@@ -1,0 +1,17 @@
+CONF_ENTRY(CString,InitialKey,"EIB_INITIAL_KEY","EIBKEY")
+CONF_ENTRY(int,ListeningPort,"LISTENING_PORT",5000)
+CONF_ENTRY(int,MaxConcurrentClients,"MAX_CONCURRENT_CLIENTS",10)
+CONF_ENTRY(int,ConsoleManagerPort,"CONSOLE_MANAGER_PORT",6000)
+CONF_ENTRY(int,LogLevel,"LOG_LEVEL",3)
+CONF_ENTRY(int,LogFileMaxSize,"LOG_FILE_MAX_SIZE",512)
+CONF_ENTRY(int,MaxNumObjectsHistory,"MAX_NUM_OBJECTS_HISTORY",100)
+CONF_ENTRY(CString,EibDeviceMode,"EIB_DEVICE_MODE","MODE_TUNNELING")
+CONF_ENTRY(CString,EibDeviceAddress,"EIB_IP_ADDRESS","224.0.23.12")
+CONF_ENTRY(bool,AutoDetectEibDeviceAddress,"AUTO_DETECT_EIB_DEVICE_ADDRESS",false)
+#ifdef WIN32
+CONF_ENTRY(int,EibLocalInterface,"EIB_LOCAL_INTERFACE",1)
+CONF_ENTRY(int,ClientsListenInterface,"CLIENTS_LISTEN_INTERFACE",1)
+#else
+CONF_ENTRY(CString,EibLocalInterface,"EIB_LOCAL_INTERFACE","eth0")
+CONF_ENTRY(CString,ClientsListenInterface,"CLIENTS_LISTEN_INTERFACE","eth0")
+#endif

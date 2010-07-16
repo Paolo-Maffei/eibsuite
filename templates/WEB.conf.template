@@ -1,0 +1,31 @@
+#######################################################################################################
+#General Block
+#######################################################################################################
+[WEB-GENERAL]
+
+#initial key to encrypt and decrypt the messages required for random keys exchange
+WEB_INITIAL_KEY = EIBKEY
+
+#IP Address of the EIB Server
+EIB_SERVER_IP_ADDRESS = 127.0.0.1
+
+#The EIB Server port (the port that EIB Server listens to accept new clients)
+EIB_SERVER_PORT = 5000
+
+#The port to listen to for Incoming WEB connections (browser)
+WEB_SERVER_PORT = 8080
+
+#The ip address to listen to for Incoming WEB connections (browser)
+LOCAL_IP_ADDRESS = 127.0.0.1
+
+#Login name of the AMX server. this name will be used during the authentication with the EIB Server (Case sensitive)
+WEB_SERVER_NAME = WEB
+
+#Network name of this server. this name rquired during the authentication with the EIB Server (Case sensitive)
+WEB_NETWORK_NAME = WEB
+
+#Login password of the AMX server. this password will be used during the authentication with the EIB Server
+WEB_SERVER_PASSWORD = WEB
+
+WEB_SERVER_IMAGES_FOLDER = C:\Documents and Settings\Yosi\Desktop\EIBProject\WEBServer\Images
+

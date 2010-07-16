@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B4CA5BEF-2DAE-429B-AF57-E805B7A77060}</ProjectGuid>
+    <RootNamespace>EIBServer</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30128.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\EIBServer\include;$(SolutionDir)\..\EIBStdlib\include;$(SolutionDir)\..\JTC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\EIBServer\include;$(SolutionDir)\..\EIBStdlib\include;$(SolutionDir)\..\JTC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EIBStdLib\EIBStdLib.vcxproj">
+      <Project>{50f37432-4115-463e-948e-98d57468f606}</Project>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\JTC\JTC.vcxproj">
+      <Project>{6ff24d09-1c95-4d46-b02f-5f27304a0308}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\EIBServer\src\BusMonConnection.cpp" />
+    <ClCompile Include="..\..\EIBServer\src\Client.cpp" />
+    <ClCompile Include="..\..\EIBServer\src\ClientsMgr.cpp" />
+    <ClCompile Include="..\..\EIBServer\src\conf\EIBBusMonConf.cpp" />
+    <ClCompile Include="..\..\EIBServer\src\conf\EIBInterfaceConf.cpp" />
+    <ClCompile Include="..\..\EIBServer\src\conf\EIBServerUsersConf.cpp" />
+    <ClCompile Include="..\..\EIBServer\src\ConsoleManager.cpp" />
+    <ClCompile Include="..\..\EIBServer\src\EIBHandler.cpp" />
+    <ClCompile Include="..\..\EIBServer\src\EIBInterface.cpp" />
+    <ClCompile Include="..\..\EIBServer\src\EIBServer.cpp" />
+    <ClCompile Include="..\..\EIBServer\src\Main.cpp" />
+    <ClCompile Include="..\..\EIBServer\src\PacketFilter.cpp" />
+    <ClCompile Include="..\..\EIBServer\src\RoutingConnection.cpp" />
+    <ClCompile Include="..\..\EIBServer\src\ServerConfig.cpp" />
+    <ClCompile Include="..\..\EIBServer\src\TunnelConnection.cpp" />
+    <ClCompile Include="..\..\EIBServer\src\UsersDB.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\EIBServer\include\BusMonConnection.h" />
+    <ClInclude Include="..\..\EIBServer\include\Client.h" />
+    <ClInclude Include="..\..\EIBServer\include\ClientsMgr.h" />
+    <ClInclude Include="..\..\EIBServer\include\conf\EIBBusMonConf.h" />
+    <ClInclude Include="..\..\EIBServer\include\conf\EIBInterfaceConf.h" />
+    <ClInclude Include="..\..\EIBServer\include\conf\EIBServerUsersConf.h" />
+    <ClInclude Include="..\..\EIBServer\include\ConsoleManager.h" />
+    <ClInclude Include="..\..\EIBServer\include\EIBHandler.h" />
+    <ClInclude Include="..\..\EIBServer\include\EIBInterface.h" />
+    <ClInclude Include="..\..\EIBServer\include\EIBServer.h" />
+    <ClInclude Include="..\..\EIBServer\include\GeneralConf.h" />
+    <ClInclude Include="..\..\EIBServer\include\packetfilter.h" />
+    <ClInclude Include="..\..\EIBServer\include\RoutingConnection.h" />
+    <ClInclude Include="..\..\EIBServer\include\ServerConfig.h" />
+    <ClInclude Include="..\..\EIBServer\include\ServerStatusConf.h" />
+    <ClInclude Include="..\..\EIBServer\include\TunnelConnection.h" />
+    <ClInclude Include="..\..\EIBServer\include\UsersDB.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

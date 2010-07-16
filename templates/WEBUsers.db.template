@@ -1,0 +1,7 @@
+#######################################################################################################
+#USER Block - The name of the block is the User Name (Case sensitive)
+#######################################################################################################
+[USER-NAME]
+
+#the password for this user (Case sensitive)
+PASSWORD = Password

@@ -1,0 +1,5 @@
+ifeq ($(arch),ARM)
+	CC := /home/yosi/Desktop/sheeva_gcc/bin/arm-none-linux-gnueabi-g++
+else
+    CC := g++
+endif

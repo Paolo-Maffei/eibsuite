@@ -1,0 +1,262 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{50F37432-4115-463E-948E-98D57468F606}</ProjectGuid>
+    <RootNamespace>EIBStdLib</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30128.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\EIBStdLib\include;$(SolutionDir)\..\JTC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;EIBSTDLIB_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>wsock32.lib;Iphlpapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\EIBStdLib\include;$(SolutionDir)\..\JTC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;EIBSTDLIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\EIBStdLib\src\CException.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\cli.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\CMutex.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\ConfigFile.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\CTime.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\DiffieHellman.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\Directory.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\GenericServer.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\Globals.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\IConnection.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\LogFile.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\SearchResponse.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\ServiceBase.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\SingletonValidation.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\Socket.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\StatsDB.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\Utils.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\CString.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\DataBuffer.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\StringTokenizer.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\CemiFrame.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\ConnectionStateRequest.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\ConnectionStateResponse.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\ConnectRequest.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\ConnectResponse.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\CRI_CRD.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\DisconnectRequest.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\DisconnectResponse.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\EIBAddress.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\EIBNetIP.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\HPAI.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\RoutingIndication.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\SearchRequest.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\TunnelAck.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\TunnelRequest.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\Base64.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\Digest.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\MD5.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\HttpHeader.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\HttpParameter.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\HttpParser.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\HttpReply.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\HttpRequest.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\HttpSession.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\URLEncoding.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\XGetopt.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\xml\action_store.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\xml\htmlutil.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\xml\lex_util.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\xml\node_set.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\xml\tinystr.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\tinyxml.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\tinyxmlerror.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\tinyxmlparser.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\tokenlist.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\xml\Xml.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\xml_util.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\xml\xpath_expression.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\xml\xpath_processor.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\xml\xpath_stack.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\xml\xpath_static.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\xml\xpath_stream.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\xml\xpath_syntax.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\EIBStdLib\include\CException.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\cli.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\CMutex.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\ConfigFile.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\ConsoleColor.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\CTime.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\Directory.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\DummyThread.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\EibNetwork.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\EibStdLib.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\GenericDB.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\GenericServer.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\Globals.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\IConfBase.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\IConnection.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\ISerializeable.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\LogFile.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\ServiceBase.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\SingletonValidation.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\Socket.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\StatsDB.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\TranslationTable.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\Utils.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\HttpHeader.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\HttpParameter.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\HttpParser.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\HttpReply.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\HttpRequest.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\HttpSession.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\Protocol.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\URLEncoding.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\Buffer.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\CString.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\DataBuffer.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\StringTokenizer.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\cEMI.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\CemiFrame.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\ConnectionStateRequest.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\ConnectionStateResponse.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\ConnectRequest.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\ConnectResponse.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\CRI_CRD.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\DisconnectRequest.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\DisconnectResponse.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\EIBAddress.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\EIBNetIP.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\EibNetPacket.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\HPAI.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\RoutingIndication.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\SearchRequest.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\SearchResponse.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\TunnelAck.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\TunnelRequest.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\Base64.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\DiffieHellman.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\Digest.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\MD5.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\XGetopt.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\xml\action_store.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\xml\byte_stream.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\xml\htmlutil.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\xml\lex_token.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\xml\lex_util.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\xml\node_set.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\xml\tinystr.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\xml\tinyxml.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\xml\tinyxpath_conf.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\xml\tokenlist.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\xml\Xml.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\xml\xml_util.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\xml\xpath_expression.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\xml\xpath_processor.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\xml\xpath_stack.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\xml\xpath_static.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\xml\xpath_stream.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\xml\xpath_syntax.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JTC\JTC.vcxproj">
+      <Project>{6ff24d09-1c95-4d46-b02f-5f27304a0308}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

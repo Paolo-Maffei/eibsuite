@@ -1,0 +1,31 @@
+#######################################################################################################
+#General Block
+#######################################################################################################
+[SMS-GENERAL]
+
+#initial key to encrypt and decrypt the messages required for random key exchange
+SMS_INITIAL_KEY = EIBKEY
+
+#IP Address of EIB Server. If you are running EIB server and SMS Server on the same machine, use 127.0.0.1
+EIB_SERVER_IP_ADDRESS = 127.0.0.1
+
+#The EIB Server port (the port that EIB Server listens on to accept new clients)
+EIB_SERVER_PORT = 5000
+
+#The local ip address that will be used to communicate with the EIB Server
+LOCAL_IP_ADDRESS = 127.0.0.1
+
+#The serial port connected to the the Cellular device (i.e. COM13 in WINDOWS, /dev/ttyACM0 in linux)
+SMS_DEVICE = COM15
+
+#Baudrate for the Cellular device. Check your phone/modem manual for this
+SMS_DEVICE_BAUD_RATE = 115200
+
+#Login name of the SMS server. This name will be used during the authentication with the EIB Server (Case sensitive)
+SMS_SERVER_NAME = SMS
+
+#Network name of this server. This name is required for authentication with the EIB Server (Case sensitive)
+SMS_NETWORK_NAME = SMS
+
+#Login password of the SMS server. this password will be used during authentication with the EIB Server
+SMS_SERVER_PASSWORD = SMS

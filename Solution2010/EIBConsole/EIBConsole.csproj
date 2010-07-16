@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FE95A6EA-32CB-45A3-8875-92F74B4BD79A}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EIBConsole</RootNamespace>
+    <AssemblyName>EIBConsole</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="IPAddressControlLib">
+      <HintPath>..\..\EIBConsole\IPAddressControlLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\EIBConsole\AddUserForm.cs">
+      <Link>AddUserForm.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\AddUserForm.designer.cs">
+      <Link>AddUserForm.designer.cs</Link>
+      <DependentUpon>AddUserForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\Conf\EIBAddressTreeNodeConf.cs">
+      <Link>Conf\EIBAddressTreeNodeConf.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\Conf\EIBBusMonConf.cs">
+      <Link>Conf\EIBBusMonConf.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\Conf\EIBInterfaceConf.cs">
+      <Link>Conf\EIBInterfaceConf.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\Conf\EIBUsersConf.cs">
+      <Link>Conf\EIBUsersConf.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\Conf\IConfBase.cs">
+      <Link>Conf\IConfBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\Conf\IRefreshable.cs">
+      <Link>Conf\IRefreshable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\ConsoleAPI\ConsoleAPI.cs">
+      <Link>ConsoleAPI\ConsoleAPI.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\ConsoleAPI\ConsoleAPIDefs.cs">
+      <Link>ConsoleAPI\ConsoleAPIDefs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\Controls\EIBBusMonitorControl.cs">
+      <Link>Controls\EIBBusMonitorControl.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\Controls\EIBBusMonitorControl.designer.cs">
+      <Link>Controls\EIBBusMonitorControl.designer.cs</Link>
+      <DependentUpon>EIBBusMonitorControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\Controls\EIBInterfaceControl.cs">
+      <Link>Controls\EIBInterfaceControl.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\Controls\EIBInterfaceControl.designer.cs">
+      <Link>Controls\EIBInterfaceControl.designer.cs</Link>
+      <DependentUpon>EIBInterfaceControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\Controls\EIBUsersControl.cs">
+      <Link>Controls\EIBUsersControl.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\Controls\EIBUsersControl.designer.cs">
+      <Link>Controls\EIBUsersControl.designer.cs</Link>
+      <DependentUpon>EIBUsersControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\LoginDlg.cs">
+      <Link>LoginDlg.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\LoginDlg.designer.cs">
+      <Link>LoginDlg.designer.cs</Link>
+      <DependentUpon>LoginDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\MainForm.cs">
+      <Link>MainForm.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\MainForm.designer.cs">
+      <Link>MainForm.designer.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\Program.cs">
+      <Link>Program.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\Properties\Resources.Designer.cs">
+      <Link>Properties\Resources.Designer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EIBConsole\Properties\Settings.Designer.cs">
+      <Link>Properties\Settings.Designer.cs</Link>
+    </Compile>
+    <EmbeddedResource Include="..\..\EIBConsole\AddUserForm.resx">
+      <Link>AddUserForm.resx</Link>
+      <DependentUpon>AddUserForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\EIBConsole\Controls\EIBBusMonitorControl.resx">
+      <Link>Controls\EIBBusMonitorControl.resx</Link>
+      <DependentUpon>EIBBusMonitorControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\EIBConsole\Controls\EIBInterfaceControl.resx">
+      <Link>Controls\EIBInterfaceControl.resx</Link>
+      <DependentUpon>EIBInterfaceControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\EIBConsole\Controls\EIBUsersControl.resx">
+      <Link>Controls\EIBUsersControl.resx</Link>
+      <DependentUpon>EIBUsersControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\EIBConsole\LoginDlg.resx">
+      <Link>LoginDlg.resx</Link>
+      <DependentUpon>LoginDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\EIBConsole\MainForm.resx">
+      <Link>MainForm.resx</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\EIBConsole\Properties\Resources.resx">
+      <Link>Properties\Resources.resx</Link>
+    </EmbeddedResource>
+    <None Include="..\..\EIBConsole\Properties\Settings.settings">
+      <Link>Properties\Settings.settings</Link>
+    </None>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="..\..\EIBConsole\Images\device_running.ico">
+      <Link>Images\device_running.ico</Link>
+    </Content>
+    <Content Include="..\..\EIBConsole\Images\device_stopped.ico">
+      <Link>Images\device_stopped.ico</Link>
+    </Content>
+    <Content Include="..\..\EIBConsole\Images\device_unknown.ico">
+      <Link>Images\device_unknown.ico</Link>
+    </Content>
+    <Content Include="..\..\EIBConsole\Images\disconnect.bmp">
+      <Link>Images\disconnect.bmp</Link>
+    </Content>
+    <Content Include="..\..\EIBConsole\Images\disconnect.ico">
+      <Link>Images\disconnect.ico</Link>
+    </Content>
+    <Content Include="..\..\EIBConsole\Images\eib-logo.bmp">
+      <Link>Images\eib-logo.bmp</Link>
+    </Content>
+    <Content Include="..\..\EIBConsole\Images\eib-logo.gif.png">
+      <Link>Images\eib-logo.gif.png</Link>
+    </Content>
+    <Content Include="..\..\EIBConsole\Images\eib_addr.ico">
+      <Link>Images\eib_addr.ico</Link>
+    </Content>
+    <Content Include="..\..\EIBConsole\Images\folderopen.ico">
+      <Link>Images\folderopen.ico</Link>
+    </Content>
+    <Content Include="..\..\EIBConsole\Images\refresh_view.png">
+      <Link>Images\refresh_view.png</Link>
+    </Content>
+    <Content Include="..\..\EIBConsole\Images\server.ico">
+      <Link>Images\server.ico</Link>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

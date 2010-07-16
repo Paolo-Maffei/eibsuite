@@ -1,0 +1,13 @@
+#######################################################################################################
+#AMX Messages Block
+#######################################################################################################
+
+#This block lists the mapping between AMX messages and EIB messages.
+#All values should be in Hex form. <AMX CHANNEL>:<PRESS> = <EIB DESTINATION>:<VALUE>
+#AMX CHANNEL - The channel activated by the AMX controller. Hex value from 0x00 to 0xff.
+#PRESS - Enter 0x0 for release, 0x1 for press
+#EIB DESTINATION - EIB destination function address. Hex value from 0x0000 to 0xffff. 
+#VALUE - EIB function value (apci). Hex value from 0x00 to 0xff. Usually 0x80 for off, 0x81 for on
+[MESSAGES]
+0x01:0x1 = 0x1004:0x81
+0x01:0x0 = 0x1004:0x80

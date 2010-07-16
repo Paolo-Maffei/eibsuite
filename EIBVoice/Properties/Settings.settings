@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="EIBVoice.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="InitialKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)">EIBKEY</Value>
+    </Setting>
+    <Setting Name="NetworkName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Voice</Value>
+    </Setting>
+    <Setting Name="HeartBeatInterval" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="XMLSchemaFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\Yosi\Desktop\EIB\EIBVoice\MessagesDB.xsd</Value>
+    </Setting>
+    <Setting Name="RootElementName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Messages</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

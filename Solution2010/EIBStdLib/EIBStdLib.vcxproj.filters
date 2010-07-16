@@ -1,0 +1,457 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\action_store.cpp">
+      <Filter>src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\Base64.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\ConfigFile.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\CMutex.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\CException.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\CTime.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\DiffieHellman.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\Digest.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\Directory.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\EIBNetIP.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\GenericServer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\Globals.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\htmlutil.cpp">
+      <Filter>src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\IConnection.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\xpath_syntax.cpp">
+      <Filter>src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\xpath_stream.cpp">
+      <Filter>src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\xpath_static.cpp">
+      <Filter>src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\xpath_stack.cpp">
+      <Filter>src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\xpath_processor.cpp">
+      <Filter>src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\xpath_expression.cpp">
+      <Filter>src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\xml_util.cpp">
+      <Filter>src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\Xml.cpp">
+      <Filter>src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\LogFile.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\MD5.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\ServiceBase.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\SingletonValidation.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\Socket.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\StatsDB.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\Utils.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\tinyxmlparser.cpp">
+      <Filter>src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\tinyxmlerror.cpp">
+      <Filter>src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\tinyxml.cpp">
+      <Filter>src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\tinystr.cpp">
+      <Filter>src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\node_set.cpp">
+      <Filter>src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\tokenlist.cpp">
+      <Filter>src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\xml\lex_util.cpp">
+      <Filter>src\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\HttpHeader.cpp">
+      <Filter>src\Http</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\HttpParameter.cpp">
+      <Filter>src\Http</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\HttpParser.cpp">
+      <Filter>src\Http</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\HttpReply.cpp">
+      <Filter>src\Http</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\HttpRequest.cpp">
+      <Filter>src\Http</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\HttpSession.cpp">
+      <Filter>src\Http</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\URLEncoding.cpp">
+      <Filter>src\Http</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\CemiFrame.cpp">
+      <Filter>src\EIBStack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\ConnectionStateRequest.cpp">
+      <Filter>src\EIBStack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\ConnectionStateResponse.cpp">
+      <Filter>src\EIBStack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\ConnectRequest.cpp">
+      <Filter>src\EIBStack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\ConnectResponse.cpp">
+      <Filter>src\EIBStack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\CRI_CRD.cpp">
+      <Filter>src\EIBStack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\DisconnectResponse.cpp">
+      <Filter>src\EIBStack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\DisconnectRequest.cpp">
+      <Filter>src\EIBStack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\TunnelRequest.cpp">
+      <Filter>src\EIBStack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\TunnelAck.cpp">
+      <Filter>src\EIBStack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\SearchResponse.cpp">
+      <Filter>src\EIBStack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\SearchRequest.cpp">
+      <Filter>src\EIBStack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\RoutingIndication.cpp">
+      <Filter>src\EIBStack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\HPAI.cpp">
+      <Filter>src\EIBStack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\CString.cpp">
+      <Filter>src\String</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\StringTokenizer.cpp">
+      <Filter>src\String</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\DataBuffer.cpp">
+      <Filter>src\String</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\cli.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\XGetopt.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\EIBAddress.cpp">
+      <Filter>src\EIBStack</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\EIBStdLib\include\xml\action_store.h">
+      <Filter>include\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\Base64.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\Buffer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\CException.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\CMutex.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\ConfigFile.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\ConsoleColor.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\IConfBase.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\HPAI.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\Globals.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\GenericServer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\GenericDB.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\EibStdLib.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\EibNetwork.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\Directory.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\Digest.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\CTime.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\DiffieHellman.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\IConnection.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\ISerializeable.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\Protocol.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\MD5.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\LogFile.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\StatsDB.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\Socket.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\ServiceBase.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\xml\htmlutil.h">
+      <Filter>include\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\xml\byte_stream.h">
+      <Filter>include\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\xml\Xml.h">
+      <Filter>include\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\xml\xml_util.h">
+      <Filter>include\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\xml\xpath_expression.h">
+      <Filter>include\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\xml\xpath_processor.h">
+      <Filter>include\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\xml\xpath_stack.h">
+      <Filter>include\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\xml\xpath_static.h">
+      <Filter>include\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\xml\xpath_stream.h">
+      <Filter>include\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\xml\xpath_syntax.h">
+      <Filter>include\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\xml\tokenlist.h">
+      <Filter>include\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\xml\tinyxpath_conf.h">
+      <Filter>include\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\xml\tinyxml.h">
+      <Filter>include\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\xml\tinystr.h">
+      <Filter>include\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\xml\node_set.h">
+      <Filter>include\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\xml\lex_util.h">
+      <Filter>include\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\xml\lex_token.h">
+      <Filter>include\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\SingletonValidation.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\TranslationTable.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\Utils.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\CString.h">
+      <Filter>include\String</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\DataBuffer.h">
+      <Filter>include\String</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\ConnectionStateRequest.h">
+      <Filter>include\EIBStack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\ConnectionStateResponse.h">
+      <Filter>include\EIBStack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\ConnectRequest.h">
+      <Filter>include\EIBStack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\ConnectResponse.h">
+      <Filter>include\EIBStack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\EIBNetIP.h">
+      <Filter>include\EIBStack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\EIBAddress.h">
+      <Filter>include\EIBStack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\DisconnectResponse.h">
+      <Filter>include\EIBStack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\DisconnectRequest.h">
+      <Filter>include\EIBStack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\TunnelRequest.h">
+      <Filter>include\EIBStack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\TunnelAck.h">
+      <Filter>include\EIBStack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\SearchResponse.h">
+      <Filter>include\EIBStack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\SearchRequest.h">
+      <Filter>include\EIBStack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\RoutingIndication.h">
+      <Filter>include\EIBStack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\cEMI.h">
+      <Filter>include\EIBStack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\CemiFrame.h">
+      <Filter>include\EIBStack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\HttpHeader.h">
+      <Filter>include\Http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\HttpParameter.h">
+      <Filter>include\Http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\HttpParser.h">
+      <Filter>include\Http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\HttpReply.h">
+      <Filter>include\Http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\HttpRequest.h">
+      <Filter>include\Http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\HttpSession.h">
+      <Filter>include\Http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\URLEncoding.h">
+      <Filter>include\Http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\StringTokenizer.h">
+      <Filter>include\String</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\CRI_CRD.h">
+      <Filter>include\EIBStack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\EibNetPacket.h">
+      <Filter>include\EIBStack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\cli.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\XGetopt.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\DummyThread.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{baa2860d-d69e-4776-b388-16bdb5a645fa}</UniqueIdentifier>
+      <Extensions>*.h</Extensions>
+    </Filter>
+    <Filter Include="include\xml">
+      <UniqueIdentifier>{3d6c9cc7-4ed1-4c07-8ccc-a2036201b458}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{7afeb959-8edb-4dcf-8bbb-b507b170487d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xml">
+      <UniqueIdentifier>{1061041a-5805-4cef-866d-25fc8145d413}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\String">
+      <UniqueIdentifier>{6398c4c9-cb34-42b2-8a1a-235549ad7425}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Http">
+      <UniqueIdentifier>{1e5e4781-3fc0-4acd-a44f-08519841e430}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\EIBStack">
+      <UniqueIdentifier>{d1f72711-4b8d-4561-91cf-382ef714f428}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Http">
+      <UniqueIdentifier>{50216894-d1a9-4a00-8cf1-e54cceaacacd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\EIBStack">
+      <UniqueIdentifier>{f106d0d7-f369-48eb-a9f7-d54f3dc99477}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\String">
+      <UniqueIdentifier>{99fb8d4c-7be0-4157-9525-594d2888b0c4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

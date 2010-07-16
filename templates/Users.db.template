@@ -1,0 +1,22 @@
+#######################################################################################################
+#USER Block - The name of the block is the User Name (Case sensitive)
+#######################################################################################################
+[USER-NAME]
+
+#the priviliges assigned to the user. this field should be integer and is masked to determine the priviliges of the user
+# 0x0 - No priviliges as all
+# 0x1 - User can only Read messages from EIB server
+# 0x2 - User can only Write messages to EIB server
+# 0x4 - User can connect to EIBServer via EIBConsole
+# Example: if you want to grant all priviliges for a user then use 7 (0x1 + 0x2 + 0x4)
+# if you want to grant only Read policy then use 1
+PRIVILIGES = 7
+
+#the password for this user (Case sensitive)
+PASSWORD = Password
+
+#Allowed source address MASK - any EIB packet with source address that contains one of the bits specified in this mask will be sent to this user
+ALLOWED_SOURCE_MASK = 0xFFFF
+
+#Allowed source address MASK - any EIB packet with destination address that contains one of the bits specified in this mask will be sent to this user
+ALLOWED_DEST_MASK = 0xFFFF

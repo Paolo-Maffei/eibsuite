@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\jtc\src\Cond.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jtc\src\Monitor.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jtc\src\Mutex.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jtc\src\RWMutex.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jtc\src\Semaphore.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jtc\src\Sync.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jtc\src\Thread.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jtc\src\ThreadGroup.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jtc\src\TSS.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jtc\src\TSSManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\jtc\src\Version.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\jtc\include\Cond.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\Config.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\Exception.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\Handle.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\HandleI.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\JTC.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\JTCSemaphore.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\LinuxConfig.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\Monitor.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\MonitorI.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\Mutex.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\Runnable.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\RWMutex.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\Sync.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\SyncT.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\Syscall.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\Thread.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\ThreadGroup.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\TSS.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\TSSManager.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\Types.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\jtc\include\WinConfig.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{cbd89728-ca03-4add-a146-dec77d254db3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{27753877-2814-4823-8423-cc235dc97bda}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

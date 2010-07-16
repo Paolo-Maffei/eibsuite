@@ -1,0 +1,54 @@
+#######################################################################################################
+#General Block
+#######################################################################################################
+[EIB-GENERAL]
+
+#initial key to encrypt and decrypt the messages required for random keys exchange
+EIB_INITIAL_KEY = EIBKEY
+
+#The EIB Server port - the port that EIB Server listens to accept new clients (i.e. WEBServer, SMSServer, AMXServer etc.)
+LISTENING_PORT = 5000
+
+#Maximum number of concurrent connected clients
+MAX_CONCURRENT_CLIENTS = 10
+
+#the port the the console( GUI program named 'EIBConsole' ) will connect/send requests to the EIB server.
+CONSOLE_MANAGER_PORT = 6000
+
+#This number allows you to set the logging level:
+# 0 - No logging to log files at all
+# 1 - Error Messages are printed to the log files
+# 2 - Error & Info messages are printed to the log files
+# 3 - Error & Info & Debug messages are printed to the log files
+LOG_LEVEL = 0
+
+#the max size (in KB) of the log file. when the log file exceeds this size it will be saved with the local date & time and a new log file will opened
+LOG_FILE_MAX_SIZE = 512
+
+#this entry instructs the system how many different functions are saved in memory for statistics.
+MAX_NUM_OBJECTS_HISTORY = 100
+
+#The local interface (network card) that will be used for connecting to the EIBNet/IP Device.
+# Under windows: this value should be positive integer representing the NIC index (i.e. 0 or 1 or 2 etc.)
+# Under linux: this value should be the interface name (i.e. eth0 or eth1 etc)
+EIB_LOCAL_INTERFACE = 0
+
+#The local interface (network card) that will be used for accepting new connections from clients (i.e. WEBServer, SMSServer, AMXServer etc.)
+# Under windows: this value should be positive integer representing the NIC index (i.e. 0 or 1 or 2 etc.)
+# Under linux: this value should be the interface name (i.e. eth0 or eth1 etc)
+CLIENTS_LISTEN_INTERFACE = 0
+
+#The working mode with  EIB Interface
+# MODE_ROUTING - Multicast mode
+# MODE_TUNNELING - Unicast mode
+EIB_DEVICE_MODE = MODE_ROUTING
+
+#this flag instruct the system whether to send a multicast search request at the initialization phase to find out
+#the ip address of the eib interface. if set to 'false' the EIB_IP_ADDRESS directive will be used, and if set to
+#'true' the EIB_IP_ADDRESS will be ignored
+AUTO_DETECT_EIB_DEVICE_ADDRESS = yes
+
+#IP Address of EIB Device
+# if the EIB_DEVICE_MODE is MODE_ROUTING then a multicast address used by device should be provided (usually this would be 224.0.23.12)
+# if the EIB_DEVICE_MODE is MODE_TUNNELING then a unicast address should be provided (usally this address is assigned to the EIBNet/IP device via DHCP server). 
+EIB_IP_ADDRESS = 224.0.23.12

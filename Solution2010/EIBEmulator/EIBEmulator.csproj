@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A7154ADF-05F5-4037-8B8E-E255689CE119}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EIBEmulator</RootNamespace>
+    <AssemblyName>EIBEmulator</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="GlacialList, Version=1.0.1513.31776, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\EIBEmulator\GlacialList.dll</HintPath>
+    </Reference>
+    <Reference Include="IPAddressControlLib">
+      <HintPath>..\..\EIBEmulator\IPAddressControlLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\EIBEmulator\EIBMessages.cs">
+      <Link>EIBMessages.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EIBEmulator\KnownGroupsForm.cs">
+      <Link>KnownGroupsForm.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\..\EIBEmulator\KnownGroupsForm.designer.cs">
+      <Link>KnownGroupsForm.designer.cs</Link>
+      <DependentUpon>KnownGroupsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\..\EIBEmulator\MainForm.cs">
+      <Link>MainForm.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\..\EIBEmulator\MainForm.designer.cs">
+      <Link>MainForm.designer.cs</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\..\EIBEmulator\Program.cs">
+      <Link>Program.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="..\..\EIBEmulator\KnownGroupsForm.resx">
+      <Link>KnownGroupsForm.resx</Link>
+      <DependentUpon>KnownGroupsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\EIBEmulator\MainForm.resx">
+      <Link>MainForm.resx</Link>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

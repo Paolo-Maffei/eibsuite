@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\EIBServer\src\Client.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBServer\src\ClientsMgr.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBServer\src\ConsoleManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBServer\src\EIBHandler.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBServer\src\EIBInterface.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBServer\src\EIBServer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBServer\src\RoutingConnection.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBServer\src\PacketFilter.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBServer\src\TunnelConnection.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBServer\src\ServerConfig.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBServer\src\UsersDB.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBServer\src\conf\EIBServerUsersConf.cpp">
+      <Filter>src\conf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBServer\src\conf\EIBInterfaceConf.cpp">
+      <Filter>src\conf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBServer\src\conf\EIBBusMonConf.cpp">
+      <Filter>src\conf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBServer\src\BusMonConnection.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBServer\src\Main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\EIBServer\include\Client.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBServer\include\ClientsMgr.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBServer\include\ConsoleManager.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBServer\include\EIBHandler.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBServer\include\EIBInterface.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBServer\include\EIBServer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBServer\include\GeneralConf.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBServer\include\packetfilter.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBServer\include\RoutingConnection.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBServer\include\ServerConfig.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBServer\include\ServerStatusConf.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBServer\include\TunnelConnection.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBServer\include\UsersDB.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBServer\include\conf\EIBServerUsersConf.h">
+      <Filter>include\conf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBServer\include\conf\EIBInterfaceConf.h">
+      <Filter>include\conf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBServer\include\conf\EIBBusMonConf.h">
+      <Filter>include\conf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBServer\include\BusMonConnection.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{dd0a8310-6ddf-4c38-a077-b3889b3f8040}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{7719a87c-2d70-4f5f-bc88-fc07a9062758}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\conf">
+      <UniqueIdentifier>{bb65188a-db8a-42af-ac4d-3c4a7254ccc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\conf">
+      <UniqueIdentifier>{90dda479-75e8-41bc-a0ee-5a4acd16224d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

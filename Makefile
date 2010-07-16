@@ -30,6 +30,7 @@ clean: $(LIB_PROJECTS:%=%_clean) $(EXE_PROJECTS:%=%_clean)
 	make install -C "$(PWD)/$(subst _install,,$@)/linux" INSTALL_DIR=$(INSTALL_DIR)
 
 install: all $(LIB_PROJECTS:%=%_install) $(EXE_PROJECTS:%=%_install)
+	@cp -u ./scripts/run.sh $(INSTALL_DIR)	
 
 force_look:
 	true

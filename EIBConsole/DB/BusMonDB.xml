@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Root>
+  <AddressGroup Name="Root"/>
+  <AddressGroup Name="Kitchen"/>
+  <Address KNX="1/1/1" Name="Oven" Parent="Kitchen">
+    <LastSeenTime>Yesterday 8:00 PM</LastSeenTime>
+    <LastSeenValue>0x81</LastSeenValue>
+    <TotalTimesSeen>13</TotalTimesSeen>
+    <Values>
+      <Val>0x80</Val>
+      <Val>0x81</Val>
+      <Val>0x82</Val>
+    </Values>
+  </Address>
+  <Address KNX="1/1/1" Name="Light" Parent="Kitchen">
+    <LastSeenTime>Yesterday 8:00 PM</LastSeenTime>
+    <LastSeenValue>0x81</LastSeenValue>
+    <TotalTimesSeen>13</TotalTimesSeen>
+    <Values>
+      <Val>0x80</Val>
+      <Val>0x81</Val>
+      <Val>0x82</Val>
+    </Values>
+  </Address>
+</Root>

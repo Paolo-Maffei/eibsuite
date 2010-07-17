@@ -1,4 +1,5 @@
 #include "SMSServer.h"
+#include "cli.h"
 
 CSMSServer CSMSServer::_instance;
 
@@ -35,7 +36,7 @@ bool CSMSServer::Init()
 
 	START_TRY
 		//load configuration from file
-		_conf.Load(CURRENT_CONF_FOLDER + SMS_CONF_FILE_NAME);
+		_conf.Load(SMS_CONF_FILE_NAME);
 		_log.Log(LOG_LEVEL_INFO,"Reading Configuration file...Successful.");
 	END_TRY_START_CATCH(e)
 		_log.Log(LOG_LEVEL_ERROR,"Reading Configuration file...Failed: %s",e.what());
@@ -61,8 +62,6 @@ bool CSMSServer::Init()
 		_listener.start();
 		_log.Log(LOG_LEVEL_INFO,"Starting SMS Listener... Successful.");
 	END_TRY_START_CATCH_GSM(e)
-		//_cell_port = new SerialPort("//./" + device.GetSTDString(),_conf.GetDeviceBaudRate(),DEFAULT_INIT_STRING, false);
-		//_meta = new MeTa(_cell_port);
 		_log.Log(LOG_LEVEL_ERROR,"Cellular Modem connection Failed: %s",e.what());
 		_cell_port = NULL;
 		res = false;
@@ -92,7 +91,7 @@ void CSMSServer::run()
 											_conf.GetEibIPAddress(),
 											_conf.GetEibPort(),
 											_conf.GetInitialKey(),
-											_conf.GetLocalIPAddress(),
+											Socket::LocalAddress(_conf.GetListenInterface()).GetBuffer(),
 											_conf.GetName(),
 											_conf.GetPassword());
 
@@ -184,4 +183,65 @@ bool CSMSServer::SendSMS(const CString& phone_number,const CString& text)
 	}
 
 	return true;
+}
+
+void CSMSServer::InteractiveConf()
+{
+	START_TRY
+		_conf.Load(SMS_CONF_FILE_NAME);
+	END_TRY_START_CATCH_ANY
+		_conf.Init();
+	END_CATCH
+
+	LOG_SCREEN("************************************\n");
+	LOG_SCREEN("SMSServer Interactive configuration:\n");
+	LOG_SCREEN("************************************\n");
+
+	CString sval;
+	int ival;
+	bool bval;
+
+	if(ConsoleCLI::GetCString("Initial Encryption/Decryption key?",sval, _conf.GetInitialKey())){
+		_conf.SetInitialKey(sval);
+	}
+	if(ConsoleCLI::Getbool("Auto detect EIBServer on local network?",bval,_conf.GetAutoDiscoverEibServer())){
+		_conf.SetAutoDiscoverEibServer(bval);
+		if(!bval){
+			if(ConsoleCLI::GetCString("EIBServer IP Address?",sval,_conf.GetEibIPAddress())){
+				_conf.SetEibIPAddress(sval);
+			}
+			if(ConsoleCLI::Getint("EIB Server port?",ival, _conf.GetEibPort())){
+				_conf.SetEibPort(ival);
+			}
+		}
+	}
+	if(ConsoleCLI::GetCString("RELAY Server user name (used to connect to EIB Server)?",sval, _conf.GetName())){
+		_conf.SetName(sval);
+	}
+	if(ConsoleCLI::GetCString("RELAY Server password (used to connect to EIB Server)?",sval, _conf.GetPassword())){
+		_conf.SetPassword(sval);
+	}
+
+	map<CString,CString> map2;
+
+	#ifdef WIN32
+		if(CUtils::EnumNics(map2) && ConsoleCLI::GetStrOption("Choose Interface to connect through to EIBServer", map2, sval, CString(_conf.GetListenInterface()))){
+			_conf.SetListenInterface(sval.ToInt());
+		}
+	#else
+		if(CUtils::EnumNics(map2) && ConsoleCLI::GetStrOption("Choose Interface to connect through to EIBServer", map2, sval, _conf.GetListenInterface())){
+			_conf.SetListenInterface(sval);
+		}
+	#endif
+
+	if(ConsoleCLI::GetCString("SMS Network device port?",sval, _conf.GetDevice())){
+		_conf.SetDevice(sval);
+	}
+	LOG_SCREEN("Saving configuration to %s...", SMS_CONF_FILE_NAME);
+	if(!_conf.Save(SMS_CONF_FILE_NAME)){
+		throw CEIBException(FileError, "Cannot save configuration to file \"%s\"", SMS_CONF_FILE_NAME);
+	}
+	LOG_SCREEN(" [OK]\n");
+	_log.SetConsoleColor(GREEN);
+	LOG_INFO("\nNow you can run SMS Server. the new file will be loaded automatically.\n\n");
 }

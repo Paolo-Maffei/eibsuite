@@ -14,8 +14,6 @@ void CSMSServerConfig::Load(const CString& file_name)
 {
 	Init();
 	if(!this->LoadFromFile(file_name)){
-		//save the current config
-		Save(file_name);
 		throw CEIBException(ConfigFileError,"Config file Not Exist.");
 	}
 	list<CConfigBlock>::iterator it;
@@ -29,7 +27,7 @@ void CSMSServerConfig::Load(const CString& file_name)
 	}
 }
 
-void CSMSServerConfig::Save(const CString& file_name)
+bool CSMSServerConfig::Save(const CString& file_name)
 {
 	cout << "Saving configuration file (" << file_name.GetBuffer() << ")";
 
@@ -50,7 +48,7 @@ void CSMSServerConfig::Save(const CString& file_name)
 		}
 	}
 
-	this->SaveToFile(file_name);
+	return this->SaveToFile(file_name);
 }
 
 void CSMSServerConfig::Init()

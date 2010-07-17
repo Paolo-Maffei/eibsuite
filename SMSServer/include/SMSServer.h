@@ -17,6 +17,21 @@
 #include "SingletonValidation.h"
 #include "SMSListener.h"
 
+//some useful MACROS
+#ifdef WIN32
+#define LOG(level,msg,...) CSMSServer::GetInstance().GetLog().Log(level,msg,__VA_ARGS__)
+#define LOG_INFO(msg,...) LOG(LOG_LEVEL_INFO,msg,##__VA_ARGS__)
+#define LOG_ERROR(msg,...) LOG(LOG_LEVEL_ERROR,msg,##__VA_ARGS__)
+#define LOG_DEBUG(msg,...) LOG(LOG_LEVEL_DEBUG,msg,##__VA_ARGS__)
+#define LOG_SCREEN(msg,...) printf(msg,##__VA_ARGS__)
+#else
+#define LOG(level,msg,args...) CSMSServer::GetInstance().GetLog().Log(level,msg,##args)
+#define LOG_INFO(msg,args...) LOG(LOG_LEVEL_INFO,msg,##args)
+#define LOG_ERROR(msg,args...) LOG(LOG_LEVEL_ERROR,msg,##args)
+#define LOG_DEBUG(msg,args...) LOG(LOG_LEVEL_DEBUG,msg,##args)
+#define LOG_SCREEN(msg, args...) printf(msg,##args)
+#endif
+
 #ifdef WIN32
 #include "gsm_win32_serial.h"
 #include <direct.h>
@@ -58,6 +73,9 @@ public:
 	MeTa* GetMeTa() { return _meta; }
 	SerialPort* GetSerialPort() { return _cell_port; }
 	CMutex& GetMetaLock() { return _meta_lock; }
+
+	void InteractiveConf();
+
 private:
 	bool SendSMS(const CString& phone_number, const CString& text);
 	void DeleteAllMessages();

@@ -130,7 +130,7 @@ void CEIBRelayServer::InteractiveConf()
 		_conf.SetListenInterface(sval.ToInt());
 	}
 #else
-	if(CUtils::EnumNics(map2) && ConsoleCLI::GetStrOption("Choose Interface to listen for web requests (Browser)", map2, sval, _conf.GetListenInterface())){
+	if(CUtils::EnumNics(map2) && ConsoleCLI::GetStrOption("Choose Interface to listen for new KNX/IP connections", map2, sval, _conf.GetListenInterface())){
 		_conf.SetListenInterface(sval);
 	}
 #endif

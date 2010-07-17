@@ -19,11 +19,13 @@ static const string dashes =
 
 CBDataCodingScheme::CBDataCodingScheme(unsigned char dcs) : _dcs(dcs)
 {
-  if ((_dcs & 0xf0) <= 0x30)    // bits 7..4 in the range 0000..0011
+  if ((_dcs & 0xf0) <= 0x30){    // bits 7..4 in the range 0000..0011
     if ((_dcs & 0x30) == 0)
       _language = (Language)_dcs;
-  else
+  }
+  else{
     _language = Unknown;
+  }
 }
 
 string CBDataCodingScheme::toString() const

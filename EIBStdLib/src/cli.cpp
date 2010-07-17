@@ -44,18 +44,31 @@ static bool ValidateInt(const CString& input, int& val)
 	return true;
 }
 
+bool ConsoleCLI::GetIntRange(const CString& msg, int& val, int min, int max, int def)
+{
+start:
+	Getint(msg, val, def);
+	if(val < min || val > max){
+		std::puts("Illegal input. please try again...");
+		goto start;
+	}
+	return true;
+}
+
 bool ConsoleCLI::Getint(const CString& msg, int& val, int def)
 {
 	bool keep_asking;
 	do
 	{
 		CString new_msg(msg);
-		new_msg += " [";
-		new_msg += def;
-		new_msg += "] ";
+		if(def != NO_DEFAULT_OPTION){
+			new_msg += " [";
+			new_msg += def;
+			new_msg += "] ";
+		}
 		CString input;
 		GetInputFromUser(new_msg, input);
-		if(input.GetLength() == 0){
+		if(input.GetLength() == 0 && def != NO_DEFAULT_OPTION){
 			val = def;
 			return true;
 		}
@@ -69,15 +82,23 @@ bool ConsoleCLI::Getint(const CString& msg, int& val, int def)
 
 bool ConsoleCLI::GetCString(const CString& msg, CString& val, const CString& def)
 {
+start:
 	CString new_msg(msg);
-	new_msg += " [";
-	new_msg += def;
-	new_msg += "] ";
+	if(def.GetLength() > 0){
+		new_msg += " [";
+		new_msg += def;
+		new_msg += "] ";
+	}
 	CString input;
 	GetInputFromUser(new_msg, input);
 	if(input.GetLength() == 0){
-		val = def;
-		return true;
+		if(def.GetLength() > 0){
+			val = def;
+			return true;
+		}else{
+			std::puts("Illegal input. please try again...");
+			goto start;
+		}
 	}
 	val = input;
 	return true;
@@ -106,7 +127,7 @@ bool ConsoleCLI::Getbool(const CString& msg, bool& val, bool def)
 }
 
 template <class T>
-bool GetOptionBase(const CString& msg, const map<T,CString>& options, T& val, const T& def)
+bool GetOptionBase(const CString& msg, const map<T,CString>& options, T& val, const T& def, bool has_def)
 {
 	if(options.size() == 0){
 		return false;
@@ -119,9 +140,13 @@ bool GetOptionBase(const CString& msg, const map<T,CString>& options, T& val, co
 	{
 		i = 1;
 		new_msg = msg;
-		new_msg += " [";
-		new_msg += def;
-		new_msg += "]";
+
+		if(has_def){
+			new_msg += " [";
+			new_msg += def;
+			new_msg += "]";
+		}
+
 		new_msg += CRLF;
 		for(it = options.begin(); it != options.end(); ++it)
 		{
@@ -133,7 +158,7 @@ bool GetOptionBase(const CString& msg, const map<T,CString>& options, T& val, co
 			++i;
 		}
 		GetInputFromUser(new_msg, input);
-		if(input.GetLength() == 0){
+		if(input.GetLength() == 0 && has_def){
 			val = def;
 			return true;
 		}
@@ -157,10 +182,10 @@ bool GetOptionBase(const CString& msg, const map<T,CString>& options, T& val, co
 
 bool ConsoleCLI::GetStrOption(const CString& msg, const map<int,CString>& options, int& val, const int& def)
 {
-	return GetOptionBase<int>(msg,options,val,def);
+	return GetOptionBase<int>(msg,options,val,def, def != NO_DEFAULT_OPTION);
 }
 
 bool ConsoleCLI::GetStrOption(const CString& msg, const map<CString,CString>& options, CString& val, const CString& def)
 {
-	return GetOptionBase<CString>(msg,options,val,def);
+	return GetOptionBase<CString>(msg,options,val,def, def.GetLength() > 0);
 }

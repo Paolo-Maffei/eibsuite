@@ -2,14 +2,20 @@
 
 using namespace std;
 
-void eibserver_main(bool interactive_conf)
+void eibserver_main(bool interactive_conf, bool interactive_usersdb)
 {
 	CEIBServer::Create();
 	
 	if(interactive_conf){
 		CEIBServer::GetInstance().InteractiveConf();
+		exit(0);
 	}
 	
+	if(interactive_usersdb){
+		CEIBServer::GetInstance().GetUsersDB().InteractiveConf();
+		exit(0);
+	}
+
 	bool initialized = CEIBServer::GetInstance().Init();
 	if(initialized){
 		CEIBServer::GetInstance().Start();
@@ -44,19 +50,21 @@ void eibserver_main(bool interactive_conf)
 int main(int argc, char **argv)
 {
 	JTCInitialize init;
-	bool interactive_conf = false;
+	bool interactive_conf = false, interactive_usersdb = false;
 	int c;
 	opterr = 0;
 
-	while ((c = getopt (argc, argv, "i :")) != -1)
+	while ((c = getopt (argc, argv, "iu :")) != -1)
 	{
 		switch(c)
 		{
 		case 'i': interactive_conf = true;
 			break;
+		case 'u': interactive_usersdb = true;
+			break;
 		}
 	}
 
-	eibserver_main(interactive_conf);
+	eibserver_main(interactive_conf, interactive_usersdb);
 	return 0;
 }

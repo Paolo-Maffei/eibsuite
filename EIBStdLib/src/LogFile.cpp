@@ -44,6 +44,8 @@ void CLogFile::SetConsoleColor(TEXT_COLOR color)
 
 void CLogFile::Init(const CString& file_name)
 {
+//YGYG: for now, avoid logging to files
+#if 0
 	_file_name = file_name;
 
 	int size = CUtils::GetFileSize(file_name);
@@ -76,6 +78,7 @@ void CLogFile::Init(const CString& file_name)
 	}
 
 	_file.close();
+#endif
 }
 
 void CLogFile::AppendTimeLine()
@@ -101,6 +104,8 @@ void CLogFile::Log(LogLevel level, const char* format,...)
 		print2file = false;
 	}
 
+//YGYG: for now, avoid logging to files
+#if 0
 	if(print2file){
 
 		_file.open(_file_name.GetBuffer(),ios::out|ios::app);
@@ -132,7 +137,7 @@ void CLogFile::Log(LogLevel level, const char* format,...)
 		
 		_file << ' ';
 	}
-
+#endif
 	CString ret;
 	if (NULL != format)
 	{
@@ -154,10 +159,12 @@ void CLogFile::Log(LogLevel level, const char* format,...)
 			SetConsoleColor(WHITE);
 		}
 	}
-
+//YGYG: for now, avoid logging to files
+#if 0
 	if(print2file)
 	{
 		_file.close();
 	}
+#endif
 }
 

@@ -164,7 +164,7 @@ bool CEIBServer::Init()
 		_users_db.Validate();
 	END_TRY_START_CATCH(e)
 		_log.SetConsoleColor(YELLOW);
-		LOG_ERROR("Warning: %s",e.what());
+		LOG_INFO("Warning: %s",e.what());
 	END_CATCH
 
 	START_TRY
@@ -286,10 +286,11 @@ void CEIBServer::InteractiveConf()
 #endif
 
 	_conf.SetLoadOK(true);
-	LOG_SCREEN("Saving configuration to %s ...\n", DEFAULT_CONF_FILE_NAME);
+	LOG_SCREEN("Saving configuration to %s...", DEFAULT_CONF_FILE_NAME);
 	if(!_conf.Save(DEFAULT_CONF_FILE_NAME)){
 		throw CEIBException(FileError, "Cannot save configuration to file \"%s\"",DEFAULT_CONF_FILE_NAME);
 	}
-	_conf.Load(DEFAULT_CONF_FILE_NAME);
-	LOG_SCREEN("Running EIBServer with updated configuration...\n");
+	LOG_SCREEN(" [OK]\n");
+	_log.SetConsoleColor(GREEN);
+	LOG_INFO("\nNow you can run EIB Server. the new file will be loaded automatically.\n\n");
 }

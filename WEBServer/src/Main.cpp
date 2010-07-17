@@ -1,12 +1,14 @@
 #include "WEBServer.h"
 
-void webserver_main(bool interactive_conf, const CString& conf_file)
+void webserver_main(bool interactive_conf, bool interactive_usersdb)
 {
-	if(conf_file.GetLength() > 0){
-		CWEBServer::GetInstance().SetConfFile(conf_file);
-	}
 	if(interactive_conf){
 		CWEBServer::GetInstance().InteractiveConf();
+		exit(0);
+	}
+	if(interactive_usersdb){
+		CWEBServer::GetInstance().GetUsersDB().InteractiveConf();
+		exit(0);
 	}
 	
 	bool initialized = CWEBServer::GetInstance().Init();
@@ -34,30 +36,28 @@ void webserver_main(bool interactive_conf, const CString& conf_file)
 	}
 
 	CWEBServer::GetInstance().Close();
-	//CWEBServer::GetInstance().Destroy();
 }
 
 int main(int argc, char **argv)
 {
 	JTCInitialize init;
-	bool interactive_conf = false;
-	CString conf_file;
+	bool interactive_conf = false, interactive_usersdb = false;
 
 	int c;
 	opterr = 0;
 
-	while ((c = getopt (argc, argv, "if:")) != -1)
+	while ((c = getopt (argc, argv, "iu :")) != -1)
 	{
 		switch(c)
 		{
 		case 'i': interactive_conf = true;
 			break;
-		case 'f': conf_file = optarg;
+		case 'u': interactive_usersdb = true;
 			break;
 		}
 	}
 
-	webserver_main(interactive_conf, conf_file);
+	webserver_main(interactive_conf, interactive_usersdb);
 	return 0;
 }
 

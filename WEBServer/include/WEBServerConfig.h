@@ -40,7 +40,7 @@ public:
 		\brief Saves configuration to file
 		\param file_name configuration will be saved to this file
 	*/
-	void Save(const CString& file_name);
+	bool Save(const CString& file_name);
 	/*!
 		\fn bool Load(const CString& file_name)
 		\brief Loads configuration from file

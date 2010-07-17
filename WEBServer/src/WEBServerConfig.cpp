@@ -28,7 +28,7 @@ void CWEBServerConfig::Load(const CString& file_name)
 
 }
 
-void CWEBServerConfig::Save(const CString& file_name)
+bool CWEBServerConfig::Save(const CString& file_name)
 {
 	list<CConfigBlock>::iterator it_blocks;
 	if(_conf.size() == 0){
@@ -46,7 +46,7 @@ void CWEBServerConfig::Save(const CString& file_name)
 		}
 	}
 
-	this->SaveToFile(file_name);
+	return this->SaveToFile(file_name);
 }
 
 void CWEBServerConfig::Init()

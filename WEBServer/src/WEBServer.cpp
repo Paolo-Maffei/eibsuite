@@ -8,8 +8,7 @@ CWEBServer::CWEBServer() :
 CGenericServer(EIB_TYPE_WEB_SERVER),
 CSingletonProcess(WEB_SERVER_PROCESS_NAME),
 _dispatcher(NULL),
-_collector(NULL),
-_conf_file(CURRENT_CONF_FOLDER + WEB_CONF_FILE_NAME)
+_collector(NULL)
 {
 	_dispatcher = new CDispatcher();
 	_collector = new CWebCollector();
@@ -59,7 +58,7 @@ void CWEBServer::Run(void *arg)
 void CWEBServer::Close()
 {
 	_log.Log(LOG_LEVEL_INFO,"Saving Configuration file...");
-	_conf.Save(CURRENT_CONF_FOLDER + WEB_CONF_FILE_NAME);
+	_conf.Save(WEB_CONF_FILE_NAME);
 
 	//close the heart beat thread
 	_log.Log(LOG_LEVEL_INFO,"Closing Generic Server module...");
@@ -89,7 +88,7 @@ bool CWEBServer::Init()
 		
 	START_TRY
 		//load configuration from file
-		_conf.Load(_conf_file);
+		_conf.Load(WEB_CONF_FILE_NAME);
 		_log.Log(LOG_LEVEL_INFO,"Reading Configuration file...Successful.");
 	END_TRY_START_CATCH(e)
 		_log.Log(LOG_LEVEL_ERROR,"Reading Configuration file...Failed. Reason: %s",e.what());
@@ -139,7 +138,7 @@ CWEBServer& CWEBServer::GetInstance()
 void CWEBServer::InteractiveConf()
 {
 	START_TRY
-		_conf.Load(_conf_file);
+		_conf.Load(CURRENT_CONF_FOLDER + WEB_CONF_FILE_NAME);
 	END_TRY_START_CATCH_ANY
 		_conf.Init();
 	END_CATCH
@@ -187,7 +186,11 @@ void CWEBServer::InteractiveConf()
 		_conf.SetListenInterface(sval);
 	}
 #endif
-
-	_conf.Save(_conf_file);
-	LOG_SCREEN("Running WEB Server with updated configuration...\n");
+	LOG_SCREEN("Saving configuration to %s...", WEB_CONF_FILE_NAME);
+	if(!_conf.Save(WEB_CONF_FILE_NAME)){
+		throw CEIBException(FileError, "Cannot save configuration to file \"%s\"",WEB_CONF_FILE_NAME);
+	}
+	LOG_SCREEN(" [OK]\n");
+	_log.SetConsoleColor(GREEN);
+	LOG_INFO("\nNow you can run WEB Server. the new file will be loaded automatically.\n\n");
 }

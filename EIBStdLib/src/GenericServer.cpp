@@ -152,7 +152,7 @@ int CGenericServer::ReceiveEIBNetwork(CEibAddress& function, unsigned char* valu
 		if(len == 0){
 			return 0;
 		}
-			
+
 		if(s_port != _eib_port || s_address != _eib_address){
 			//faked message
 			return 0;
@@ -283,7 +283,7 @@ bool CGenericServer::FirstPhaseConnection(const CString& key,const char* local_i
 
 	END_TRY_START_CATCH_SOCKET(e)
 		GetLog()->SetConsoleColor(RED);
-		GetLog()->Log(LOG_LEVEL_ERROR,"[%s] Cannot connect to eib server... Reason: %s",GetUserName().GetBuffer(),e.what());
+		GetLog()->Log(LOG_LEVEL_ERROR,"[%s] Cannot connect to eib server..			. Reason: %s",GetUserName().GetBuffer(),e.what());
  		return false;
 	END_TRY_START_CATCH_ANY
 		GetLog()->SetConsoleColor(RED);
@@ -539,7 +539,7 @@ void CHeartBeatThread::run()
 			//server.GetLog()->Log(LOG_LEVEL_DEBUG,"[%s] Heart Beat sent.",server.GetUserName().GetBuffer());	
 
 			time_t start = time(NULL);
-			int len = _sock.RecvFrom(&msg,sizeof(ClientHeartBeatMsg),_server_address,_server_port,1000 * _heartbeat_interval);
+			int len = _sock.RecvFrom(&msg,sizeof(ClientHeartBeatMsg),_server_address,_server_port, _heartbeat_interval);
 			time_t end = time(NULL);
 
 			if(len == 0){

@@ -6,5 +6,5 @@ then
 fi
 
 export LD_LIBRARY_PATH=`pwd`
-./$1
+./$1 $2
 

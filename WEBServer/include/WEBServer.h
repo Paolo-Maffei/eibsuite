@@ -20,9 +20,18 @@ using namespace std;
 #define WEB_SERVER_PROCESS_NAME "WEBserver"
 #define DEFAULT_WEB_PORT 80
 
+//some useful MACROS
 #ifdef WIN32
+#define LOG(level,msg,...) CWEBServer::GetInstance().GetLog().Log(level,msg,__VA_ARGS__)
+#define LOG_INFO(msg,...) LOG(LOG_LEVEL_INFO,msg,##__VA_ARGS__)
+#define LOG_ERROR(msg,...) LOG(LOG_LEVEL_ERROR,msg,##__VA_ARGS__)
+#define LOG_DEBUG(msg,...) LOG(LOG_LEVEL_DEBUG,msg,##__VA_ARGS__)
 #define LOG_SCREEN(msg,...) printf(msg,##__VA_ARGS__)
 #else
+#define LOG(level,msg,args...) CWEBServer::GetInstance().GetLog().Log(level,msg,##args)
+#define LOG_INFO(msg,args...) LOG(LOG_LEVEL_INFO,msg,##args)
+#define LOG_ERROR(msg,args...) LOG(LOG_LEVEL_ERROR,msg,##args)
+#define LOG_DEBUG(msg,args...) LOG(LOG_LEVEL_DEBUG,msg,##args)
 #define LOG_SCREEN(msg, args...) printf(msg,##args)
 #endif
 
@@ -61,7 +70,6 @@ public:
 	inline CWebCollectorHandle& GetCollector() { return _collector; }
 
 	//bool GetHisotryFromEIB(CDataBuffer& buffer);
-	void SetConfFile(const CString& file_name) { _conf_file = file_name; }
 
 	void InteractiveConf();
 
@@ -73,7 +81,6 @@ private:
 	CUsersDB _users;
 	CString _domain;
 	CWebCollectorHandle _collector;
-	CString _conf_file;
 };
 
 #endif

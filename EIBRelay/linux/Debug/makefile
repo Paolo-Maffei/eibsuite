@@ -44,7 +44,7 @@ all: EIBRelay
 EIBRelay: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	$(CC) -L"/home/yosi/Desktop/EIB/jtc/linux/Debug" -L"/home/yosi/Desktop/EIB/EIBStdLib/linux/Debug" -o"EIBRelay" $(OBJS) $(USER_OBJS) $(LIBS)
+	$(CC) -L"/home/yosi/workspace/eibsuite/jtc/linux/Debug" -L"/home/yosi/workspace/eibsuite/EIBStdLib/linux/Debug" -o"EIBRelay" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

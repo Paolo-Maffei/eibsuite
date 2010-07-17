@@ -240,12 +240,13 @@ void CClientsMgr::Brodcast(CCemiFrame& msg)
 	{
 		CClientHandle client = it->second;
 		if (client->CanRead()){
-			if(!msg.IsPositiveConfirmation()){
+			if(msg.GetMessageCode() == L_DATA_IND || msg.GetMessageCode() == L_BUSMON_IND){
 				client->InsertToBuffer(msg);
 				continue;
 			}
 			//positive confirmations will be forwarded only to "Relay" clients
 			if(client->GetClientType() == EIB_TYPE_RELAY_SERVER){
+				printf("YGYG2\n");
 				client->InsertToBuffer(msg);
 				continue;
 			}

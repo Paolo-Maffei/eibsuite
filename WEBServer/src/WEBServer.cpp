@@ -62,6 +62,9 @@ void CWEBServer::Close()
 
 	//close the heart beat thread
 	_log.Log(LOG_LEVEL_INFO,"Closing Generic Server module...");
+	CGenericServer::Close();
+
+	_log.Log(LOG_LEVEL_INFO,"Closing WEB Collector module...");
 	_collector->Close();
 	CGenericServer::Close();
 	

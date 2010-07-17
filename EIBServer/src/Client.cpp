@@ -98,7 +98,7 @@ void CClient::HandleIncomingPktsFromClient(char* buffer, int max_len, const CUse
 	case EIB_MSG_TYPE_EIB_CMD:
 		if(header->_client_type == this->_client_type && user.IsWritePolicyAllowed())
 		{
-			InternalNetMsg* data = (InternalNetMsg*)(buffer + sizeof(EibNetworkHeader));
+			InternalNetMsg* data = (InternalNetMsg*)(buffer);// + sizeof(EibNetworkHeader));
 			//build the packet
 			msg.SetMessageControl(L_DATA_REQ);
 			msg.SetAddilLength(0); //must be 0

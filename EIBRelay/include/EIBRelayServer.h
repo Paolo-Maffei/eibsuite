@@ -58,8 +58,6 @@ public:
 	inline CLogFile& GetLog() { return _log;}
 	inline CRelayServerConfig& GetConfig() { return _conf;}
 	
-	void SetConfFile(const CString& file_name) { _conf_file = file_name; }
-
 	void InteractiveConf();
 
 
@@ -67,7 +65,6 @@ private:
 	static CEIBRelayServer _instance;
 	CRelayServerConfig _conf;
 	CLogFile _log;
-	CString _conf_file;
 	CRelayHandler _handler;
 };
 

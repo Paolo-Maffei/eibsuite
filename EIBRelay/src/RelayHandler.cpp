@@ -429,6 +429,7 @@ CRelayHandler::CRelayDataOutputHandler::~CRelayDataOutputHandler()
 
 void CRelayHandler::CRelayDataOutputHandler::Close()
 {
+	_stop = true;
 }
 
 void CRelayHandler::CRelayDataOutputHandler::run()

@@ -1,12 +1,10 @@
 #include "EIBRelayServer.h"
 
-void releyserver_main(bool interactive_conf, const CString& conf_file)
+void releyserver_main(bool interactive_conf)
 {
-	if(conf_file.GetLength() > 0){
-		CEIBRelayServer::GetInstance().SetConfFile(conf_file);
-	}
 	if(interactive_conf){
 		CEIBRelayServer::GetInstance().InteractiveConf();
+		exit(0);
 	}
 	
 	bool initialized = CEIBRelayServer::GetInstance().Init();
@@ -41,22 +39,19 @@ int main(int argc, char **argv)
 {
 	JTCInitialize init;
 	bool interactive_conf = false;
-	CString conf_file;
 
 	int c;
 	opterr = 0;
 
-	while ((c = getopt (argc, argv, "if:")) != -1)
+	while ((c = getopt (argc, argv, "i :")) != -1)
 	{
 		switch(c)
 		{
 		case 'i': interactive_conf = true;
 			break;
-		case 'f': conf_file = optarg;
-			break;
 		}
 	}
 
-	releyserver_main(interactive_conf, conf_file);
+	releyserver_main(interactive_conf);
 	return 0;
 }

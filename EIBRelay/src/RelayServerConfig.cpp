@@ -28,7 +28,7 @@ void CRelayServerConfig::Load(const CString& file_name)
 
 }
 
-void CRelayServerConfig::Save(const CString& file_name)
+bool CRelayServerConfig::Save(const CString& file_name)
 {
 	list<CConfigBlock>::iterator it_blocks;
 	if(_conf.size() == 0){
@@ -46,7 +46,7 @@ void CRelayServerConfig::Save(const CString& file_name)
 		}
 	}
 
-	this->SaveToFile(file_name);
+	return this->SaveToFile(file_name);
 }
 
 void CRelayServerConfig::Init()

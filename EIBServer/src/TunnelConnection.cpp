@@ -342,12 +342,14 @@ bool CTunnelingConnection::HandleTunnelRequest(unsigned char* buffer,CCemiFrame 
 	++_state._recv_sequence;
 
 	unsigned char mc = req.GetcEMI().GetMessageCode();
+	//Data indication
 	if(mc == L_DATA_IND || mc == L_BUSMON_IND)
 	{
 		//data indication or bus monitor indication should be processed
 		frame = req.GetcEMI();
 	}
-	else
+	//Data confirmation
+	else if (mc == L_DATA_CON)
 	{
 		if(req.GetcEMI().IsPositiveConfirmation()){
 			//positive confirmation was received
@@ -364,9 +366,11 @@ bool CTunnelingConnection::HandleTunnelRequest(unsigned char* buffer,CCemiFrame 
 		}
 		else
 		{
-			LOG_ERROR("[Received] [Not supported message control field in cEMI frame]");
+			LOG_ERROR("[Received] [Not supported message control field in cEMI frame (negative confirmation)]");
 			return false;
 		}
+	}else{
+		LOG_ERROR("[Received] [Not supported message control field in cEMI frame]");
 	}
 
 	return true;

@@ -1,7 +1,7 @@
 #include "SMSServerDB.h"
 #include "HttpParser.h"
-#include "SMSServer.h"
 #include "cli.h"
+#include "SMSServer.h"
 
 CSMSServerDB::CSMSServerDB()
 {
@@ -156,45 +156,50 @@ start:
 	map<int,CString> map1;
 	map1.insert(map1.end(),pair<int,CString>(1,"Add Phone Number"));
 	map1.insert(map1.end(),pair<int,CString>(2,"Delete Phone Number"));
-	map1.insert(map1.end(),pair<int,CString>(3,"Print Current entries"));
-	map1.insert(map1.end(),pair<int,CString>(4,"Save & Quit"));
-	map1.insert(map1.end(),pair<int,CString>(5,"Quit without saving"));
+	map1.insert(map1.end(),pair<int,CString>(3,"Edit Phone Number Mappings"));
+	map1.insert(map1.end(),pair<int,CString>(4,"Print Current entries"));
+	map1.insert(map1.end(),pair<int,CString>(5,"Save & Quit"));
+	map1.insert(map1.end(),pair<int,CString>(6,"Quit without saving"));
 	ConsoleCLI::GetStrOption("Choose one of the above options:", map1, ival, NO_DEFAULT_OPTION);
 
 	switch (ival)
 	{
 	case 1:
 		entry.ClearAll();
-		if(AddOrUpdateUserEntry(entry) && AddRecord(entry.GetName(), entry)){
+		if(AddUserEntry(entry) && AddRecord(entry.GetName(), entry)){
 			LOG_SCREEN("Phone entry Added successfully.\n");
-			goto start;
 		}
 		break;
 	case 2:
 		if(DeleteUserEntry(file_name)){
 			LOG_SCREEN("Phone entry Deleted successfully.\n");
-			goto start;
 		}
 		break;
 	case 3:
+		if(EditUserEntry(file_name)){
+			LOG_SCREEN("Phone entry Updated successfully.\n");
+		}
+		break;
+	case 4:
 		if(_data.size() == 0)
 			LOG_SCREEN("No Phone number entries found in in file \"%s\"\n", file_name.GetBuffer());
 		else
 			Print();
-		goto start;
-		break;
-	case 4:
 		break;
 	case 5:
+		break;
+	case 6:
 		return;
-	case -1: goto start;
+	case NO_DEFAULT_OPTION:  //when user press just enter...
+		break;
 	default:
 		LOG_SCREEN("Unknown Option\n");
-		goto start;
+		break;
 	}
+	goto start;
 }
 
-bool CSMSServerDB::AddOrUpdateUserEntry(CUserEntry& entry)
+bool CSMSServerDB::AddUserEntry(CUserEntry& entry)
 {
 	CString sval;
 	if(!ConsoleCLI::GetCString("Enter Phone number: ",sval, entry.GetName())){
@@ -203,6 +208,30 @@ bool CSMSServerDB::AddOrUpdateUserEntry(CUserEntry& entry)
 	CString name(PHONE_NUMBER_BLOCK_PREFIX_STR);
 	entry.SetName(name + sval);
 	return true;
+}
+
+bool CSMSServerDB::EditUserEntry(const CString& file_name)
+{
+	if(_data.size() == 0){
+		LOG_SCREEN("No Phone number entries found in in file \"%s\"\n", file_name.GetBuffer());
+		return false;
+	}
+	int i = 1, ival;
+	map<CString,CUserEntry>::iterator it;
+	Print();
+	if(!ConsoleCLI::GetIntRange("Select a Phone number to Edit: ",ival, 1, _data.size(), NO_DEFAULT_OPTION)){
+		return false;
+	}
+	for( it = _data.begin(); it != _data.end(); ++it)
+	{
+		if (i++ != ival){
+			continue;
+		}else{
+			//now we can start editing
+			return it->second.Edit();
+		}
+	}
+	return false;
 }
 
 bool CSMSServerDB::DeleteUserEntry(const CString& file_name)
@@ -268,4 +297,116 @@ void CUserEntry::ClearAll()
 void CUserEntry::Print() const
 {
 	LOG_SCREEN("%s", _name.GetBuffer());
+}
+
+void CUserEntry::PrintAllMappings()
+{
+	LOG_SCREEN("%s Messages Mappings:\n", _name.GetBuffer());
+	LOG_SCREEN("-------------------------\n");
+
+	map<AddressValueKey,CUserAlertRecord>::const_iterator it1;
+	int i = 1;
+	for( it1 = _eib_to_sms_db.begin(); it1 != _eib_to_sms_db.end(); ++it1){
+		LOG_SCREEN("%d. [EIB --> SMS] 0x%X:0x%x:%s\n", i++,
+													   it1->second.GetDestAddress(),
+													   it1->second.GetValue(),
+													   it1->second.GetTextMessage().GetBuffer());
+	}
+	map<CString,CCommandRecord>::const_iterator it2;
+	for( it2 = _sms_to_eib_db.begin(); it2 != _sms_to_eib_db.end(); ++it2){
+		LOG_SCREEN("%d. [SMS --> EIB] 0x%X:0x%x:%s\n", i++,
+													   it2->second.GetDestAddress(),
+													   it2->second.GetValue(),
+													   it2->second.GetTextMessage().GetBuffer());
+	}
+}
+
+bool CUserEntry::Edit()
+{
+start:
+	LOG_SCREEN("\nEdit Entry [%s]:\n",_name.GetBuffer());
+	LOG_SCREEN("-----------------------------\n");
+
+	CUserEntry entry;
+
+	int ival;
+	map<int,CString> map1;
+	map1.insert(map1.end(),pair<int,CString>(1,"Add mapping entry"));
+	map1.insert(map1.end(),pair<int,CString>(2,"Delete mapping entry"));
+	map1.insert(map1.end(),pair<int,CString>(3,"Print all mappings"));
+	map1.insert(map1.end(),pair<int,CString>(4,"Quit"));
+	ConsoleCLI::GetStrOption("Choose one of the above options:", map1, ival, NO_DEFAULT_OPTION);
+
+	bool dirty = false;
+
+	switch (ival)
+	{
+	case 1:
+		break;
+	case 2:
+		if(DeleteSingleMapping()){
+			LOG_SCREEN("Mapping entry deleted successfully\n.");
+			dirty = true;
+		}
+		break;
+	case 3:
+		if(_eib_to_sms_db.size() == 0 && _sms_to_eib_db.size() == 0){
+			LOG_SCREEN("No Messages mapping entries found for \"%s\"\n", _name.GetBuffer());
+			break;
+		}
+		PrintAllMappings();
+		break;
+	case 4: return dirty;
+		break;
+	case NO_DEFAULT_OPTION:
+		break;
+	default:
+		break;
+	}
+	goto start;
+}
+
+bool CUserEntry::DeleteSingleMapping()
+{
+	if(_eib_to_sms_db.size() == 0 && _sms_to_eib_db.size() == 0){
+		LOG_SCREEN("No Messages mapping entries found for \"%s\"\n", _name.GetBuffer());
+		return false;
+	}
+	PrintAllMappings();
+	int i = 1, ival;
+	if(!ConsoleCLI::GetIntRange("Select a mapping entry to delete: ",ival, 1, _eib_to_sms_db.size() +  _sms_to_eib_db.size(), NO_DEFAULT_OPTION)){
+		return false;
+	}
+
+	if(ival <= (int)_eib_to_sms_db.size()){
+		map<AddressValueKey,CUserAlertRecord>::iterator it;
+		for( it = _eib_to_sms_db.begin(); it != _eib_to_sms_db.end(); ++it)
+		{
+			if (i++ != ival){
+				continue;
+			}else{
+				_eib_to_sms_db.erase(it);
+				return true;
+			}
+		}
+	}
+	else{
+		map<CString,CCommandRecord>::iterator it;
+		for( it = _sms_to_eib_db.begin(); it != _sms_to_eib_db.end(); ++it)
+		{
+			if (i++ != ival){
+				continue;
+			}else{
+				_sms_to_eib_db.erase(it);
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+bool CUserEntry::AddSingleMapping()
+{
+	return false;
 }

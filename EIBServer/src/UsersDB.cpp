@@ -140,8 +140,8 @@ start:
 	case 2:
 		if(DeleteUser(file_name)){
 			LOG_SCREEN("User Deleted successfully.\n");
-			goto start;
 		}
+		goto start;
 		break;
 	case 3:
 		if(UpdateUser(file_name)){
@@ -159,7 +159,7 @@ start:
 	case 5: Save();
 		break;
 	case 6: return;
-	case -1: goto start;
+	case NO_DEFAULT_OPTION: goto start;
 	default:
 		LOG_SCREEN("Unknown Option\n");
 		goto start;

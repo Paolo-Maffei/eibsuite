@@ -83,6 +83,8 @@ private:
 
 typedef CUserAlertRecord CCommandRecord;
 
+class CSMSServerDB;
+
 class CUserEntry
 {
 public:
@@ -100,10 +102,17 @@ public:
 	void AddAlertRecord(CUserAlertRecord& alert);
 	void AddSmsCommand(CCommandRecord& cmd);
 
-	void Print() const;
+	friend class CSMSServerDB;
 
 	map<AddressValueKey,CUserAlertRecord>& GetEibToSmsDB() { return _eib_to_sms_db;}
 	map<CString,CCommandRecord>& GetSmsToEibDB() { return _sms_to_eib_db;}
+
+private:
+	void Print() const;
+	bool Edit();
+	void PrintAllMappings();
+	bool DeleteSingleMapping();
+	bool AddSingleMapping();
 
 private:
 	CString _name;
@@ -134,8 +143,8 @@ private:
 	void ParseAlertRecord(const CString& alert_record,CUserEntry& record);
 	void ParseCommandRecord(const CString& command_record,CUserEntry& record);
 
-private:
-	bool AddOrUpdateUserEntry(CUserEntry& entry);
+	bool AddUserEntry(CUserEntry& entry);
+	bool EditUserEntry(const CString& file_name);
 	bool DeleteUserEntry(const CString& file_name);
 };
 

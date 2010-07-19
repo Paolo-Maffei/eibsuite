@@ -135,6 +135,11 @@ bool CSMSServerDB::FindEibMessages(const CString& sms_msg, list<CCommandRecord>&
 	return (result.size() > 0);
 }
 
+void CSMSServerDB::InteractiveConf()
+{
+
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void CUserEntry::AddAlertRecord(CUserAlertRecord& alert)

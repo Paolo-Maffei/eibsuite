@@ -126,6 +126,8 @@ public:
 	bool FindSmsMesaages(unsigned short d_address, unsigned short value, list<CUserAlertRecord>& result) ;
 	bool FindEibMessages(const CString& sms_msg, list<CCommandRecord>& result) ;
 
+	void InteractiveConf();
+
 private:
 	void ParseAlertRecord(const CString& alert_record,CUserEntry& record);
 	void ParseCommandRecord(const CString& command_record,CUserEntry& record);

@@ -34,6 +34,7 @@ public:
 	static void GetCurrentPath(CString& path);
 	static int GetNumOfNICs();
 	static bool EnumNics(map<CString,CString>& nics);
+	static void WaitForCharInput(char expected, const CString& msg);
 
 private:
 	CUtils(){};

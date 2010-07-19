@@ -29,20 +29,7 @@ void eibserver_main(bool interactive_conf, bool interactive_usersdb)
 		//dummy->join();
 	}
 
-	char x = (char)0 ;
-	while (true)
-	{
-		cout << endl << "Press q to stop EIB Server: " << endl;
-		cin >> x ;
-		if(x != 'q'){
-			cout << "Incorrect Choice." << endl;
-			cin.ignore(INT_MAX,'\n');
-		}
-		else{
-			break;
-		}
-	}
-
+	CUtils::WaitForCharInput('q', "Press q to stop EIB Server: ");
 	CEIBServer::GetInstance().Close();
 	CEIBServer::Destroy();
 }

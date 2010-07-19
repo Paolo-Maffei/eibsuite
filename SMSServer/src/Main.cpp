@@ -1,11 +1,15 @@
 #include "SMSServer.h"
 
-void smsserver_main(bool interactive_conf)
+void smsserver_main(bool interactive_conf, bool interactive_smsdb)
 {
-	//list<CUserAlertRecord> cmds;
-	//bool res = CSMSServer::GetInstance().GetDB().FindSmsMesaages(4100,129,cmds);
 	if(interactive_conf){
 		CSMSServer::GetInstance().InteractiveConf();
+	}
+	if(interactive_smsdb){
+		CSMSServer::GetInstance().GetDB().InteractiveConf();
+	}
+
+	if(interactive_conf || interactive_smsdb){
 		exit(0);
 	}
 
@@ -16,43 +20,30 @@ void smsserver_main(bool interactive_conf)
 	else{
 		cerr << "Error during initialization of SMS Server." << endl;
 	}
-	//wait for connection establishment with EIB Server
-	JTCThread::sleep(1000);
 
-	char x = (char)0 ;
-	while (true)
-	{
-		cout << endl << "Press q to stop SMS Server: ";
-		cin >> x ;
-		if(x != 'q'){
-			cout << "Incorrect Choice." << endl;
-			cin.ignore(INT_MAX,'\n');
-		}
-		else{
-			break;
-		}
-	}
-
+	CUtils::WaitForCharInput('q', "Press q to stop SMS Server: ");
 	CSMSServer::GetInstance().Close();
 }
 
 int main(int argc, char **argv)
 {
 	JTCInitialize init;
-	bool interactive_conf = false;
+	bool interactive_conf = false, interactive_smsdb = false;
 
 	int c;
 	opterr = 0;
 
-	while ((c = getopt (argc, argv, "i :")) != -1)
+	while ((c = getopt (argc, argv, "iu :")) != -1)
 	{
 		switch(c)
 		{
 		case 'i': interactive_conf = true;
 			break;
+		case 'u': interactive_smsdb = true;
+			break;
 		}
 	}
 
-	smsserver_main(interactive_conf);
+	smsserver_main(interactive_conf, interactive_smsdb);
 	return 0;
 }

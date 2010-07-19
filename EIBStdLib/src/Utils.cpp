@@ -1,4 +1,5 @@
 #include "Utils.h"
+#include "JTC.h"
 
 void CUtils::ReadFile(const CString& full_name, CString& content)
 {
@@ -162,4 +163,24 @@ bool CUtils::EnumNics(map<CString,CString>& nics)
 	}
 	return true;
 #endif
+}
+
+void CUtils::WaitForCharInput(char expected, const CString& msg)
+{
+	//delay execution a bit, so we could flush any waiting buffers to screen before printing these msgs
+	JTCThread::sleep(500);
+
+	char x = (char)0 ;
+	while (true)
+	{
+		cout << endl << msg.GetBuffer();
+		cin >> x ;
+		if(x != expected){
+			cout << "Incorrect Choice." << endl;
+			cin.ignore(INT_MAX,'\n');
+		}
+		else{
+			break;
+		}
+	}
 }

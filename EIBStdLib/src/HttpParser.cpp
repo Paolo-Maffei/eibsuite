@@ -1,5 +1,9 @@
 #include "HttpParser.h"
 
+// some constants
+char CR = 13;             // ASCII carriage return
+char LF = 10;             // ASCII line feed
+
 CHttpParser::CHttpParser(): _legal(false)
 {
 }

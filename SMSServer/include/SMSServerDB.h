@@ -94,19 +94,19 @@ public:
 
 	void SetName(const CString& name) { _name = name;}
 	const CString& GetName() const{ return _name;}
-	const CString& GetTextMsg() const{ return _text_msg;}
 		
 	void ClearAll();
 
 	void AddAlertRecord(CUserAlertRecord& alert);
 	void AddSmsCommand(CCommandRecord& cmd);
 
+	void Print() const;
+
 	map<AddressValueKey,CUserAlertRecord>& GetEibToSmsDB() { return _eib_to_sms_db;}
 	map<CString,CCommandRecord>& GetSmsToEibDB() { return _sms_to_eib_db;}
 
 private:
 	CString _name;
-	CString _text_msg;
 	CString _phone_number;
 	map<AddressValueKey,CUserAlertRecord> _eib_to_sms_db;
 	map<CString,CCommandRecord> _sms_to_eib_db;
@@ -128,9 +128,15 @@ public:
 
 	void InteractiveConf();
 
+	void Print();
+
 private:
 	void ParseAlertRecord(const CString& alert_record,CUserEntry& record);
 	void ParseCommandRecord(const CString& command_record,CUserEntry& record);
+
+private:
+	bool AddOrUpdateUserEntry(CUserEntry& entry);
+	bool DeleteUserEntry(const CString& file_name);
 };
 
 #endif

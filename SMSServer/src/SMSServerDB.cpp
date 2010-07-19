@@ -1,5 +1,7 @@
 #include "SMSServerDB.h"
 #include "HttpParser.h"
+#include "SMSServer.h"
+#include "cli.h"
 
 CSMSServerDB::CSMSServerDB()
 {
@@ -137,7 +139,107 @@ bool CSMSServerDB::FindEibMessages(const CString& sms_msg, list<CCommandRecord>&
 
 void CSMSServerDB::InteractiveConf()
 {
+	CString file_name(CURRENT_CONF_FOLDER);
+	file_name += SMS_DB_FILE;
+	Init(file_name);
+	Load();
 
+
+start:
+	LOG_SCREEN("************************************************\n");
+	LOG_SCREEN("SMS Messages Mappings Interactive configuration:\n");
+	LOG_SCREEN("************************************************\n");
+
+	CUserEntry entry;
+
+	int ival;
+	map<int,CString> map1;
+	map1.insert(map1.end(),pair<int,CString>(1,"Add Phone Number"));
+	map1.insert(map1.end(),pair<int,CString>(2,"Delete Phone Number"));
+	map1.insert(map1.end(),pair<int,CString>(3,"Print Current entries"));
+	map1.insert(map1.end(),pair<int,CString>(4,"Save & Quit"));
+	map1.insert(map1.end(),pair<int,CString>(5,"Quit without saving"));
+	ConsoleCLI::GetStrOption("Choose one of the above options:", map1, ival, NO_DEFAULT_OPTION);
+
+	switch (ival)
+	{
+	case 1:
+		entry.ClearAll();
+		if(AddOrUpdateUserEntry(entry) && AddRecord(entry.GetName(), entry)){
+			LOG_SCREEN("Phone entry Added successfully.\n");
+			goto start;
+		}
+		break;
+	case 2:
+		if(DeleteUserEntry(file_name)){
+			LOG_SCREEN("Phone entry Deleted successfully.\n");
+			goto start;
+		}
+		break;
+	case 3:
+		if(_data.size() == 0)
+			LOG_SCREEN("No Phone number entries found in in file \"%s\"\n", file_name.GetBuffer());
+		else
+			Print();
+		goto start;
+		break;
+	case 4:
+		break;
+	case 5:
+		return;
+	case -1: goto start;
+	default:
+		LOG_SCREEN("Unknown Option\n");
+		goto start;
+	}
+}
+
+bool CSMSServerDB::AddOrUpdateUserEntry(CUserEntry& entry)
+{
+	CString sval;
+	if(!ConsoleCLI::GetCString("Enter Phone number: ",sval, entry.GetName())){
+		return false;
+	}
+	CString name(PHONE_NUMBER_BLOCK_PREFIX_STR);
+	entry.SetName(name + sval);
+	return true;
+}
+
+bool CSMSServerDB::DeleteUserEntry(const CString& file_name)
+{
+	if(_data.size() == 0){
+		LOG_SCREEN("No Phone number entries found in in file \"%s\"\n", file_name.GetBuffer());
+		return false;
+	}
+	int i = 1, ival;
+	map<CString,CUserEntry>::const_iterator it;
+	Print();
+	if(!ConsoleCLI::GetIntRange("Select a Phone number to delete: ",ival, 1, _data.size(), NO_DEFAULT_OPTION)){
+		return false;
+	}
+	for( it = _data.begin(); it != _data.end(); ++it)
+	{
+		if (i++ != ival){
+			continue;
+		}else{
+			return DeleteRecord(it->second.GetName());
+		}
+	}
+	return false;
+}
+
+void CSMSServerDB::Print()
+{
+	map<CString,CUserEntry>::const_iterator it;
+	int i = 1;
+	LOG_SCREEN("Phone numbers list\n---------------------\n");
+	for( it = _data.begin(); it != _data.end(); ++it)
+	{
+		LOG_SCREEN("%d. ", i++);
+		it->second.Print();
+		LOG_SCREEN("\n");
+	}
+	LOG_SCREEN("\n");
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -157,9 +259,13 @@ void CUserEntry::AddSmsCommand(CCommandRecord& cmd)
 
 void CUserEntry::ClearAll()
 {
-	_name = EMPTY_STRING;
-	_text_msg = EMPTY_STRING;
-	_phone_number = EMPTY_STRING;
+	_name.Clear();
+	_phone_number.Clear();
 	_eib_to_sms_db.clear();
 	_sms_to_eib_db.clear();
+}
+
+void CUserEntry::Print() const
+{
+	LOG_SCREEN("%s", _name.GetBuffer());
 }

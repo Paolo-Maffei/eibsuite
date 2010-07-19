@@ -3,8 +3,9 @@
 
 #include "EibStdLib.h"
 
-#define CR '\r'
-#define LF '\n'
+//#define CR '\r'
+//#define LF '\n'
+
 #define CRLF "\r\n"
 #define SPACE ' '
 #define HTTP_METHOD_GET_STR "GET"

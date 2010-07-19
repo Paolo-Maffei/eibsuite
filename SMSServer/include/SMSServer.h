@@ -2,6 +2,7 @@
 #define __SMS_SERVER_HEADER_
 
 #include "Globals.h"
+#include "SMSServerDB.h"
 #include "gsm_config.h"
 #include "gsm_nls.h"
 #include "gsm_error.h"
@@ -11,7 +12,6 @@
 #include "CMutex.h"
 #include "GenericServer.h"
 #include "SMSServerConfig.h"
-#include "SMSServerDB.h"
 #include "LogFile.h"
 #include "MsgTable.h"
 #include "SingletonValidation.h"
@@ -41,7 +41,6 @@ typedef Win32SerialPort SerialPort;
 typedef UnixSerialPort SerialPort;
 #define _MAX_PATH 256
 #endif
-
 
 using namespace gsmlib;
 using namespace std;

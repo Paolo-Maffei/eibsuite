@@ -23,7 +23,7 @@ $(EXE_PROJECTS): force_look
 	make clean -C "$(PWD)/$(subst _clean,,$@)/linux"
 
 clean: $(LIB_PROJECTS:%=%_clean) $(EXE_PROJECTS:%=%_clean)
-	@$(RM) $(INSTALL_DIR)
+	@rm -rf $(INSTALL_DIR)
 
 %_install:
 	@mkdir -p $(INSTALL_DIR)

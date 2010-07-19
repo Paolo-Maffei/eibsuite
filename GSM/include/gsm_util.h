@@ -1,4 +1,3 @@
-
 #ifndef GSM_UTIL_H
 #define GSM_UTIL_H
 
@@ -29,7 +28,7 @@ namespace gsmlib
 
   // convert gsm to Latin-1
   // characters that have no counterpart in Latin-1 are converted to
-  // code 172 (Latin-1 boolean not, "¬")
+  // code 172 (Latin-1 boolean not, "")
   string gsmToLatin1(string s);
 
   // convert Latin-1 to gsm

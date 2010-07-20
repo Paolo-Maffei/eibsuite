@@ -53,11 +53,7 @@ bool CSMSServer::Init()
 	START_TRY
 		_log.Log(LOG_LEVEL_INFO,"Initializing Cellular Modem connection...");
 		CString device = _conf.GetDevice();
-		_cell_port = new SerialPort(device.GetSTDString(),_conf.GetDeviceBaudRate(),DEFAULT_INIT_STRING, false);
-		if(_cell_port == NULL){
-			throw CEIBException(GeneralError,"dummy");
-		}
-		_meta = new MeTa(_cell_port);
+		_meta = new MeTa(new SerialPort(device.GetSTDString(),_conf.GetDeviceBaudRate(),DEFAULT_INIT_STRING, false));
 		if(_meta == NULL){
 			throw CEIBException(GeneralError,"dummy");
 		}
@@ -66,7 +62,6 @@ bool CSMSServer::Init()
 		_log.Log(LOG_LEVEL_INFO,"Starting SMS Listener... Successful.");
 	END_TRY_START_CATCH_GSM(e)
 		_log.Log(LOG_LEVEL_ERROR,"Cellular Modem connection Failed: %s",e.what());
-		_cell_port = NULL;
 		res = false;
 	END_CATCH
 	
@@ -109,10 +104,6 @@ void CSMSServer::Run()
 
 void CSMSServer::DeleteAllMessages()
 {
-	if (_cell_port == NULL){
-		return;
-	}
-	
 	MeTa* m = CSMSServer::GetInstance().GetMeTa();
 	
 	if(m == NULL){
@@ -132,9 +123,6 @@ bool CSMSServer::SendSMS(const CString& phone_number,const CString& text)
 {
 	try
 	{
-		if (_cell_port == NULL){
-			return false;
-		}
 		MeTa* m = CSMSServer::GetInstance().GetMeTa();
 
 		if(m == NULL){

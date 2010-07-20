@@ -70,7 +70,6 @@ public:
 	CLogFile& GetLog() { return _log;}
 
 	MeTa* GetMeTa() { return _meta; }
-	SerialPort* GetSerialPort() { return _cell_port; }
 	CMutex& GetMetaLock() { return _meta_lock; }
 
 	CSMSServerConfig& GetConf() { return _conf; }
@@ -88,7 +87,6 @@ private:
 	CSMSServerConfig _conf;
 	CSMSServerDB _db;
 	CEIBAgent _agent;
-	SerialPort* _cell_port;
 	CLogFile _log;
 	CMsgTable _msg_table;
 	CSMSListener _listener;

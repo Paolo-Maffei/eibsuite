@@ -28,8 +28,8 @@ void CSMSListener::run()
 		return;
 	}
 	
-	EventHandler* eh = new EventHandler();
-	me->setEventHandler(eh);
+	EventHandler eh;
+	me->setEventHandler(&eh);
 
 	CMutex& lock = CSMSServer::GetInstance().GetMetaLock();
 
@@ -48,13 +48,10 @@ void CSMSListener::run()
 		timeoutVal.tv_usec = 0;
 		me->waitEvent(&timeoutVal);
 #endif
-		CheckForNewMessages(*eh,me);
+		CheckForNewMessages(eh,me);
 		lock.Release();
 	}
 	
-	if(eh != NULL){
-		delete eh;
-	}
 }
 
 void CSMSListener::CheckForNewMessages(EventHandler& event_handler,MeTa* me)

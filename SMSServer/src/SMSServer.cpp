@@ -10,10 +10,11 @@ CSingletonProcess(SMS_SERVER_PROCESS_NAME)
 
 CSMSServer::~CSMSServer()
 {
+	printf("1.\n");
 	if (_cell_port != NULL){
 		delete _cell_port;
 	}
-
+	printf("2.\n");
 	if (_meta != NULL){
 		delete _meta;
 	}

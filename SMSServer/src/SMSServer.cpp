@@ -53,7 +53,8 @@ bool CSMSServer::Init()
 	START_TRY
 		_log.Log(LOG_LEVEL_INFO,"Initializing Cellular Modem connection...");
 		CString device = _conf.GetDevice();
-		_meta = new MeTa(new SerialPort(device.GetSTDString(),_conf.GetDeviceBaudRate(),DEFAULT_INIT_STRING, false));
+		Ref<Port> sp = new SerialPort(device.GetSTDString(),_conf.GetDeviceBaudRate(),DEFAULT_INIT_STRING, false);
+		_meta = new MeTa(sp);
 		if(_meta == NULL){
 			throw CEIBException(GeneralError,"dummy");
 		}

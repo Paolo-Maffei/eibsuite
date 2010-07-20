@@ -22,8 +22,6 @@ void CSMSListener::run()
 {
 	ASSERT_ERROR(CSMSServer::GetInstance().GetSerialPort() != NULL,"Cell port cannot be NULL");
 	
-	SerialPort* cell_port = NULL;
-	cell_port = CSMSServer::GetInstance().GetSerialPort();
 	MeTa* me = CSMSServer::GetInstance().GetMeTa();
 	
 	if(me == NULL){
@@ -33,23 +31,25 @@ void CSMSListener::run()
 	EventHandler* eh = new EventHandler();
 	me->setEventHandler(eh);
 
+	CMutex& lock = CSMSServer::GetInstance().GetMetaLock();
+
 	while (!_stop)
 	{
 		//JTCThread::sleep(1000);
-		CSMSServer::GetInstance().GetMetaLock().Lock();
+		lock.Lock();
 #ifdef WIN32
 		::timeval timeoutVal;
-		 timeoutVal.tv_sec = 1;
+		timeoutVal.tv_sec = 1;
 		timeoutVal.tv_usec = 0;
-		 me->waitEvent((gsmlib::timeval *)&timeoutVal);
+		me->waitEvent((gsmlib::timeval *)&timeoutVal);
 #else
 		struct timeval timeoutVal;
-		 timeoutVal.tv_sec = 1;
+		timeoutVal.tv_sec = 1;
 		timeoutVal.tv_usec = 0;
 		me->waitEvent(&timeoutVal);
 #endif
 		CheckForNewMessages(*eh,me);
-		CSMSServer::GetInstance().GetMetaLock().Release();
+		lock.Release();
 	}
 	
 	if(eh != NULL){

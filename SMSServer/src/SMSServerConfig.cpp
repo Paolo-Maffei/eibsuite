@@ -29,8 +29,6 @@ void CSMSServerConfig::Load(const CString& file_name)
 
 bool CSMSServerConfig::Save(const CString& file_name)
 {
-	cout << "Saving configuration file (" << file_name.GetBuffer() << ")";
-
 	list<CConfigBlock>::iterator it_blocks;
 	if(_conf.size() == 0){
 		CConfigBlock gen_block;

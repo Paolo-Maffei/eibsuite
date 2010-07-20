@@ -55,7 +55,13 @@ bool CSMSServer::Init()
 		_log.Log(LOG_LEVEL_INFO,"Initializing Cellular Modem connection...");
 		CString device = _conf.GetDevice();
 		_cell_port = new SerialPort(device.GetSTDString(),_conf.GetDeviceBaudRate(),DEFAULT_INIT_STRING, false);
+		if(_cell_port == NULL){
+			throw CEIBException(GeneralError,"dummy");
+		}
 		_meta = new MeTa(_cell_port);
+		if(_meta == NULL){
+			throw CEIBException(GeneralError,"dummy");
+		}
 		//DeleteAllMessages();
 		_listener.start();
 		_log.Log(LOG_LEVEL_INFO,"Starting SMS Listener... Successful.");

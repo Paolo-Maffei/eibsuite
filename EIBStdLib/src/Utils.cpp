@@ -175,7 +175,7 @@ void CUtils::WaitForCharInput(char expected, const CString& msg, bool sleep)
 	char x = (char)0 ;
 	while (true)
 	{
-		cout << endl << msg.GetBuffer();
+		cout << endl << msg.GetBuffer() << endl;
 		cin >> x ;
 		if(x != expected){
 			cout << "Incorrect Choice." << endl;

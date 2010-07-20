@@ -87,13 +87,26 @@ void CSMSServer::run()
 {
 	CGenericServer::Init(&_log);
 
-	bool established = this->OpenConnection(_conf.GetNetworkName(),
+	bool established = false;
+	if(_conf.GetAutoDiscoverEibServer())
+	{
+		_log.Log(LOG_LEVEL_INFO,"Searching EIB Server on local network...");
+		established = this->OpenConnection(_conf.GetNetworkName().GetBuffer(),
+											_conf.GetInitialKey().GetBuffer(),
+											Socket::LocalAddress(_conf.GetListenInterface()).GetBuffer(),
+											_conf.GetName().GetBuffer(),
+											_conf.GetPassword().GetBuffer());
+	}
+	else
+	{
+		established = this->OpenConnection(_conf.GetNetworkName().GetBuffer(),
 											_conf.GetEibIPAddress(),
 											_conf.GetEibPort(),
-											_conf.GetInitialKey(),
+											_conf.GetInitialKey().GetBuffer(),
 											Socket::LocalAddress(_conf.GetListenInterface()).GetBuffer(),
-											_conf.GetName(),
-											_conf.GetPassword());
+											_conf.GetName().GetBuffer(),
+											_conf.GetPassword().GetBuffer());
+	}
 
 	if (!established)
 	{

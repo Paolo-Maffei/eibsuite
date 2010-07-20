@@ -12,6 +12,12 @@ CSMSListener::~CSMSListener()
 {
 }
 
+void CSMSListener::Close()
+{
+	_stop = true;
+	this->join();
+}
+
 void CSMSListener::run()
 {
 	ASSERT_ERROR(CSMSServer::GetInstance().GetSerialPort() != NULL,"Cell port cannot be NULL");
@@ -29,7 +35,7 @@ void CSMSListener::run()
 
 	while (!_stop)
 	{
-		JTCThread::sleep(1000);
+		//JTCThread::sleep(1000);
 		CSMSServer::GetInstance().GetMetaLock().Lock();
 #ifdef WIN32
 		::timeval timeoutVal;

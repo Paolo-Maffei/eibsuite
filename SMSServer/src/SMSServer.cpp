@@ -78,7 +78,15 @@ bool CSMSServer::Init()
 
 void CSMSServer::Close()
 {
-	_log.Log(LOG_LEVEL_INFO,"Saving Configuration file...");
+	LOG_INFO("Saving Configuration file...");
+	_conf.Save(SMS_CONF_FILE_NAME);
+
+	//close agent
+	LOG_INFO("Closing connection to EIB Server...");
+	_agent.Close();
+
+	LOG_INFO("Closing the cellular port...");
+	_listener.Close();
 }
 
 void CSMSServer::Run()

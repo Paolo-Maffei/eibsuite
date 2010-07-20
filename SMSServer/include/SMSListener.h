@@ -51,6 +51,8 @@ public:
 	virtual ~CSMSListener();
 	virtual void run();
 
+	void Close();
+
 private:
 	bool _stop;
 	void CheckForNewMessages(EventHandler& event_handler,MeTa* me);

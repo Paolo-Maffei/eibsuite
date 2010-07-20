@@ -15,6 +15,8 @@ CEIBAgent::~CEIBAgent()
 void CEIBAgent::Close()
 {
 	_stop = true;
+	//wait for the thread to quit
+	this->join();
 }
 
 bool CEIBAgent::ConnectToEIB()
@@ -59,7 +61,7 @@ void CEIBAgent::run()
 
 	while (!_stop)
 	{
-		length = ReceiveEIBNetwork(func,val,val_len);
+		length = ReceiveEIBNetwork(func,val,val_len, 1000);
 
 		if (length > 0)
 		{

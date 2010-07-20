@@ -44,6 +44,8 @@ typedef UnixSerialPort SerialPort;
 using namespace gsmlib;
 using namespace std;
 
+static MeTa* global_meta;
+
 #define DEFAULT_LOG_FILE_NAME "SmsServer.log"
 
 #define SMS_SERVER_PROCESS_NAME "SMSServer"
@@ -69,7 +71,6 @@ public:
 	static CSMSServer& GetInstance() { return _instance;}
 	CLogFile& GetLog() { return _log;}
 
-	MeTa* GetMeTa() { return _meta; }
 	CMutex& GetMetaLock() { return _meta_lock; }
 
 	CSMSServerConfig& GetConf() { return _conf; }
@@ -90,7 +91,6 @@ private:
 	CLogFile _log;
 	CMsgTable _msg_table;
 	CSMSListener _listener;
-	MeTa* _meta;
 	CMutex _meta_lock;
 };
 

@@ -53,9 +53,8 @@ bool CSMSServer::Init()
 	START_TRY
 		_log.Log(LOG_LEVEL_INFO,"Initializing Cellular Modem connection...");
 		CString device = _conf.GetDevice();
-		Ref<Port> sp = new SerialPort(device.GetSTDString(),_conf.GetDeviceBaudRate(),DEFAULT_INIT_STRING, false);
-		_meta = new MeTa(sp);
-		if(_meta == NULL){
+		global_meta = new MeTa(new SerialPort(device.GetSTDString(),_conf.GetDeviceBaudRate(),DEFAULT_INIT_STRING, false));
+		if(global_meta == NULL){
 			throw CEIBException(GeneralError,"dummy");
 		}
 		//DeleteAllMessages();
@@ -105,17 +104,15 @@ void CSMSServer::Run()
 
 void CSMSServer::DeleteAllMessages()
 {
-	MeTa* m = CSMSServer::GetInstance().GetMeTa();
-	
-	if(m == NULL){
+	if(global_meta == NULL){
 		return;
 	}
 
-	vector<std::string> stores = m->getSMSStoreNames();
+	vector<std::string> stores = global_meta->getSMSStoreNames();
 	vector<std::string>::iterator it;
 	for(it = stores.begin(); it != stores.end(); ++it)
 	{
-		SMSStoreRef st = m->getSMSStore(*it);
+		SMSStoreRef st = global_meta->getSMSStore(*it);
 		st->erase(st->begin(),st->end());
 	}
 }
@@ -124,9 +121,7 @@ bool CSMSServer::SendSMS(const CString& phone_number,const CString& text)
 {
 	try
 	{
-		MeTa* m = CSMSServer::GetInstance().GetMeTa();
-
-		if(m == NULL){
+		if(global_meta == NULL){
 			return false;
 		}
 
@@ -137,7 +132,7 @@ bool CSMSServer::SendSMS(const CString& phone_number,const CString& text)
 		submitSMS->setStatusReportRequest(false);
 		Address destAddr(phone_number.GetBuffer());
 		submitSMS->setDestinationAddress(destAddr);
-		m->sendSMSs(submitSMS, text.GetBuffer(), true);
+		global_meta->sendSMSs(submitSMS, text.GetBuffer(), true);
 	}
 	catch (GsmException &e)
 	{

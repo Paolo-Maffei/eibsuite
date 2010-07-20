@@ -56,7 +56,6 @@ void CEIBAgent::run()
 	unsigned char val_len = 0;
 	int length;
 
-	SerialPort* cell_port = CSMSServer::GetInstance().GetSerialPort();
 	CSMSServerDB& db = CSMSServer::GetInstance().GetDB();
 
 	while (!_stop)
@@ -69,7 +68,7 @@ void CEIBAgent::run()
 			cout << "Received " << length << " Bytes from EIB Server." << endl;
 
 			list<CUserAlertRecord> result;
-			if(cell_port != NULL && db.FindSmsMesaages(func.ToByteArray(),val[0],result)){
+			if(db.FindSmsMesaages(func.ToByteArray(),val[0],result)){
 				list<CUserAlertRecord>::iterator it;
 				for(it = result.begin(); it != result.end(); ++it)
 				{

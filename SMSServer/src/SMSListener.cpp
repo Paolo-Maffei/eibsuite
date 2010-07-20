@@ -20,16 +20,10 @@ void CSMSListener::Close()
 
 void CSMSListener::run()
 {
-	ASSERT_ERROR(CSMSServer::GetInstance().GetSerialPort() != NULL,"Cell port cannot be NULL");
-	
-	MeTa* me = CSMSServer::GetInstance().GetMeTa();
-	
-	if(me == NULL){
-		return;
-	}
+	ASSERT_ERROR(global_meta != NULL,"ME/TA cannot be NULL");
 	
 	EventHandler eh;
-	me->setEventHandler(&eh);
+	global_meta->setEventHandler(&eh);
 
 	CMutex& lock = CSMSServer::GetInstance().GetMetaLock();
 
@@ -41,14 +35,14 @@ void CSMSListener::run()
 		::timeval timeoutVal;
 		timeoutVal.tv_sec = 1;
 		timeoutVal.tv_usec = 0;
-		me->waitEvent((gsmlib::timeval *)&timeoutVal);
+		global_meta->waitEvent((gsmlib::timeval *)&timeoutVal);
 #else
 		struct timeval timeoutVal;
 		timeoutVal.tv_sec = 1;
 		timeoutVal.tv_usec = 0;
-		me->waitEvent(&timeoutVal);
+		global_meta->waitEvent(&timeoutVal);
 #endif
-		CheckForNewMessages(eh,me);
+		CheckForNewMessages(eh,global_meta);
 		lock.Release();
 	}
 	

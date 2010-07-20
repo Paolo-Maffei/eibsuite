@@ -4,9 +4,7 @@
 CSMSServer CSMSServer::_instance;
 
 CSMSServer::CSMSServer() : 
-CGenericServer(EIB_TYPE_SMS_SERVER),
-CSingletonProcess(SMS_SERVER_PROCESS_NAME),
-_stop(false)
+CSingletonProcess(SMS_SERVER_PROCESS_NAME)
 {
 }
 
@@ -83,67 +81,17 @@ void CSMSServer::Close()
 	_log.Log(LOG_LEVEL_INFO,"Saving Configuration file...");
 }
 
-void CSMSServer::run()
+void CSMSServer::Run()
 {
-	CGenericServer::Init(&_log);
-
-	bool established = false;
-	if(_conf.GetAutoDiscoverEibServer())
+	if (!_agent.ConnectToEIB())
 	{
-		_log.Log(LOG_LEVEL_INFO,"Searching EIB Server on local network...");
-		established = this->OpenConnection(_conf.GetNetworkName().GetBuffer(),
-											_conf.GetInitialKey().GetBuffer(),
-											Socket::LocalAddress(_conf.GetListenInterface()).GetBuffer(),
-											_conf.GetName().GetBuffer(),
-											_conf.GetPassword().GetBuffer());
-	}
-	else
-	{
-		established = this->OpenConnection(_conf.GetNetworkName().GetBuffer(),
-											_conf.GetEibIPAddress(),
-											_conf.GetEibPort(),
-											_conf.GetInitialKey().GetBuffer(),
-											Socket::LocalAddress(_conf.GetListenInterface()).GetBuffer(),
-											_conf.GetName().GetBuffer(),
-											_conf.GetPassword().GetBuffer());
-	}
-
-	if (!established)
-	{
-		cout << endl << "Cannot establish connection with EIB Server!" << endl;
-		cout.flush();
+		_log.Log(LOG_LEVEL_INFO,"\nCannot establish connection with EIB Server!\n");
 		return;
 	}
-	else{
-		cout << endl << "EIB Server Connection established." << endl;
-		cout.flush();
-	}
 
-	CEibAddress func;
-	unsigned char val[5];
-	unsigned char val_len = 0;
-	int length;
-	while (!_stop)
-	{
-		length = ReceiveEIBNetwork(func,val,val_len);
+	_log.Log(LOG_LEVEL_INFO,"\nEIB Server Connection established.\n");
 
-		if (length > 0)
-		{
-			cout << endl;
-			cout << "Received " << length << " Bytes from EIB Server." << endl;
-			
-			list<CUserAlertRecord> result;
-			if(_cell_port != NULL && _db.FindSmsMesaages(func.ToByteArray(),val[0],result)){
-				list<CUserAlertRecord>::iterator it;
-				for(it = result.begin(); it != result.end(); ++it)
-				{
-					CSMSServer::GetInstance().GetMetaLock().Lock();
-					SendSMS(it->GetPoneNumber(),it->GetTextMessage());
-					CSMSServer::GetInstance().GetMetaLock().Release();
-				}
-			}
-		}
-	}
+	_agent.start();
 }
 
 void CSMSServer::DeleteAllMessages()

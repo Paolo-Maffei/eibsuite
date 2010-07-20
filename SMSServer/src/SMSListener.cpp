@@ -105,7 +105,7 @@ void CSMSListener::CheckForNewMessages(EventHandler& event_handler,MeTa* me)
 			val[0] = it->GetValue();
 			unsigned char val_len = 1;
 
-			CSMSServer::GetInstance().SendEIBNetwork(
+			CSMSServer::GetInstance().GetEIBAgent().SendEIBNetwork(
 					CEibAddress(it->GetDestAddress(),true),
 					val,
 					val_len,

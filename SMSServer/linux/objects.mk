@@ -8,6 +8,7 @@ MsgTable.o \
 SMSListener.o \
 SMSServer.o \
 SMSServerConfig.o \
-SMSServerDB.o
+SMSServerDB.o \
+EIBAgent.o
 
 LIBS := -lpthread -ljtc -lEIBStdLib -lGSM

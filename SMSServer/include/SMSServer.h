@@ -8,9 +8,8 @@
 #include "gsm_error.h"
 #include "gsm_me_ta.h"
 #include "gsm_util.h"
-#include "JTC.h"
+#include "EIBAgent.h"
 #include "CMutex.h"
-#include "GenericServer.h"
 #include "SMSServerConfig.h"
 #include "LogFile.h"
 #include "MsgTable.h"
@@ -49,12 +48,13 @@ using namespace std;
 
 #define SMS_SERVER_PROCESS_NAME "SMSServer"
 
-class CSMSServer : public CGenericServer, public JTCThread, public CSingletonProcess
+class CSMSServer : public CSingletonProcess
 {
 public:
 	CSMSServer();
 	virtual ~CSMSServer();
-	virtual void run();
+
+	void Run();
 	bool Init();
 	void Close();
 
@@ -73,23 +73,27 @@ public:
 	SerialPort* GetSerialPort() { return _cell_port; }
 	CMutex& GetMetaLock() { return _meta_lock; }
 
+	CSMSServerConfig& GetConf() { return _conf; }
+
+	CEIBAgent& GetEIBAgent() { return _agent; }
+
 	void InteractiveConf();
+	bool SendSMS(const CString& phone_number, const CString& text);
 
 private:
-	bool SendSMS(const CString& phone_number, const CString& text);
 	void DeleteAllMessages();
 
 private:
 	static CSMSServer _instance;
 	CSMSServerConfig _conf;
 	CSMSServerDB _db;
+	CEIBAgent _agent;
 	SerialPort* _cell_port;
 	CLogFile _log;
 	CMsgTable _msg_table;
 	CSMSListener _listener;
 	MeTa* _meta;
 	CMutex _meta_lock;
-	bool _stop;
 };
 
 #endif

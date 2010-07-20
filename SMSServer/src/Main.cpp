@@ -15,7 +15,7 @@ void smsserver_main(bool interactive_conf, bool interactive_smsdb)
 
 	bool initialized = CSMSServer::GetInstance().Init();
 	if(initialized)	{
-		CSMSServer::GetInstance().start();
+		CSMSServer::GetInstance().Run();
 	}
 	else{
 		cerr << "Error during initialization of SMS Server." << endl;

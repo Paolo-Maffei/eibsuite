@@ -22,14 +22,9 @@ void eibserver_main(bool interactive_conf, bool interactive_usersdb)
 	}
 	else{
 		cerr << endl << "Server Failed to start: initialization of EIB Server failed." << endl;
-		//start and close dummy thread to prevent exception from being thrown in JTCInitialize destructor
-		//We do not need to delete the dummy object since the destructor is being called from the thread base class
-		//CDummyThreadHandle dummy = new CDummyThread();
-		//dummy->start();
-		//dummy->join();
 	}
 
-	CUtils::WaitForCharInput('q', "Press q to stop EIB Server: ");
+	CUtils::WaitForCharInput('q', "Press q to stop EIB Server: ", true);
 	CEIBServer::GetInstance().Close();
 	CEIBServer::Destroy();
 }

@@ -165,10 +165,12 @@ bool CUtils::EnumNics(map<CString,CString>& nics)
 #endif
 }
 
-void CUtils::WaitForCharInput(char expected, const CString& msg)
+void CUtils::WaitForCharInput(char expected, const CString& msg, bool sleep)
 {
-	//delay execution a bit, so we could flush any waiting buffers to screen before printing these msgs
-	JTCThread::sleep(500);
+	if(sleep){
+		//delay execution a bit, so we could flush any waiting buffers to screen before printing these msgs
+		JTCThread::sleep(500);
+	}
 
 	char x = (char)0 ;
 	while (true)

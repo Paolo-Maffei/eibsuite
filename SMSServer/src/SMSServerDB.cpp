@@ -342,6 +342,9 @@ start:
 	switch (ival)
 	{
 	case 1:
+		if(AddMappings()){
+			dirty = true;
+		}
 		break;
 	case 2:
 		if(DeleteSingleMapping()){
@@ -406,7 +409,51 @@ bool CUserEntry::DeleteSingleMapping()
 	return false;
 }
 
-bool CUserEntry::AddSingleMapping()
+bool CUserEntry::AddMappings()
 {
+bool dirty = false;
+start:
+	int ival;
+	map<int,CString> map1;
+	map1.insert(map1.end(),pair<int,CString>(1,"Add EIB --> SMS mapping entry"));
+	map1.insert(map1.end(),pair<int,CString>(2,"Add SMS --> EIB mapping entry"));
+	map1.insert(map1.end(),pair<int,CString>(3,"Quit"));
+	ConsoleCLI::GetStrOption("Choose one of the above options:", map1, ival, NO_DEFAULT_OPTION);
+	switch(ival)
+	{
+	case 1:
+		if(AddSingleMapping(true, false)){
+			LOG_SCREEN("Entry added successfully.\n");
+			dirty = true;
+		}
+		break;
+	case 2:
+		if(AddSingleMapping(false, true)){
+			LOG_SCREEN("Entry added successfully.\n");
+			dirty = true;
+		}
+		break;
+	case 3:return dirty;
+	case NO_DEFAULT_OPTION:
+		break;
+	default:
+		break;
+	}
+	goto start;
 	return false;
+}
+
+bool CUserEntry::AddSingleMapping(bool eib2sms, bool sms2eib)
+{
+	CString sval;
+	if(!ConsoleCLI::GetCString("Enter EIB Destination address?",sval, "1/1/1")){
+		return false;
+	}
+	START_TRY
+		CEibAddress addr(sval);
+	END_TRY_START_CATCH(e)
+		LOG_SCREEN("Error: Illegal EIB Address.");
+		return false;
+	END_CATCH
+	return true;
 }

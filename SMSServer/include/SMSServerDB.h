@@ -110,9 +110,10 @@ public:
 private:
 	void Print() const;
 	bool Edit();
+	bool AddMappings();
 	void PrintAllMappings();
 	bool DeleteSingleMapping();
-	bool AddSingleMapping();
+	bool AddSingleMapping(bool eib2sms, bool sms2eib);
 
 private:
 	CString _name;

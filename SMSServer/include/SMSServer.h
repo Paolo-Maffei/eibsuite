@@ -44,7 +44,7 @@ typedef UnixSerialPort SerialPort;
 using namespace gsmlib;
 using namespace std;
 
-static MeTa* global_meta;
+static MeTa* global_meta = NULL;
 
 #define DEFAULT_LOG_FILE_NAME "SmsServer.log"
 

@@ -28,23 +28,21 @@ struct _AddressValueKey
 
 	bool operator == (const _AddressValueKey& avk) const
 	{
-		if ( _d_address == avk._d_address && _value == avk._value){
-			return true;
-		}
-		return false;
+		return (_d_address == avk._d_address && _value == avk._value);
 	}
 
 	bool operator < (const _AddressValueKey& avk) const
 	{
-		if (_d_address < avk._d_address && _value < avk._value){
-			return true;
-		}
+		if(_d_address < avk._d_address) return true;
+		if(_d_address == avk._d_address && _value < avk._value) return true;
 		return false;
 	}
 
 	bool operator > (const _AddressValueKey& avk) const
 	{
-		return (_d_address > avk._d_address || _value > avk._value);
+		if(_d_address > avk._d_address) return true;
+		if(_d_address == avk._d_address && _value > avk._value) return true;
+		return false;
 	}
 
 	unsigned short _d_address;

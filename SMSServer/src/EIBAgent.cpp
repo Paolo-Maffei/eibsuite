@@ -14,9 +14,8 @@ CEIBAgent::~CEIBAgent()
 
 void CEIBAgent::Close()
 {
+	CGenericServer::Close();
 	_stop = true;
-	//wait for the thread to quit
-	this->join();
 }
 
 bool CEIBAgent::ConnectToEIB()
@@ -29,7 +28,7 @@ bool CEIBAgent::ConnectToEIB()
 	bool established = false;
 	if(conf.GetAutoDiscoverEibServer())
 	{
-		log.Log(LOG_LEVEL_INFO,"Searching EIB Server on local network...");
+		LOG_INFO("Searching EIB Server on local network...");
 		established = this->OpenConnection(conf.GetNetworkName().GetBuffer(),
 											conf.GetInitialKey().GetBuffer(),
 											Socket::LocalAddress(conf.GetListenInterface()).GetBuffer(),
@@ -56,7 +55,8 @@ void CEIBAgent::run()
 	unsigned char val_len = 0;
 	int length;
 
-	CSMSServerDB& db = CSMSServer::GetInstance().GetDB();
+	CSMSServer& singleton = CSMSServer::GetInstance();
+	CSMSServerDB& db = singleton.GetDB();
 
 	while (!_stop)
 	{
@@ -64,17 +64,16 @@ void CEIBAgent::run()
 
 		if (length > 0)
 		{
-			cout << endl;
-			cout << "Received " << length << " Bytes from EIB Server." << endl;
+			LOG_DEBUG("[Received] CEMI frame from EIB Server. EIBAddress: %s (%d bytes).", func.ToString().GetBuffer(), length);
 
 			list<CUserAlertRecord> result;
 			if(db.FindSmsMesaages(func.ToByteArray(),val[0],result)){
 				list<CUserAlertRecord>::iterator it;
 				for(it = result.begin(); it != result.end(); ++it)
 				{
-					CSMSServer::GetInstance().GetMetaLock().Lock();
+					//JTCSynchronized(*(singleton.GetSMSListener()));
+					LOG_DEBUG("Trying to send SMS: %s", it->GetPoneNumber().GetBuffer());
 					CSMSServer::GetInstance().SendSMS(it->GetPoneNumber(),it->GetTextMessage());
-					CSMSServer::GetInstance().GetMetaLock().Release();
 				}
 			}
 		}

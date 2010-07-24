@@ -27,9 +27,8 @@ void smsserver_main(bool interactive_conf, bool interactive_smsdb)
 
 int main(int argc, char **argv)
 {
-	JTCInitialize init;
-	bool interactive_conf = false, interactive_smsdb = false;
 
+	bool interactive_conf = false, interactive_smsdb = false;
 	int c;
 	opterr = 0;
 

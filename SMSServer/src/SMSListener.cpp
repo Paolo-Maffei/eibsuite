@@ -4,7 +4,8 @@
 
 using namespace gsmlib;
 
-CSMSListener::CSMSListener() : _stop(false)
+CSMSListener::CSMSListener() :
+_stop(false)
 {
 }
 
@@ -14,38 +15,51 @@ CSMSListener::~CSMSListener()
 
 void CSMSListener::Close()
 {
+	//aquire lock
+	//JTCSynchronized sync(*this);
 	_stop = true;
-	this->join();
 }
 
 void CSMSListener::run()
 {
-	ASSERT_ERROR(global_meta != NULL,"ME/TA cannot be NULL");
+	//aquire lock
+	//JTCSynchronized sync(*this);
+
+	MeTa* m = CSMSServer::GetInstance().GetMeta();
+	ASSERT_ERROR(m != NULL,"ME/TA cannot be NULL");
 	
 	EventHandler eh;
-	global_meta->setEventHandler(&eh);
-
-	CMutex& lock = CSMSServer::GetInstance().GetMetaLock();
+	m->setEventHandler(&eh);
 
 	while (!_stop)
 	{
-		//JTCThread::sleep(1000);
-		lock.Lock();
-#ifdef WIN32
-		::timeval timeoutVal;
-		timeoutVal.tv_sec = 1;
-		timeoutVal.tv_usec = 0;
-		global_meta->waitEvent((gsmlib::timeval *)&timeoutVal);
-#else
-		struct timeval timeoutVal;
-		timeoutVal.tv_sec = 1;
-		timeoutVal.tv_usec = 0;
-		global_meta->waitEvent(&timeoutVal);
-#endif
-		CheckForNewMessages(eh,global_meta);
-		lock.Release();
+		START_TRY
+
+			//this->wait(100);
+
+	#ifdef WIN32
+			::timeval timeoutVal;
+			timeoutVal.tv_sec = 1;
+			timeoutVal.tv_usec = 0;
+			m->waitEvent((gsmlib::timeval *)&timeoutVal);
+	#else
+			struct timeval timeoutVal;
+			timeoutVal.tv_sec = 1;
+			timeoutVal.tv_usec = 0;
+			m->waitEvent(&timeoutVal);
+	#endif
+			CheckForNewMessages(eh,m);
+
+		END_TRY_START_CATCH(e)
+			LOG_ERROR("Error in SMSListener: %s", e.what());
+		END_TRY_START_CATCH_GSM(ex)
+			LOG_ERROR("GSM Error in SMSListener: %s", ex.what());
+		END_TRY_START_CATCH_ANY
+			LOG_ERROR("Unknown Exception in SMSListener.");
+		END_CATCH
 	}
 	
+
 }
 
 void CSMSListener::CheckForNewMessages(EventHandler& event_handler,MeTa* me)
@@ -102,7 +116,7 @@ void CSMSListener::CheckForNewMessages(EventHandler& event_handler,MeTa* me)
 			val[0] = it->GetValue();
 			unsigned char val_len = 1;
 
-			CSMSServer::GetInstance().GetEIBAgent().SendEIBNetwork(
+			CSMSServer::GetInstance().GetEIBAgent()->SendEIBNetwork(
 					CEibAddress(it->GetDestAddress(),true),
 					val,
 					val_len,

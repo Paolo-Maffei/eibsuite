@@ -30,7 +30,12 @@ clean: $(LIB_PROJECTS:%=%_clean) $(EXE_PROJECTS:%=%_clean)
 	make install -C "$(PWD)/$(subst _install,,$@)/linux" INSTALL_DIR=$(INSTALL_DIR)
 
 install: all $(LIB_PROJECTS:%=%_install) $(EXE_PROJECTS:%=%_install)
-	@cp -u ./scripts/run.sh $(INSTALL_DIR)	
+	@echo 'Installing tools & scripts'	
+	@cp -u ./scripts/run.sh $(INSTALL_DIR)
+	@cp -uR templates/ $(INSTALL_DIR)/templates
+	@echo '*************************************************************************'
+	@echo 'EIB Suite installed successfully into "$(INSTALL_DIR)"'
+	@echo '*************************************************************************'	
 
 force_look:
 	true

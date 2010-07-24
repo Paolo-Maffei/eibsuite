@@ -46,7 +46,9 @@ void CSMSServerDB::OnSaveRecordStarted(const CUserEntry& record,CString& record_
 	for(; it1 != m1.end(); it1++)
 	{
 		sprintf(val, "%s:0x%x:%s", CEibAddress(it1->second.GetDestAddress(), true).ToString().GetBuffer(), it1->second.GetValue(), it1->second.GetTextMessage().GetBuffer());
-		param_values.insert(pair<CString,CString>(ALERT_PARAM_STR,val));
+		if(param_values.insert(pair<CString,CString>(ALERT_PARAM_STR,val)).second){
+
+		}
 	}
 
 	const map<CString,CUserAlertRecord>& m2 = record.GetSmsToEibDBConst();
@@ -55,7 +57,9 @@ void CSMSServerDB::OnSaveRecordStarted(const CUserEntry& record,CString& record_
 	for(; it2 != m2.end(); it2++)
 	{
 		sprintf(val, "%s:0x%x:%s", it2->second.GetTextMessage().GetBuffer(), it2->second.GetValue(), CEibAddress(it2->second.GetDestAddress(), true).ToString().GetBuffer());
-		param_values.insert(pair<CString,CString>(SMS_COMMAND_STR,val));
+		if(param_values.insert(pair<CString,CString>(SMS_COMMAND_STR,val)).second){
+
+		}
 	}
 
 	return;
@@ -348,6 +352,8 @@ void CUserEntry::PrintAllMappings()
 
 bool CUserEntry::Edit()
 {
+	bool dirty = false;
+
 start:
 	LOG_SCREEN("\nEdit Entry [%s]:\n",_name.GetBuffer());
 	LOG_SCREEN("-----------------------------\n");
@@ -363,20 +369,22 @@ start:
 	map1.insert(map1.end(),pair<int,CString>(5,"Quit"));
 	ConsoleCLI::GetStrOption("Choose one of the above options:", map1, ival, NO_DEFAULT_OPTION);
 
-	bool dirty = false;
-
 	switch (ival)
 	{
 	case 1:
 		if(AddSingleMapping(true, false)){
 			LOG_SCREEN("\nEntry added successfully.\n");
 			dirty = true;
+		}else{
+			LOG_SCREEN("\nERROR: Failed to add entry!\n");
 		}
 		break;
 	case 2:
 		if(AddSingleMapping(false, true)){
 			LOG_SCREEN("\nEntry added successfully.\n");
 			dirty = true;
+		}else{
+			LOG_SCREEN("\nERROR: Failed to add entry!\n");
 		}
 		break;
 	case 3:
@@ -471,6 +479,7 @@ bool CUserEntry::AddSingleMapping(bool eib2sms, bool sms2eib)
 
 
 	if(!ConsoleCLI::GetCString("Enter SMS Text message: ",sval, EMPTY_STRING)){
+		LOG_SCREEN("ERROR: Cannot get SMS Text message.");
 		return false;
 	}
 	record.SetTextMessage(sval);

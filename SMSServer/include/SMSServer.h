@@ -2,6 +2,7 @@
 #define __SMS_SERVER_HEADER_
 
 #include "Globals.h"
+#include "JTC.h"
 #include "SMSServerDB.h"
 #include "gsm_config.h"
 #include "gsm_nls.h"
@@ -9,12 +10,11 @@
 #include "gsm_me_ta.h"
 #include "gsm_util.h"
 #include "EIBAgent.h"
-#include "CMutex.h"
+#include "SMSListener.h"
 #include "SMSServerConfig.h"
 #include "LogFile.h"
 #include "MsgTable.h"
 #include "SingletonValidation.h"
-#include "SMSListener.h"
 
 //some useful MACROS
 #ifdef WIN32
@@ -44,11 +44,12 @@ typedef UnixSerialPort SerialPort;
 using namespace gsmlib;
 using namespace std;
 
-static MeTa* global_meta = NULL;
-
 #define DEFAULT_LOG_FILE_NAME "SmsServer.log"
 
 #define SMS_SERVER_PROCESS_NAME "SMSServer"
+
+typedef JTCHandleT<CSMSListener> CSMSListenerHandle;
+typedef JTCHandleT<CEIBAgent> CEIBAgentHandle;
 
 class CSMSServer : public CSingletonProcess
 {
@@ -71,11 +72,12 @@ public:
 	static CSMSServer& GetInstance() { return _instance;}
 	CLogFile& GetLog() { return _log;}
 
-	CMutex& GetMetaLock() { return _meta_lock; }
-
 	CSMSServerConfig& GetConf() { return _conf; }
 
-	CEIBAgent& GetEIBAgent() { return _agent; }
+	MeTa* GetMeta() { return _meta; }
+
+	CEIBAgentHandle& GetEIBAgent() { return _agent; }
+	CSMSListenerHandle& GetSMSListener() { return _listener; }
 
 	void InteractiveConf();
 	bool SendSMS(const CString& phone_number, const CString& text);
@@ -87,11 +89,11 @@ private:
 	static CSMSServer _instance;
 	CSMSServerConfig _conf;
 	CSMSServerDB _db;
-	CEIBAgent _agent;
+	CEIBAgentHandle _agent;
+	MeTa* _meta;
 	CLogFile _log;
 	CMsgTable _msg_table;
-	CSMSListener _listener;
-	CMutex _meta_lock;
+	CSMSListenerHandle _listener;
 };
 
 #endif

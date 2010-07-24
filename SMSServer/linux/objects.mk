@@ -4,11 +4,11 @@
 
 OBJS += \
 Main.o \
-MsgTable.o \
-SMSListener.o \
 SMSServer.o \
-SMSServerConfig.o \
+SMSListener.o \
+EIBAgent.o \
+MsgTable.o \
 SMSServerDB.o \
-EIBAgent.o
+SMSServerConfig.o 
 
 LIBS := -lpthread -ljtc -lEIBStdLib -lGSM

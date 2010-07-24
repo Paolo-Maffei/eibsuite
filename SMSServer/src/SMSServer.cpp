@@ -1,21 +1,18 @@
 #include "SMSServer.h"
 #include "cli.h"
 
+JTCInitialize init;
 CSMSServer CSMSServer::_instance;
 
-CSMSServer::CSMSServer() : 
+CSMSServer::CSMSServer() :
 CSingletonProcess(SMS_SERVER_PROCESS_NAME)
 {
+	_listener = new CSMSListener();
+	_agent = new CEIBAgent();
 }
 
 CSMSServer::~CSMSServer()
 {
-	/*if (_cell_port != NULL){
-		delete _cell_port;
-	}
-	if (_meta != NULL){
-		delete _meta;
-	}*/
 }
 
 bool CSMSServer::Init()
@@ -53,12 +50,12 @@ bool CSMSServer::Init()
 	START_TRY
 		_log.Log(LOG_LEVEL_INFO,"Initializing Cellular Modem connection...");
 		CString device = _conf.GetDevice();
-		global_meta = new MeTa(new SerialPort(device.GetSTDString(),_conf.GetDeviceBaudRate(),DEFAULT_INIT_STRING, false));
-		if(global_meta == NULL){
+		_meta = new MeTa(new SerialPort(device.GetSTDString(),_conf.GetDeviceBaudRate(),DEFAULT_INIT_STRING, false));
+		if(_meta == NULL){
 			throw CEIBException(GeneralError,"dummy");
 		}
 		//DeleteAllMessages();
-		_listener.start();
+		_listener->start();
 		_log.Log(LOG_LEVEL_INFO,"Starting SMS Listener... Successful.");
 	END_TRY_START_CATCH_GSM(e)
 		_log.Log(LOG_LEVEL_ERROR,"Cellular Modem connection Failed: %s",e.what());
@@ -83,15 +80,17 @@ void CSMSServer::Close()
 
 	//close agent
 	LOG_INFO("Closing connection to EIB Server...");
-	_agent.Close();
+	_agent->Close();
+	_agent->join();
 
 	LOG_INFO("Closing the cellular port...");
-	_listener.Close();
+	_listener->Close();
+	_listener->join();
 }
 
 void CSMSServer::Run()
 {
-	if (!_agent.ConnectToEIB())
+	if (!_agent->ConnectToEIB())
 	{
 		_log.Log(LOG_LEVEL_INFO,"\nCannot establish connection with EIB Server!\n");
 		return;
@@ -99,46 +98,45 @@ void CSMSServer::Run()
 
 	_log.Log(LOG_LEVEL_INFO,"\nEIB Server Connection established.\n");
 
-	_agent.start();
+	_agent->start();
 }
 
 void CSMSServer::DeleteAllMessages()
 {
-	if(global_meta == NULL){
+	if(_meta == NULL){
 		return;
 	}
 
-	vector<std::string> stores = global_meta->getSMSStoreNames();
+	vector<std::string> stores = _meta->getSMSStoreNames();
 	vector<std::string>::iterator it;
 	for(it = stores.begin(); it != stores.end(); ++it)
 	{
-		SMSStoreRef st = global_meta->getSMSStore(*it);
+		SMSStoreRef st = _meta->getSMSStore(*it);
 		st->erase(st->begin(),st->end());
 	}
 }
 
 bool CSMSServer::SendSMS(const CString& phone_number,const CString& text)
 {
-	try
-	{
-		if(global_meta == NULL){
+	START_TRY
+		if(_meta == NULL){
+			LOG_ERROR("EIB Error during Send SMS: %s", "No Me/Ta Device connected.");
 			return false;
 		}
 
 		//send the sms
 		SMSSubmitMessage* submitSMS = new SMSSubmitMessage();
 		submitSMS->setStatusReportRequest(false);
-
-		submitSMS->setStatusReportRequest(false);
 		Address destAddr(phone_number.GetBuffer());
 		submitSMS->setDestinationAddress(destAddr);
-		global_meta->sendSMSs(submitSMS, text.GetBuffer(), true);
-	}
-	catch (GsmException &e)
-	{
-		cout << e.what() << endl;
-		return false;
-	}
+		_meta->sendSMSs(submitSMS, text.GetBuffer(), true);
+	END_TRY_START_CATCH(e)
+		LOG_ERROR("EIB Error during Send SMS: %s", e.what());
+	END_TRY_START_CATCH_GSM(ex)
+		LOG_ERROR("GSM Error during Send SMS: %s", ex.what());
+	END_TRY_START_CATCH_ANY
+		LOG_ERROR("General Error during Send SMS.");
+	END_CATCH
 
 	return true;
 }
@@ -173,10 +171,10 @@ void CSMSServer::InteractiveConf()
 			}
 		}
 	}
-	if(ConsoleCLI::GetCString("RELAY Server user name (used to connect to EIB Server)?",sval, _conf.GetName())){
+	if(ConsoleCLI::GetCString("SMS Server user name (used to connect to EIB Server)?",sval, _conf.GetName())){
 		_conf.SetName(sval);
 	}
-	if(ConsoleCLI::GetCString("RELAY Server password (used to connect to EIB Server)?",sval, _conf.GetPassword())){
+	if(ConsoleCLI::GetCString("SMS Server password (used to connect to EIB Server)?",sval, _conf.GetPassword())){
 		_conf.SetPassword(sval);
 	}
 

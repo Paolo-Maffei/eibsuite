@@ -81,8 +81,6 @@ private:
 	CString _phone_number;
 };
 
-typedef CUserAlertRecord CCommandRecord;
-
 class CSMSServerDB;
 
 class CUserEntry
@@ -99,18 +97,20 @@ public:
 		
 	void ClearAll();
 
-	void AddAlertRecord(CUserAlertRecord& alert);
-	void AddSmsCommand(CCommandRecord& cmd);
+	bool AddAlertRecord(CUserAlertRecord& alert);
+	bool AddSmsCommand(CUserAlertRecord& cmd);
 
 	friend class CSMSServerDB;
 
 	map<AddressValueKey,CUserAlertRecord>& GetEibToSmsDB() { return _eib_to_sms_db;}
-	map<CString,CCommandRecord>& GetSmsToEibDB() { return _sms_to_eib_db;}
+	map<CString,CUserAlertRecord>& GetSmsToEibDB() { return _sms_to_eib_db;}
+
+	const map<AddressValueKey,CUserAlertRecord>& GetEibToSmsDBConst() const { return _eib_to_sms_db;}
+	const map<CString,CUserAlertRecord>& GetSmsToEibDBConst() const { return _sms_to_eib_db;}
 
 private:
 	void Print() const;
 	bool Edit();
-	bool AddMappings();
 	void PrintAllMappings();
 	bool DeleteSingleMapping();
 	bool AddSingleMapping(bool eib2sms, bool sms2eib);
@@ -119,7 +119,7 @@ private:
 	CString _name;
 	CString _phone_number;
 	map<AddressValueKey,CUserAlertRecord> _eib_to_sms_db;
-	map<CString,CCommandRecord> _sms_to_eib_db;
+	map<CString,CUserAlertRecord> _sms_to_eib_db;
 };
 
 class CSMSServerDB : public CGenericDB<CString,CUserEntry>
@@ -134,7 +134,7 @@ public:
 	virtual void OnSaveRecordStarted(const CUserEntry& record,CString& record_name, map<CString,CString>& param_values);
 	
 	bool FindSmsMesaages(unsigned short d_address, unsigned short value, list<CUserAlertRecord>& result) ;
-	bool FindEibMessages(const CString& sms_msg, list<CCommandRecord>& result) ;
+	bool FindEibMessages(const CString& sms_msg, list<CUserAlertRecord>& result) ;
 
 	void InteractiveConf();
 

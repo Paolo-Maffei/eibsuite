@@ -89,9 +89,9 @@ void CSMSListener::CheckForNewMessages(EventHandler& event_handler,MeTa* me)
     }
 
 	//look for the sms that received in the db
-	list<CCommandRecord> res;
+	list<CUserAlertRecord> res;
 	if(CSMSServer::GetInstance().GetDB().FindEibMessages(text,res)){
-		list<CCommandRecord>::iterator it;
+		list<CUserAlertRecord>::iterator it;
 		for(it = res.begin(); it != res.end(); ++it)
 		{
 			if(origin_number != it->GetPoneNumber()){

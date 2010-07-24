@@ -11,18 +11,15 @@
 # 1 - The eib message destination address
 # 2 - The eib message value field (apci)
 # 3 - The SMS text to be sent to the user
-EIB_TO_SMS = 0x1004:0x81:The light is On
-EIB_TO_SMS = 0x1004:0x80:The light is off
+EIB_TO_SMS = 1/2/3:0x81:The light is On
+EIB_TO_SMS = 1/2/3:0x80:The light is off
 
+#SMS_TO_EIB
 #This is an entry that mapps between INCOMING SMS message and a OUTGOING EIB message that should be sent to the eib home network.
 #if the SMS server receives a message matching the rule defined here, an EIB Frame will be sent the Eib Device
 #this entry composed of 3 different fields:
-
-#EIB_TO_SMS - This is an entry that maps between INCOMING SMS messages and a OUTGOING EIB message that should be sent to the eib home network.
-#If the SMS server receives a message matching the rule defined here, an SMS will be sent to the user.
-#This entry is composed of 3 different fields, seperated by a colon <1>:<2>:<3>
 # 1 - The eib message destination address
 # 2 - The eib message value field
 # 3 - The SMS text that is received by the user
-SMS_TO_EIB = 0x1004:0x81:light on
-SMS_TO_EIB = 0x1004:0x81:light off
+SMS_TO_EIB = 1/2/3:0x81:light on
+SMS_TO_EIB = 1/2/3:0x81:light off

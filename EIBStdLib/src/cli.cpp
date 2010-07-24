@@ -80,6 +80,29 @@ bool ConsoleCLI::Getint(const CString& msg, int& val, int def)
 	return true;
 }
 
+bool ConsoleCLI::GetHexString(const CString& msg, CString& val, const CString& def, bool prefix_required)
+{
+start:
+	while(GetCString(msg,val,def)){
+		if(prefix_required){
+			if(val[0] != '0' || (val[1] != 'x' && val[1] != 'X')){
+				std::puts("Illegal HEX prefix. please try again...");
+				goto start;
+			}
+		}
+
+		for(int i = prefix_required ? 2 : 0; i < val.GetLength(); i++)
+		{
+			if(!IS_HEX_DIGIT(val[i])){
+				std::puts("Illegal input. only HEX characters are allowed. please try again...");
+				goto start;
+			}
+		}
+		break;
+	}
+	return true;
+}
+
 bool ConsoleCLI::GetCString(const CString& msg, CString& val, const CString& def)
 {
 start:

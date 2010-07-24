@@ -38,6 +38,26 @@ void CSMSServerDB::OnReadRecordNameComplete(CUserEntry& current_record, const CS
 
 void CSMSServerDB::OnSaveRecordStarted(const CUserEntry& record,CString& record_name, map<CString,CString>& param_values)
 {
+	record_name = record.GetName();
+	const map<AddressValueKey,CUserAlertRecord>& m1 = record.GetEibToSmsDBConst();
+	map<AddressValueKey,CUserAlertRecord>::const_iterator it1 = m1.begin();
+
+	char val[512];
+	for(; it1 != m1.end(); it1++)
+	{
+		sprintf(val, "%s:0x%x:%s", CEibAddress(it1->second.GetDestAddress(), true).ToString().GetBuffer(), it1->second.GetValue(), it1->second.GetTextMessage().GetBuffer());
+		param_values.insert(pair<CString,CString>(ALERT_PARAM_STR,val));
+	}
+
+	const map<CString,CUserAlertRecord>& m2 = record.GetSmsToEibDBConst();
+	map<CString,CUserAlertRecord>::const_iterator it2 = m2.begin();
+
+	for(; it2 != m2.end(); it2++)
+	{
+		sprintf(val, "%s:0x%x:%s", it2->second.GetTextMessage().GetBuffer(), it2->second.GetValue(), CEibAddress(it2->second.GetDestAddress(), true).ToString().GetBuffer());
+		param_values.insert(pair<CString,CString>(SMS_COMMAND_STR,val));
+	}
+
 	return;
 }
 
@@ -51,17 +71,18 @@ void CSMSServerDB::ParseAlertRecord(const CString& alert_record,CUserEntry& reco
 
 	CUserAlertRecord alert;
 	
-	unsigned short d_address;
-	if(!tok.NextToken().UShortFromHexString(d_address)){
-		throw CEIBException(ConfigFileError,"error in SMS db file. \"%s\" entry is incorrect",alert_record.GetBuffer());
-	}
+	START_TRY
+		CEibAddress addr(tok.NextToken());
+		alert.SetDestAddress(addr.ToByteArray());
+	END_TRY_START_CATCH(e)
+		throw CEIBException(ConfigFileError,"error in SMS db file. \"%s\" entry is incorrect: %s",alert_record.GetBuffer(), e.what());
+	END_CATCH
 
 	unsigned char value;
 	if(!tok.NextToken().UCharFromHexString(value)){
 		throw CEIBException(ConfigFileError,"error in SMS db file. \"%s\" entry is incorrect",alert_record.GetBuffer());
 	}
 
-	alert.SetDestAddress(d_address);
 	alert.SetValue(value);
 	alert.SetTextMessage(tok.NextToken());
 	alert.SetPhoneNumber(record.GetPhoneNumber());
@@ -77,21 +98,24 @@ void CSMSServerDB::ParseCommandRecord(const CString& command_record,CUserEntry& 
 		throw CEIBException(ConfigFileError,"error in SMS db file. \"%s\" entry is incorrect",command_record.GetBuffer());
 	}
 
-	CCommandRecord cmd;
+	CUserAlertRecord cmd;
 
-	unsigned short d_address;
-	if(!tok.NextToken().UShortFromHexString(d_address)){
-		throw CEIBException(ConfigFileError,"error in SMS db file. \"%s\" entry is incorrect",command_record.GetBuffer());
-	}
+	cmd.SetTextMessage(tok.NextToken());
 
 	unsigned char value;
 	if(!tok.NextToken().UCharFromHexString(value)){
 		throw CEIBException(ConfigFileError,"error in SMS db file. \"%s\" entry is incorrect",command_record.GetBuffer());
 	}
 
-	cmd.SetDestAddress(d_address);
+	START_TRY
+		CEibAddress addr(tok.NextToken());
+		cmd.SetDestAddress(addr.ToByteArray());
+	END_TRY_START_CATCH(e)
+		throw CEIBException(ConfigFileError,"error in SMS db file. \"%s\" entry is incorrect: %s",command_record.GetBuffer(), e.what());
+	END_CATCH
+
 	cmd.SetValue(value);
-	cmd.SetTextMessage(tok.NextToken());
+
 	cmd.SetPhoneNumber(record.GetPhoneNumber());
 
 	record.AddSmsCommand(cmd);
@@ -118,7 +142,7 @@ bool CSMSServerDB::FindSmsMesaages(unsigned short d_address, unsigned short valu
 	return (result.size() > 0);
 }
 
-bool CSMSServerDB::FindEibMessages(const CString& sms_msg, list<CCommandRecord>& result) 
+bool CSMSServerDB::FindEibMessages(const CString& sms_msg, list<CUserAlertRecord>& result)
 {
 	//first clear the list
 	result.clear();
@@ -127,7 +151,7 @@ bool CSMSServerDB::FindEibMessages(const CString& sms_msg, list<CCommandRecord>&
 	for(it = _data.begin();it != _data.end();++it)
 	{
 		CUserEntry& tmp = it->second;
-		map<CString,CCommandRecord>::iterator sec_it;
+		map<CString,CUserAlertRecord>::iterator sec_it;
 		sec_it = tmp.GetSmsToEibDB().find(sms_msg);
 		if (sec_it != tmp.GetSmsToEibDB().end()){
 			result.push_back(sec_it->second);
@@ -187,7 +211,7 @@ start:
 			Print();
 		break;
 	case 5:
-		break;
+		Save();
 	case 6:
 		return;
 	case NO_DEFAULT_OPTION:  //when user press just enter...
@@ -205,6 +229,7 @@ bool CSMSServerDB::AddUserEntry(CUserEntry& entry)
 	if(!ConsoleCLI::GetCString("Enter Phone number: ",sval, entry.GetName())){
 		return false;
 	}
+	entry.SetPhoneNumber(sval);
 	CString name(PHONE_NUMBER_BLOCK_PREFIX_STR);
 	entry.SetName(name + sval);
 	return true;
@@ -273,16 +298,16 @@ void CSMSServerDB::Print()
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void CUserEntry::AddAlertRecord(CUserAlertRecord& alert)
+bool CUserEntry::AddAlertRecord(CUserAlertRecord& alert)
 {
 	unsigned short d_address = alert.GetDestAddress();
 	unsigned short value = alert.GetValue();
-	GetEibToSmsDB().insert(pair<AddressValueKey,CUserAlertRecord>(AddressValueKey(d_address,value),alert));
+	return GetEibToSmsDB().insert(pair<AddressValueKey,CUserAlertRecord>(AddressValueKey(d_address,value),alert)).second;
 }
 
-void CUserEntry::AddSmsCommand(CCommandRecord& cmd)
+bool CUserEntry::AddSmsCommand(CUserAlertRecord& cmd)
 {
-	GetSmsToEibDB().insert(pair<CString,CCommandRecord>(cmd.GetTextMessage(),cmd));
+	return GetSmsToEibDB().insert(pair<CString,CUserAlertRecord>(cmd.GetTextMessage(),cmd)).second;
 }
 
 
@@ -307,17 +332,17 @@ void CUserEntry::PrintAllMappings()
 	map<AddressValueKey,CUserAlertRecord>::const_iterator it1;
 	int i = 1;
 	for( it1 = _eib_to_sms_db.begin(); it1 != _eib_to_sms_db.end(); ++it1){
-		LOG_SCREEN("%d. [EIB --> SMS] 0x%X:0x%x:%s\n", i++,
-													   it1->second.GetDestAddress(),
+		LOG_SCREEN("%d. [EIB --> SMS] %s:0x%x:%s\n", i++,
+													   CEibAddress(it1->second.GetDestAddress(), true).ToString().GetBuffer(),
 													   it1->second.GetValue(),
 													   it1->second.GetTextMessage().GetBuffer());
 	}
-	map<CString,CCommandRecord>::const_iterator it2;
+	map<CString,CUserAlertRecord>::const_iterator it2;
 	for( it2 = _sms_to_eib_db.begin(); it2 != _sms_to_eib_db.end(); ++it2){
-		LOG_SCREEN("%d. [SMS --> EIB] 0x%X:0x%x:%s\n", i++,
-													   it2->second.GetDestAddress(),
-													   it2->second.GetValue(),
-													   it2->second.GetTextMessage().GetBuffer());
+		LOG_SCREEN("%d. [SMS --> EIB] %s:0x%x:%s\n", i++,
+													it2->second.GetTextMessage().GetBuffer(),
+													it2->second.GetValue(),
+													CEibAddress(it2->second.GetDestAddress(), true).ToString().GetBuffer());
 	}
 }
 
@@ -331,10 +356,11 @@ start:
 
 	int ival;
 	map<int,CString> map1;
-	map1.insert(map1.end(),pair<int,CString>(1,"Add mapping entry"));
-	map1.insert(map1.end(),pair<int,CString>(2,"Delete mapping entry"));
-	map1.insert(map1.end(),pair<int,CString>(3,"Print all mappings"));
-	map1.insert(map1.end(),pair<int,CString>(4,"Quit"));
+	map1.insert(map1.end(),pair<int,CString>(1,"Add EIB --> SMS mapping entry"));
+	map1.insert(map1.end(),pair<int,CString>(2,"Add SMS --> EIB mapping entry"));
+	map1.insert(map1.end(),pair<int,CString>(3,"Delete mapping entry"));
+	map1.insert(map1.end(),pair<int,CString>(4,"Print all mappings"));
+	map1.insert(map1.end(),pair<int,CString>(5,"Quit"));
 	ConsoleCLI::GetStrOption("Choose one of the above options:", map1, ival, NO_DEFAULT_OPTION);
 
 	bool dirty = false;
@@ -342,24 +368,31 @@ start:
 	switch (ival)
 	{
 	case 1:
-		if(AddMappings()){
+		if(AddSingleMapping(true, false)){
+			LOG_SCREEN("\nEntry added successfully.\n");
 			dirty = true;
 		}
 		break;
 	case 2:
+		if(AddSingleMapping(false, true)){
+			LOG_SCREEN("\nEntry added successfully.\n");
+			dirty = true;
+		}
+		break;
+	case 3:
 		if(DeleteSingleMapping()){
 			LOG_SCREEN("Mapping entry deleted successfully\n.");
 			dirty = true;
 		}
 		break;
-	case 3:
+	case 4:
 		if(_eib_to_sms_db.size() == 0 && _sms_to_eib_db.size() == 0){
 			LOG_SCREEN("No Messages mapping entries found for \"%s\"\n", _name.GetBuffer());
 			break;
 		}
 		PrintAllMappings();
 		break;
-	case 4: return dirty;
+	case 5: return dirty;
 		break;
 	case NO_DEFAULT_OPTION:
 		break;
@@ -394,7 +427,7 @@ bool CUserEntry::DeleteSingleMapping()
 		}
 	}
 	else{
-		map<CString,CCommandRecord>::iterator it;
+		map<CString,CUserAlertRecord>::iterator it;
 		for( it = _sms_to_eib_db.begin(); it != _sms_to_eib_db.end(); ++it)
 		{
 			if (i++ != ival){
@@ -409,51 +442,44 @@ bool CUserEntry::DeleteSingleMapping()
 	return false;
 }
 
-bool CUserEntry::AddMappings()
-{
-bool dirty = false;
-start:
-	int ival;
-	map<int,CString> map1;
-	map1.insert(map1.end(),pair<int,CString>(1,"Add EIB --> SMS mapping entry"));
-	map1.insert(map1.end(),pair<int,CString>(2,"Add SMS --> EIB mapping entry"));
-	map1.insert(map1.end(),pair<int,CString>(3,"Quit"));
-	ConsoleCLI::GetStrOption("Choose one of the above options:", map1, ival, NO_DEFAULT_OPTION);
-	switch(ival)
-	{
-	case 1:
-		if(AddSingleMapping(true, false)){
-			LOG_SCREEN("Entry added successfully.\n");
-			dirty = true;
-		}
-		break;
-	case 2:
-		if(AddSingleMapping(false, true)){
-			LOG_SCREEN("Entry added successfully.\n");
-			dirty = true;
-		}
-		break;
-	case 3:return dirty;
-	case NO_DEFAULT_OPTION:
-		break;
-	default:
-		break;
-	}
-	goto start;
-	return false;
-}
-
 bool CUserEntry::AddSingleMapping(bool eib2sms, bool sms2eib)
 {
+	CUserAlertRecord record;
+
 	CString sval;
-	if(!ConsoleCLI::GetCString("Enter EIB Destination address?",sval, "1/1/1")){
+	if(!ConsoleCLI::GetCString("Enter EIB Destination address: ",sval, "1/1/1")){
 		return false;
 	}
 	START_TRY
 		CEibAddress addr(sval);
+		record.SetDestAddress(addr.ToByteArray());
 	END_TRY_START_CATCH(e)
 		LOG_SCREEN("Error: Illegal EIB Address.");
 		return false;
 	END_CATCH
-	return true;
+
+	if(!ConsoleCLI::GetHexString("Enter APCI value: ", sval, "0x80", true)){
+		return false;
+	}
+	unsigned char t;
+	if(sval.UCharFromHexString(t)){
+		record.SetValue(t);
+	}else{
+		LOG_SCREEN("ERROR: Cannot convert HEX string value.");
+		return false;
+	}
+
+
+	if(!ConsoleCLI::GetCString("Enter SMS Text message: ",sval, EMPTY_STRING)){
+		return false;
+	}
+	record.SetTextMessage(sval);
+
+	if(eib2sms && !sms2eib){
+		return AddAlertRecord(record);
+	}else if(!eib2sms && sms2eib){
+		return AddSmsCommand(record);
+	}
+
+	return false;
 }

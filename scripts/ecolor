@@ -1,0 +1,8 @@
+#!/bin/bash
+
+color=$1
+
+shift
+echo `printf "\033[${color}m"`"$@"`printf "\033[37;0m"`
+
+

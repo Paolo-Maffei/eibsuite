@@ -1,0 +1,42 @@
+mainmenu "EIBSuite Configuration"
+
+config CONFIG_JTC_LIB
+	bool "JTC"
+	default y
+	help
+		this configuration option will build the JTC library. the JTC library contains the Threading and Synchronization code and is required by all EIB Suite applications.
+
+config CONFIG_GSM_LIB
+        bool "GSMLib"
+        default y
+
+config CONFIG_EIB_STD_LIB
+	bool "EIBStdLib"
+	depends on CONFIG_JTC_LIB
+	default y
+
+config CONFIG_EIB_SERVER
+        bool "EIBServer"
+        depends on CONFIG_EIB_STD_LIB
+	default y
+
+config CONFIG_WEB_SERVER
+	bool "WEBServer"
+	depends on CONFIG_EIB_STD_LIB
+        default y
+
+config CONFIG_AMX_SERVER
+        bool "AMXServer"
+        depends on CONFIG_EIB_STD_LIB
+        default y
+
+config CONFIG_RELAY_SERVER
+        bool "EIBRelay"
+        depends on CONFIG_EIB_STD_LIB
+        default y
+
+config CONFIG_SMS_SERVER
+        bool "SMSServer"
+        depends on CONFIG_EIB_STD_LIB && CONFIG_GSM_LIB
+        default y
+

@@ -4,6 +4,8 @@ else
 	INSTALL_DIR := $(shell pwd)/bin
 endif
 
+CONFIG_DIR := $(shell pwd)/config
+
 EXE_PROJECTS := EIBServer WEBServer AMXServer EIBRelay SMSServer
 LIB_PROJECTS := jtc EIBStdLib GSM
 PWD = $(shell pwd)
@@ -24,6 +26,7 @@ $(EXE_PROJECTS): force_look
 
 clean: $(LIB_PROJECTS:%=%_clean) $(EXE_PROJECTS:%=%_clean)
 	@rm -rf $(INSTALL_DIR)
+	@rm -f .config .tmpconfig.h .config.cmd
 
 %_install:
 	@mkdir -p $(INSTALL_DIR)
@@ -38,7 +41,8 @@ install: all $(LIB_PROJECTS:%=%_install) $(EXE_PROJECTS:%=%_install)
 	@echo '*************************************************************************'	
 
 menuconfig:
-	
+	make -sC $(CONFIG_DIR)
+	@$(CONFIG_DIR)/mconf Tconfig
 
 force_look:
 	true

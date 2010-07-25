@@ -97,6 +97,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\SMSServer\src\EIBAgent.cpp" />
     <ClCompile Include="..\..\SMSServer\src\Main.cpp" />
     <ClCompile Include="..\..\SMSServer\src\MsgTable.cpp" />
     <ClCompile Include="..\..\SMSServer\src\SMSListener.cpp" />
@@ -105,6 +106,7 @@
     <ClCompile Include="..\..\SMSServer\src\SMSServerDB.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\SMSServer\include\EIBAgent.h" />
     <ClInclude Include="..\..\SMSServer\include\MsgTable.h" />
     <ClInclude Include="..\..\SMSServer\include\SMSGeneralConf.h" />
     <ClInclude Include="..\..\SMSServer\include\SMSListener.h" />

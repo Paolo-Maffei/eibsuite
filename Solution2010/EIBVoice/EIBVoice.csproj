@@ -156,7 +156,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <Link>Properties\Settings.Designer.cs</Link>
     </Compile>
-    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

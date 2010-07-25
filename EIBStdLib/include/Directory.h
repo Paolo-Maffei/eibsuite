@@ -4,6 +4,12 @@
 #include "EibStdLib.h"
 #include "CString.h"
 
+#ifdef WIN32
+#include  <io.h>
+#include  <stdio.h>
+#include  <stdlib.h>
+#endif
+
 #define RW_DIR_MASK 0777
 
 #ifndef _MAX_PATH

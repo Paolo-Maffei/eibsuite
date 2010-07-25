@@ -49,6 +49,7 @@ CString CDirectory::CurrentDirectory()
 
 bool CDirectory::IsExist(const CString& path)
 {
+#ifndef WIN32
 	if (access( path.GetBuffer(), 0 ) == 0 )
 	{
 		struct stat status;
@@ -56,4 +57,7 @@ bool CDirectory::IsExist(const CString& path)
         return (status.st_mode & S_IFDIR);
 	}
 	return false;
+#else
+	return (_access(path.GetBuffer(), 0) == 0);
+#endif
 }

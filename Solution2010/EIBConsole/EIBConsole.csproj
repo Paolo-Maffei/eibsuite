@@ -163,7 +163,6 @@
     <None Include="..\..\EIBConsole\Properties\Settings.settings">
       <Link>Properties\Settings.settings</Link>
     </None>
-    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

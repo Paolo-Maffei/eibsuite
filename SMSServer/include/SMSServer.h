@@ -33,6 +33,7 @@
 
 #ifdef WIN32
 #include "gsm_win32_serial.h"
+#include "XGetopt.h"
 #include <direct.h>
 typedef Win32SerialPort SerialPort;
 #else

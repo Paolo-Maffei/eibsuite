@@ -37,6 +37,9 @@ install: all $(LIB_PROJECTS:%=%_install) $(EXE_PROJECTS:%=%_install)
 	@echo 'EIB Suite installed successfully into "$(INSTALL_DIR)"'
 	@echo '*************************************************************************'	
 
+menuconfig:
+	
+
 force_look:
 	true
 

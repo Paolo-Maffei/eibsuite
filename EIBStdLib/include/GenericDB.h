@@ -167,7 +167,6 @@ public:
 		{
 			CString name;
 			list<pair<CString, CString> > params_values;
-			//map<CString,CString> params_values;
 			OnSaveRecordStarted(it->second,name,params_values);
 			myfile << "[" << name.GetBuffer() << "]" << endl;
 			//write the record data

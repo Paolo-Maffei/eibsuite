@@ -1,5 +1,19 @@
 mainmenu "EIBSuite Configuration"
 
+choice
+        prompt "CPU"
+
+config CONFIG_CPU_X86
+        bool "x86 (Standard PC)"
+	default y
+
+config CONFIG_CPU_ARM
+        bool "Arm (Sheeva Plug)"
+	default n
+
+endchoice
+
+
 config CONFIG_JTC_LIB
 	bool "JTC"
 	default y

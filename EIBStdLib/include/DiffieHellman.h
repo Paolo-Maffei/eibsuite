@@ -13,8 +13,8 @@
 // CRYPTO LIBRARY FOR EXCHANGING KEYS
 // USING THE DIFFIE-HELLMAN KEY EXCHANGE PROTOCOL
 
-#define MAX_RANDOM_INTEGER 2147483648 //Should make these numbers massive to be more secure
-#define MAX_PRIME_NUMBER   2147483648 //Bigger the number the slower the algorithm
+#define MAX_RANDOM_INTEGER 2147483648UL //Should make these numbers massive to be more secure
+#define MAX_PRIME_NUMBER   2147483648UL //Bigger the number the slower the algorithm
 
 //Linear Feedback Shift Registers
 #define LFSR(n)    {if (n&1) n=((n^0x80000055)>>1)|0x80000000; else n>>=1;}

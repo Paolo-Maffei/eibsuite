@@ -221,12 +221,12 @@ void CUsersDB::OnReadRecordNameComplete(CUser& current_record, const CString& re
 	current_record.SetName(record_name);
 }
 
-void CUsersDB::OnSaveRecordStarted(const CUser& record,CString& record_name, map<CString,CString>& param_values)
+void CUsersDB::OnSaveRecordStarted(const CUser& record,CString& record_name, list<pair<CString,CString> >& param_values)
 {
 	record_name = record.GetName();
 	CString priv(record.GetPriviliges());
-	param_values.insert(pair<CString,CString>(USER_PRIVILIGES_PARAM_NAME,priv));
-	param_values.insert(pair<CString,CString>(USER_PASSWORD_PARAM_NAME,record.GetPassword()));
+	param_values.insert(param_values.end(), pair<CString,CString>(USER_PRIVILIGES_PARAM_NAME,priv));
+	param_values.insert(param_values.end(), pair<CString,CString>(USER_PASSWORD_PARAM_NAME,record.GetPassword()));
 }
 
 bool CUsersDB::AuthenticateUser(const CString& user_name, const CString& password, CUser& user)

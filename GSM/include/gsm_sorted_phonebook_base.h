@@ -178,6 +178,8 @@ namespace gsmlib
     // (eg. database name, URL, etc.)
     virtual SortedPhonebookRef createPhonebook(string source)
       throw(GsmException) = 0;
+
+    virtual ~CustomPhonebookFactory() {}
   };
 
   // registry for custom backends

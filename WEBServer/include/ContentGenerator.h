@@ -37,7 +37,7 @@ private:
 	static void AddLink(CDataBuffer& content, const CString& target_url, const CString& display_text = "", bool close_tag = true);
 	static void AddImage(CDataBuffer& content, const CString& source_url, int width, int height, int border = 0, const CString& alternative_text = "");
 	static void AddHeader(CDataBuffer& content, const int heading_level, const CString& heading_text);
-	static void AddInputTag(CDataBuffer& content, const CString&  type, const CString& name, const CString& value, const CString& id = "", int maxlength = NULL, int size = NULL);
+	static void AddInputTag(CDataBuffer& content, const CString&  type, const CString& name, const CString& value, const CString& id = "", int maxlength = 0, int size = 0);
 	static void AddFormTag(CDataBuffer& content, const CString& action, const CString& method = "post");
 	static void AddScriptTag(CDataBuffer& content, const CString& language, const CString& type, const CString& source);
 	static void AddEibRecordTable(CDataBuffer& content, CEibAddress& function, CEIBObjectRecord& record);

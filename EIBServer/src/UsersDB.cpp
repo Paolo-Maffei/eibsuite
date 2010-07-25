@@ -86,7 +86,7 @@ void CUsersDB::OnReadRecordNameComplete(CUser& current_record, const CString& re
 	current_record.SetName(record_name);
 }
 
-void CUsersDB::OnSaveRecordStarted(const CUser& record,CString& record_name, map<CString,CString>& param_values)
+void CUsersDB::OnSaveRecordStarted(const CUser& record,CString& record_name, list<pair<CString,CString> >& param_values)
 {
 	record_name = record.GetName();
 	unsigned int priv = 0;
@@ -98,10 +98,10 @@ void CUsersDB::OnSaveRecordStarted(const CUser& record,CString& record_name, map
 		priv |= USER_POLICY_CONSOLE_ACCESS;
 
 	CString temp(priv);
-	param_values.insert(pair<CString,CString>(USER_PRIVILIGES_PARAM_NAME,temp));
-	param_values.insert(pair<CString,CString>(USER_PASSWORD_PARAM_NAME,record.GetPassword()));
-	param_values.insert(pair<CString,CString>(USER_ALLOWED_SOURCE_MASK,CString::ToHexFormat(record.GetFilter().GetSrcMask())));
-	param_values.insert(pair<CString,CString>(USER_ALLOWED_DEST_MASK,CString::ToHexFormat(record.GetFilter().GetDstMask())));
+	param_values.insert(param_values.end(), pair<CString,CString>(USER_PRIVILIGES_PARAM_NAME,temp));
+	param_values.insert(param_values.end(), pair<CString,CString>(USER_PASSWORD_PARAM_NAME,record.GetPassword()));
+	param_values.insert(param_values.end(), pair<CString,CString>(USER_ALLOWED_SOURCE_MASK,CString::ToHexFormat(record.GetFilter().GetSrcMask())));
+	param_values.insert(param_values.end(), pair<CString,CString>(USER_ALLOWED_DEST_MASK,CString::ToHexFormat(record.GetFilter().GetDstMask())));
 }
 
 void CUsersDB::InteractiveConf()

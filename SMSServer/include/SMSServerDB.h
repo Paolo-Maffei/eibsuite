@@ -129,7 +129,7 @@ public:
 	virtual void OnReadParamComplete(CUserEntry& current_record, const CString& param,const CString& value);
 	virtual void OnReadRecordComplete(CUserEntry& current_record);
 	virtual void OnReadRecordNameComplete(CUserEntry& current_record, const CString& record_name);
-	virtual void OnSaveRecordStarted(const CUserEntry& record,CString& record_name, map<CString,CString>& param_values);
+	virtual void OnSaveRecordStarted(const CUserEntry& record,CString& record_name, list<pair<CString, CString> >& param_values);
 	
 	bool FindSmsMesaages(unsigned short d_address, unsigned short value, list<CUserAlertRecord>& result) ;
 	bool FindEibMessages(const CString& sms_msg, list<CUserAlertRecord>& result) ;

@@ -185,6 +185,8 @@ namespace gsmlib
   public:
     // this member should return true if gsmlib is to be interrupted
     virtual bool interrupted() = 0;
+
+    virtual ~InterruptBase() {}
   };
 
   // set global interrupt object
@@ -200,6 +202,8 @@ namespace gsmlib
   public:
     // override this to receive progress reports
     virtual void reportProgress(int part, int total) = 0;
+
+    virtual ~ProgressBase() {};
   };
 
   // set global progress object

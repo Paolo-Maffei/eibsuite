@@ -49,6 +49,9 @@ namespace gsmlib
     // RING indication
     virtual void ringIndication();
 
+    // D'tor
+    virtual ~GsmEvent() {};
+
     friend class gsmlib::GsmAt;
   };
 };

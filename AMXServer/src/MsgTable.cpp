@@ -85,7 +85,7 @@ void CMsgsDB::OnReadRecordNameComplete(CString& current_record, const CString& r
 	}
 }
 
-void CMsgsDB::OnSaveRecordStarted(const CString& record,CString& record_name, map<CString,CString>& param_values)
+void CMsgsDB::OnSaveRecordStarted(const CString& record,CString& record_name, list<pair<CString,CString> >& param_values)
 {
 }
 

@@ -66,7 +66,7 @@ public:
 	virtual void OnReadParamComplete(CUser& current_record, const CString& param,const CString& value);
 	virtual void OnReadRecordComplete(CUser& current_record);
 	virtual void OnReadRecordNameComplete(CUser& current_record, const CString& record_name);
-	virtual void OnSaveRecordStarted(const CUser& record,CString& record_name, map<CString,CString>& param_values);
+	virtual void OnSaveRecordStarted(const CUser& record,CString& record_name, list<pair<CString,CString> >& param_values);
 
 private:
 	bool AddOrUpdateUser(CUser& user);

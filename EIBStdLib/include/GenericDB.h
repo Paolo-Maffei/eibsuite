@@ -62,7 +62,7 @@ public:
 	//will be called for each record read from file
 	virtual void OnReadRecordNameComplete(T& current_record, const CString& record_name) = 0;
 	//will be called for each record that to be saved to the file
-	virtual void OnSaveRecordStarted(const T& record,CString& record_name, map<CString,CString>& param_values) = 0;
+	virtual void OnSaveRecordStarted(const T& record,CString& record_name, list<pair<CString, CString> >& param_values) = 0;
 
 	virtual void Init(const CString& file_name)
 	{ 
@@ -166,11 +166,12 @@ public:
 		for ( it=_data.begin() ; it != _data.end(); it++ )
 		{
 			CString name;
-			map<CString,CString> params_values;
+			list<pair<CString, CString> > params_values;
+			//map<CString,CString> params_values;
 			OnSaveRecordStarted(it->second,name,params_values);
 			myfile << "[" << name.GetBuffer() << "]" << endl;
 			//write the record data
-			map<CString,CString>::iterator pv_it;
+			list<pair<CString, CString> >::iterator pv_it;
 			for ( pv_it=params_values.begin() ; pv_it != params_values.end(); pv_it++ )
 			{
 				myfile << pv_it->first.GetBuffer() << " = " << pv_it->second << endl;

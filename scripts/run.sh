@@ -5,6 +5,11 @@ then
 	exit
 fi
 
+if [ ! -d "conf" ]
+then
+	mkdir conf
+fi
+
 export LD_LIBRARY_PATH=`pwd`
 ./$1 $2
 

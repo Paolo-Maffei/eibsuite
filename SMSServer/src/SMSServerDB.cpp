@@ -36,7 +36,7 @@ void CSMSServerDB::OnReadRecordNameComplete(CUserEntry& current_record, const CS
 	current_record.SetPhoneNumber(record_name.SubString(prefix.GetLength(), record_name.GetLength() - prefix.GetLength()));
 }
 
-void CSMSServerDB::OnSaveRecordStarted(const CUserEntry& record,CString& record_name, map<CString,CString>& param_values)
+void CSMSServerDB::OnSaveRecordStarted(const CUserEntry& record,CString& record_name, list<pair<CString, CString> >& param_values)
 {
 	record_name = record.GetName();
 	const map<AddressValueKey,CUserAlertRecord>& m1 = record.GetEibToSmsDBConst();
@@ -46,9 +46,7 @@ void CSMSServerDB::OnSaveRecordStarted(const CUserEntry& record,CString& record_
 	for(; it1 != m1.end(); it1++)
 	{
 		sprintf(val, "%s:0x%x:%s", CEibAddress(it1->second.GetDestAddress(), true).ToString().GetBuffer(), it1->second.GetValue(), it1->second.GetTextMessage().GetBuffer());
-		if(param_values.insert(pair<CString,CString>(ALERT_PARAM_STR,val)).second){
-
-		}
+		param_values.insert(param_values.end(), pair<CString,CString>(ALERT_PARAM_STR,val));
 	}
 
 	const map<CString,CUserAlertRecord>& m2 = record.GetSmsToEibDBConst();
@@ -57,9 +55,7 @@ void CSMSServerDB::OnSaveRecordStarted(const CUserEntry& record,CString& record_
 	for(; it2 != m2.end(); it2++)
 	{
 		sprintf(val, "%s:0x%x:%s", it2->second.GetTextMessage().GetBuffer(), it2->second.GetValue(), CEibAddress(it2->second.GetDestAddress(), true).ToString().GetBuffer());
-		if(param_values.insert(pair<CString,CString>(SMS_COMMAND_STR,val)).second){
-
-		}
+		param_values.insert(param_values.end(), pair<CString,CString>(SMS_COMMAND_STR,val));
 	}
 
 	return;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -30,7 +30,7 @@ namespace EIBEmulator
         byte _send_sequence;
         DEVICE_MODE _mode = DEVICE_MODE.MODE_TUNNELING;
         NetworkInterface _current_if = null;
-        private object _syncObj = new object();
+        //private object _syncObj = new object();
         private bool _restart_now = false;
         Regex hex_regex = new Regex(@"^[A-Fa-f0-9]*$",RegexOptions.Compiled);
 

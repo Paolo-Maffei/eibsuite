@@ -16,7 +16,7 @@ public:
 	virtual ~CBase64();
 
 	static CString Encode(const CString& clear);
-	static CString Decode(const CString& cipher);
+	static bool Decode(const CString& cipher, CString& result);
 
 private:
 	static inline bool is_base64(unsigned char c) {

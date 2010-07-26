@@ -27,6 +27,9 @@ $(OUT_EXE): $(OBJS)
 # Other Targets
 install:
 	@$(CP) $(OUT_EXE) $(INSTALL_DIR)
+	@mkdir -p $(INSTALL_DIR)/Images/
+	@$(CP) ../Images/error.jpg $(INSTALL_DIR)/Images/
+	@$(CP) ../Images/favicon.ico $(INSTALL_DIR)/Images/
 
 clean:
 	-$(RM) $(OBJS) $(OBJS:%.o=%.d) $(OUT_EXE)

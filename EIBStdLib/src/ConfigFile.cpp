@@ -1,7 +1,7 @@
 #include "ConfigFile.h"
 #include "Globals.h"
 
-bool CConfigBlock::IsExist(CConfParam& param)
+bool CConfigBlock::IsExist(const CConfParam& param)
 {
 	list<CConfParam>::iterator it_params = GetParams().begin();
 	while (it_params != GetParams().end())
@@ -12,6 +12,24 @@ bool CConfigBlock::IsExist(CConfParam& param)
 		it_params++;
 	}
 	return false;
+}
+
+void CConfigBlock::Update(const CConfParam& param)
+{
+	if(!IsExist(param)){
+		_params.insert(_params.end(), param);
+		return;
+	}
+
+	list<CConfParam>::iterator it_params = GetParams().begin();
+	while (it_params != GetParams().end())
+	{
+		if((*it_params).GetName() == param.GetName()){
+			it_params->SetValue(param.GetValueConst());
+			break;
+		}
+		it_params++;
+	}
 }
 
 bool CConfigFile::LoadFromFile(const CString &file_name)

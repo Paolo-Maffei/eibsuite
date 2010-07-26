@@ -10,6 +10,7 @@
 #include "Digest.h"
 #include "StatsDB.h"
 #include "ContentGenerator.h"
+#include "UsersDB.h"
 
 #define MAX_HTTP_REQUEST_SIZE 4096
 
@@ -31,7 +32,7 @@ private:
 	void InitReply(CHttpReply& reply);
 	void GetHisotryFromEIB(CStatsDB& db,CString& err);
 
-	void CreateContent(CHttpRequest& request, CHttpReply& reply);
+	void CreateContent(CHttpRequest& request, CHttpReply& reply, const CUser& user);
 	//bool SendEIBCommand(const CString& addr, unsigned int apci,CString& err);
 	bool SendEIBCommand(const CString& addr, unsigned char *apci, unsigned char apci_len, CString& err);
 
@@ -39,6 +40,8 @@ private:
 	bool GetByteArrayFromHexString(const CString& str, unsigned char *val, unsigned char &val_len);
 
 	void HandleFavoritsIconRequest(CHttpReply& reply);
+	void HandleImageRequest(const CString& file_name, CHttpReply& reply);
+	void FillRawFile(const CString& file_name, CDataBuffer& buf, int& total_size);
 
 private:
 	queue<TCPSocket*> _job_queue;

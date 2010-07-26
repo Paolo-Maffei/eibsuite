@@ -22,7 +22,7 @@ public:
 	virtual CString HashString(const CString& input);
 	virtual CString HashFile(const CString& file_name);
 
-	virtual CString Decode(const CString& cipher);
+	virtual bool Decode(const CString& cipher, CString& result);
 
 	//virtual CString HashString(const char* input);
 	//virtual CString HashFile(const char* file_name);

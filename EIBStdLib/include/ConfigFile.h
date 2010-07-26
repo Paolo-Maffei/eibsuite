@@ -31,13 +31,19 @@ public:
 	\fn CString& GetName() const
 	\return CString& the name of the config parameter
 	*/
-	const CString& GetName(){ return _name;}
+	const CString& GetName() const { return _name;}
 	/*!
 	\brief Get Method
 	\fn CString& GetValue()
 	\return CString& the vlaue of the config parameter
 	*/
 	CString& GetValue(){ return _value;}
+	/*!
+	\brief Get Method
+	\fn CString& GetValue() cont
+	\return CString& the vlaue of the config parameter (const version of method)
+	*/
+	const CString& GetValueConst() const { return _value;}
 	/*!
 	\brief Get Method
 	\fn CString& GetComments()
@@ -103,18 +109,25 @@ public:
 	*/
 	void SetName(const CString& name) { _block_name = name;}
 	/*!
-	\brief Set Method
+	\brief Get Method
 	\fn list<CConfParam>& GetParams()
 	\return list of CConfParam assgined withi the Block.
 	*/
 	list<CConfParam>& GetParams() { return _params;}
 
 	/*!
+	\brief Set Method
+	\fn void Update(const CConfParam& param)
+	\param param - the Configuration parameter object to update in the block (name + value)
+	*/
+	void Update(const CConfParam& param);
+
+	/*!
 	\brief Method to determine whether a parameter already exist in the list
 	\fn bool IsExist(const CConfParam& param)
 	\return true if the parameter already exist in the list
 	*/
-	bool IsExist(CConfParam& param);
+	bool IsExist(const CConfParam& param);
 
 private:
 #ifdef WIN32

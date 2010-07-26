@@ -52,6 +52,7 @@
 
 //html image-related tags
 #define HTML_IMAGE_OPEN				"<img "
+#define HTML_IMAGE_CLOSE			" />"
 #define HTML_WIDTH_EQUALS			" width="
 #define HTML_HEIGHT_EQUALS			" height="
 #define HTML_BORDER_EQUALS			" border="

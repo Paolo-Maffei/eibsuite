@@ -29,7 +29,7 @@ public:
 	static void Page_AckScheduleCommand(CDataBuffer& content);
 
 	static void Page_HistoryGlobal(CDataBuffer& content, CStatsDB& db, const CString& error_message);
-
+	static void Page_UnAuthorizedAction(CDataBuffer& content);
 	static void Generate_Error_Line(CDataBuffer& content, const CString& error_message);
 
 private:

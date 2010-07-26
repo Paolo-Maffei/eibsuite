@@ -427,6 +427,9 @@ public:
 	*/
 	unsigned long ToULong() const;
 
+	bool EndsWith (const CString& str) const;
+	bool EndsWith (const char* str) const;
+
 	unsigned int HashCode() const;
 
 	bool ShortFromHexString(short& val) const;

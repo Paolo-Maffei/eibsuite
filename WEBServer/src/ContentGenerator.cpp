@@ -312,6 +312,7 @@ void CContentGenerator::Generate_Error_Line(CDataBuffer& content, const CString&
 	if (error_message.GetLength()>0)
 	{
 		content += "<hr/>";
+		AddImage(content, "/error.jpg", 20,20,0,"Error");
 		content += HTML_FONT_OPEN;
 		content += "face=\"sans-serif\" color=\"red\" size=\"2\">";
 		content += "Error: ";
@@ -347,24 +348,36 @@ void CContentGenerator::AddImage(CDataBuffer& content,
 	ADD_TO_CONTENT(HTML_QUOTE);
 	ADD_TO_CONTENT(source_url);
 	ADD_TO_CONTENT(HTML_QUOTE);
-	ADD_TO_CONTENT(HTML_WIDTH_EQUALS);
-	ADD_TO_CONTENT(HTML_QUOTE);
-	ADD_TO_CONTENT(CString(width));
-	ADD_TO_CONTENT(HTML_QUOTE);
-	ADD_TO_CONTENT(HTML_HEIGHT_EQUALS);
-	ADD_TO_CONTENT(HTML_QUOTE);
-	ADD_TO_CONTENT(CString(height));
-	ADD_TO_CONTENT(HTML_QUOTE);
-	ADD_TO_CONTENT(HTML_BORDER_EQUALS);
-	ADD_TO_CONTENT(HTML_QUOTE);
-	ADD_TO_CONTENT(CString(border));
-	ADD_TO_CONTENT(HTML_QUOTE);
-	ADD_TO_CONTENT(HTML_ALT_EQUALS);
-	ADD_TO_CONTENT(HTML_QUOTE);
-	ADD_TO_CONTENT(alternative_text);
-	ADD_TO_CONTENT(HTML_QUOTE);
-	ADD_TO_CONTENT(HTML_TAG_CLOSE);
-	ADD_TO_CONTENT(HTML_LINK_CLOSE);
+	if(width > 0)
+	{
+		ADD_TO_CONTENT(HTML_WIDTH_EQUALS);
+		ADD_TO_CONTENT(HTML_QUOTE);
+		ADD_TO_CONTENT(CString(width));
+		ADD_TO_CONTENT(HTML_QUOTE);
+	}
+	if(height > 0)
+	{
+		ADD_TO_CONTENT(HTML_HEIGHT_EQUALS);
+		ADD_TO_CONTENT(HTML_QUOTE);
+		ADD_TO_CONTENT(CString(height));
+		ADD_TO_CONTENT(HTML_QUOTE);
+	}
+	if(border > 0)
+	{
+		ADD_TO_CONTENT(HTML_BORDER_EQUALS);
+		ADD_TO_CONTENT(HTML_QUOTE);
+		ADD_TO_CONTENT(CString(border));
+		ADD_TO_CONTENT(HTML_QUOTE);
+	}
+	if(alternative_text != EMPTY_STRING)
+	{
+		ADD_TO_CONTENT(HTML_ALT_EQUALS);
+		ADD_TO_CONTENT(HTML_QUOTE);
+		ADD_TO_CONTENT(alternative_text);
+		ADD_TO_CONTENT(HTML_QUOTE);
+	}
+	//ADD_TO_CONTENT(HTML_TAG_CLOSE);
+	ADD_TO_CONTENT(HTML_IMAGE_CLOSE);
 }
 void CContentGenerator::AddLink(CDataBuffer& content, const CString& target_url, const CString& display_text, bool close_tag)
 {
@@ -456,7 +469,6 @@ void CContentGenerator::AddInputTag(CDataBuffer& content,
 	}
 	ADD_TO_CONTENT(HTML_TAG_CLOSE);	
 }
-
 
 void CContentGenerator::AddFormTag(CDataBuffer& content, const CString& action, const CString& method)
 {
@@ -560,6 +572,30 @@ void CContentGenerator::Form_ScheduleCommand(CDataBuffer& content, const CString
 	ADD_TO_CONTENT(HTML_BODY_CLOSE);
 	ADD_TO_CONTENT(HTML_CLOSE);
 }
+
 void CContentGenerator::Page_AckScheduleCommand(CDataBuffer& content)
 {
+}
+
+void CContentGenerator::Page_UnAuthorizedAction(CDataBuffer& content)
+{
+	content.Clear();
+	content += HTML_OPEN;
+	content += HTML_HEAD_OPEN;
+	content += HTML_HEAD_CLOSE;
+	content += HTML_BODY_OPEN;
+
+	AddHeader(content,1,"EIB Web Interface");
+
+	Generate_Error_Line(content,"You are not authorized to perform this action.");
+
+	//content += HTML_H2_OPEN;
+	//content += successful ? "Command sent successfuly" : "Command was not sent to eib server";
+	//content += HTML_H2_CLOSE;
+
+	content += "<hr />";
+	AddLinkToMainPage(content);
+
+	content += HTML_BODY_CLOSE;
+	content += HTML_CLOSE;
 }

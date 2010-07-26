@@ -144,6 +144,12 @@ void CHttpReply::ResolveContentType()
 		break;
 	case CT_IMAGE_X_ICON: content_type.SetValue(CONTENT_TYPE_IMAGE_X_ICON_STR);
 		break;
+	case CT_IMAGE_PNG: content_type.SetValue(CONTENT_TYPE_IMAGE_PNG_STR);
+		break;
+	case CT_IMAGE_JPG: content_type.SetValue(CONTENT_TYPE_IMAGE_JPG_STR);
+		break;
+	case CT_IMAGE_JPEG: content_type.SetValue(CONTENT_TYPE_IMAGE_JPEG_STR);
+		break;
 	default: content_type.SetValue(CONTENT_TYPE_TEXT_PLAIN_STR);
 		break;
 	}

@@ -21,19 +21,19 @@ CString CDigest::HashFile(const CString& file_name)
 	return EMPTY_STRING;
 }
 
-CString CDigest::Decode(const CString& cipher)
+bool CDigest::Decode(const CString& cipher, CString& result)
 {
 	switch (_algorithm)
 	{
 	case ALGORITHM_MD5: throw CEIBException(GeneralError,"MD5 Cipher cannot be decoded");
 		break;
-	case ALGORITHM_BASE64: return CBase64::Decode(cipher);
+	case ALGORITHM_BASE64: return CBase64::Decode(cipher, result);
 		break;
 	default:
 		break;
 	}
 	throw CEIBException(GeneralError,"Unknown decoding algorithm");
-	return EMPTY_STRING;
+	return false;
 }
 
 CString CDigest::HashFile_MD5(const CString& file_name)

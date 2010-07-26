@@ -105,7 +105,13 @@ void CWebHandler::HandleRequest(TCPSocket* sock, char* buffer,CHttpReply& reply)
 	CDigest digest(ALGORITHM_BASE64);
 	int index = auth.GetValue().Find("Basic ");
 	CString cipher = auth.GetValue().SubString(index + 6,auth.GetValue().GetLength() - index - 6);
-	CString clear  = digest.Decode(cipher);
+	CString clear;
+	if(!digest.Decode(cipher, clear)){
+		reply.AddHeader(AUTHENTICATION_HEADER,"Basic");
+		reply.SetStatusCode(STATUS_NOT_AUTHORIZED);
+		return;
+	}
+
 	//user name and password
 	CHttpHeader login(clear);
 
@@ -126,8 +132,40 @@ void CWebHandler::HandleRequest(TCPSocket* sock, char* buffer,CHttpReply& reply)
 		return;
 	}
 	
+	//Check if the request if for an image
+	if(request.GetRequestURI().EndsWith(".jpg") || request.GetRequestURI().EndsWith(".png") ||
+	   request.GetRequestURI().EndsWith(".jpeg")	)
+	{
+		HandleImageRequest(request.GetRequestURI().SubString(1, request.GetRequestURI().GetLength() - 1), reply);
+		return;
+	}
+
 	//logic of parameters
-	CreateContent(request,reply);
+	CreateContent(request,reply, user);
+}
+
+void CWebHandler::HandleImageRequest(const CString& file_name, CHttpReply& reply)
+{
+	if(file_name.EndsWith(".jpg") || file_name.EndsWith(".jpeg")){
+		reply.SetContentType(CT_IMAGE_JPEG);
+	}else if(file_name.EndsWith(".png")){
+		reply.SetContentType(CT_IMAGE_PNG);
+	}else{
+		reply.SetVersion(HTTP_1_0);
+		reply.SetStatusCode(STATUS_NOT_FOUND);
+		return;
+	}
+
+	reply.SetVersion(HTTP_1_0);
+	reply.SetStatusCode(STATUS_OK);
+	reply.AddHeader("Accept-Ranges","bytes");
+
+	LOG_DEBUG("[WEB Handler] Serving file: %s", file_name.GetBuffer());
+
+	const CString& file = CWEBServer::GetInstance().GetConfig().GetImagesFolder() + PATH_DELIM + file_name;
+	int clen;
+	CWebHandler::FillRawFile(file, reply.GetContent(), clen);
+	//reply.AddHeader(CONTENT_LENGTH_HEADER, clen);
 }
 
 void CWebHandler::HandleFavoritsIconRequest(CHttpReply& reply)
@@ -138,23 +176,39 @@ void CWebHandler::HandleFavoritsIconRequest(CHttpReply& reply)
 
 	reply.AddHeader("Accept-Ranges","bytes");
 
-	CString icon_file = CWEBServer::GetInstance().GetConfig().GetImagesFolder();
-	icon_file += "\\favicon.ico";
-
-	ifstream file (icon_file.GetBuffer(), ios::out | ios::app | ios::binary);
-	if(file.is_open()){
-		file.seekg(0, std::ios_base::end);
-		int size = file.tellg();
-		char* memblock = new char [size];
-		file.seekg(0, ios::beg);
-		file.read (memblock, size);
-		file.close();
-		reply.GetContent().Clear();
-		reply.GetContent().Add(memblock,size);
-	}
+	const CString& icon_file = CWEBServer::GetInstance().GetConfig().GetImagesFolder() + PATH_DELIM + "favicon.ico";
+	int clen;
+	CWebHandler::FillRawFile(icon_file, reply.GetContent(), clen);
+	//reply.AddHeader(CONTENT_LENGTH_HEADER, clen);
 }
 
-void CWebHandler::CreateContent(CHttpRequest& request,CHttpReply& reply)
+void CWebHandler::FillRawFile(const CString& file_name, CDataBuffer& buf, int& total_size)
+{
+	buf.Clear();
+	ifstream file (file_name.GetBuffer(), ios::in | ios::binary | ios::ate);
+	if(file.is_open()){
+		//we get the file size since the file was opened at end (ios::ate)
+		int size;
+		//buffer with fixed size
+		char memblock[1024];
+		//goto file start
+		file.seekg(ios::beg);
+		while(file.good())
+		{
+			size = file.readsome(memblock, 1024);
+			if (!size) break;
+			total_size += size;
+			buf.Add(memblock,size);
+		}
+		//close the file
+		file.close();
+	}else{
+		throw CEIBException(FileError, "[WEB Handler] Cannot find file %s", file_name.GetBuffer());
+	}
+	//LOG_DEBUG("Serving: %s [200 OK]", file_name.GetBuffer());
+}
+
+void CWebHandler::CreateContent(CHttpRequest& request,CHttpReply& reply, const CUser& user)
 {
 	CHttpParameter p;
 	CString err;
@@ -181,7 +235,17 @@ void CWebHandler::CreateContent(CHttpRequest& request,CHttpReply& reply)
 	CEibAddress addr;
 	CTime datetime;
 
-	switch (p.GetValue().ToInt())
+	int cmd_type = p.GetValue().ToInt();
+	if((cmd_type == PARAM_COMMAND_VALUE_GLOBAL_HISTORY || cmd_type == PARAM_COMMAND_VALUE_FUNCTION_HISTORY) &&
+			!user.IsReadPolicyAllowed()){
+		goto unauthorized;
+	}
+	else if((cmd_type == PARAM_COMMAND_VALUE_SEND_COMMAND || cmd_type == PARAM_COMMAND_VALUE_SCHEDULE_COMMAND) &&
+			!user.IsWritePolicyAllowed()){
+		goto unauthorized;
+	}
+
+	switch (cmd_type)
 	{
 	case PARAM_COMMAND_VALUE_GLOBAL_HISTORY:
 		GetHisotryFromEIB(db,err);
@@ -288,6 +352,11 @@ void CWebHandler::CreateContent(CHttpRequest& request,CHttpReply& reply)
 		reply.Redirect("/");
 		break;
 	}
+
+	return;
+
+unauthorized:
+	gen.Page_UnAuthorizedAction(reply.GetContent());
 }
 
 bool CWebHandler::GetByteArrayFromHexString(const CString& str, unsigned char *val, unsigned char &val_len)

@@ -643,3 +643,27 @@ CString CString::ToHexFormat(int wanted_length, const CString& current)
 		return (CString("0x") + current);
 	}
 }
+
+bool CString::EndsWith(const CString& str) const
+{
+	return EndsWith(str.GetBuffer());
+}
+
+bool CString::EndsWith(const char* str) const
+{
+    unsigned int lastMatchPos = _str.rfind(str); // Find the last occurrence of ending
+    bool isEnding = (lastMatchPos != std::string::npos); // Make sure it's found at least once
+
+    /*
+    // If the string was found, make sure that any characters that follow it are the ones we're trying to ignore
+    for( int i = lastMatchPos + strlen(str); (i < _str.length()) && isEnding; i++)
+    {
+        if( (_str[i] != '\n') &&
+            (_str[i] != '\r') )
+        {
+            isEnding = false;
+        }
+    }
+	*/
+    return isEnding;
+}

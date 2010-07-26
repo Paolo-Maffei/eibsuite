@@ -1,11 +1,12 @@
 #include <Base64.h>
 
-CString CBase64::Decode(const CString& cipher)
+bool CBase64::Decode(const CString& cipher, CString& result)
 {
+	result.Clear();
+
 	int in_len = cipher.GetLength();
 	int i = 0,j = 0, in_ = 0;
 	unsigned char char_array_4[4], char_array_3[3];
-    CString ret;
 
 	while (in_len-- && ( cipher[in_] != '=') && is_base64(cipher[in_]))
 	{
@@ -21,7 +22,7 @@ CString CBase64::Decode(const CString& cipher)
 			char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
 
 			for (i = 0; (i < 3); i++){
-				ret += (char)char_array_3[i];
+				result += (char)char_array_3[i];
 			}
 			i = 0;
 		}
@@ -42,9 +43,9 @@ CString CBase64::Decode(const CString& cipher)
 		char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
 
 		for (j = 0; (j < i - 1); j++){
-			ret += char_array_3[j];
+			result += char_array_3[j];
 		}
 	}
 
-	return ret;
+	return true;
 }

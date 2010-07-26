@@ -23,8 +23,8 @@ public:
 	CUser(const CUser& user);
 	virtual ~CUser();
 
-	bool IsReadPolicyAllowed();
-	bool IsWritePolicyAllowed();
+	bool IsReadPolicyAllowed() const;
+	bool IsWritePolicyAllowed() const;
 
 	const CString& GetName() const;
 	const CString& GetPassword() const;

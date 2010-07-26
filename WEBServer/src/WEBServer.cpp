@@ -189,6 +189,11 @@ void CWEBServer::InteractiveConf()
 		_conf.SetListenInterface(sval);
 	}
 #endif
+
+	if(ConsoleCLI::GetCString("WEB Server Images Location: ",sval, _conf.GetImagesFolder())){
+		_conf.SetImagesFolder(sval);
+	}
+
 	LOG_SCREEN("Saving configuration to %s...", WEB_CONF_FILE_NAME);
 	if(!_conf.Save(WEB_CONF_FILE_NAME)){
 		throw CEIBException(FileError, "Cannot save configuration to file \"%s\"",WEB_CONF_FILE_NAME);

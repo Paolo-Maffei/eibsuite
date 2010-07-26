@@ -286,12 +286,12 @@ unsigned int CUser::GetPriviliges() const
 	return _priviliges;
 }
 
-bool CUser::IsReadPolicyAllowed()
+bool CUser::IsReadPolicyAllowed() const
 {
 	return ((USER_POLICY_READ_ACCESS & _priviliges) != 0);
 }
 
-bool CUser::IsWritePolicyAllowed()
+bool CUser::IsWritePolicyAllowed() const
 {
 	return ((USER_POLICY_WRITE_ACCESS & _priviliges) != 0);
 }

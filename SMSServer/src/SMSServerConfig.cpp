@@ -63,7 +63,7 @@ void CSMSServerConfig::SaveGeneralBlock(CConfigBlock& block)
 	#define CONF_ENTRY(var_type, method_name, user_string, def_val) \
 	ParamToString(pv.GetValue(),this->_##method_name); \
 	pv.SetName(user_string); \
-	if (!block.IsExist(pv)) block.GetParams().insert(block.GetParams().end(),pv);
+	block.Update(pv);
 	#include "SMSGeneralConf.h"
 	#undef CONF_ENTRY
 }

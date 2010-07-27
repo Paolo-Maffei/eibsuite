@@ -9,6 +9,7 @@
 #include "DisconnectResponse.h"
 #include "TunnelRequest.h"
 #include "TunnelAck.h"
+#include "DescriptionRequest.h"
 
 using namespace EibStack;
 
@@ -166,7 +167,8 @@ void CRelayHandler::CRelayControlHandler::run()
 			HandleConnectRequest(buffer,sizeof(buffer));
 			break;
 		case DESCRIPTION_REQUEST:
-			throw CEIBException(NotImplementedError,"Not implemented yet!!!");
+			LOG_DEBUG("[Received] [Description Request]");
+			HandleDescriptionRequest(buffer,sizeof(buffer));
 			break;
 		case TUNNELLING_REQUEST:
 			HandleTunnelRequest(buffer, sizeof(buffer));
@@ -346,6 +348,20 @@ void CRelayHandler::CRelayControlHandler::HandleConnectionStateRequest(unsigned 
 		LOG_ERROR("Socket Error in connection state request parsing: %s",ex.what());
 	END_TRY_START_CATCH_ANY
 		LOG_ERROR("Unknown Error in connection state request parsing");
+	END_CATCH
+}
+
+void CRelayHandler::CRelayControlHandler::HandleDescriptionRequest(unsigned char* buffer, int max_len)
+{
+	START_TRY
+		CDescriptionRequest req(buffer);
+		//throw CEIBException(NotImplementedError,"Not implemented yet!!!");
+	END_TRY_START_CATCH(e)
+		LOG_ERROR("Error in description request parsing: %s",e.what());
+	END_TRY_START_CATCH_SOCKET(ex)
+		LOG_ERROR("Socket Error in description request parsing: %s",ex.what());
+	END_TRY_START_CATCH_ANY
+		LOG_ERROR("Unknown Error in description request parsing");
 	END_CATCH
 }
 

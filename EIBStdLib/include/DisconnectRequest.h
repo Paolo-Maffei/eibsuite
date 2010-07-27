@@ -58,7 +58,7 @@ public:
      */
     unsigned short GetReserved();
 
-	void FillBuffer(unsigned char* buffer, int max_length);
+	virtual void FillBuffer(unsigned char* buffer, int max_length);
 };
 
 }

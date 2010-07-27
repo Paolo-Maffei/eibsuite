@@ -63,6 +63,7 @@ public:
 		void HandleTunnelRequest(unsigned char* buffer, int max_len);
 		void HandleDisconnectResponse(unsigned char* buffer, int max_len);
 		void HandleTunnelAck(unsigned char* buffer, int max_len);
+		void HandleDescriptionRequest(unsigned char* buffer, int max_len);
 
 	private:
 		CRelayHandler* _relay;

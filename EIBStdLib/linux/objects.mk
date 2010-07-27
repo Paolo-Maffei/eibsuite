@@ -38,6 +38,7 @@ MD5.o \
 RoutingIndication.o \
 SearchRequest.o \
 SearchResponse.o \
+DescriptionRequest.o \
 ServiceBase.o \
 SharedMemory.o \
 SingletonValidation.o \

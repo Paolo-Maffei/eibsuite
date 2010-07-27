@@ -265,6 +265,10 @@ typedef struct EIB_STD_EXPORT{
     EIBNETIP_SUPPFAM_DIB *supported;
 } EIBNETIP_DESCRIPTION_RESPONSE;
 
+typedef struct EIB_STD_EXPORT {
+	EIBNETIP_HPAI endpoint;
+} EIBNETIP_DESCRIPTION_REQUEST;
+
 typedef struct {
     byte channelid;
     byte status;

@@ -3,8 +3,10 @@
 using namespace EibStack;
 
 CConnectionStateResponse::CConnectionStateResponse(byte channelid, byte status) :
-CEIBNetPacket<EIBNETIP_CONNECTIONSTATE_RESPONSE>(CONNECT_REQUEST)
+CEIBNetPacket<EIBNETIP_CONNECTIONSTATE_RESPONSE>(CONNECTIONSTATE_RESPONSE)
 {
+	_data.status = status;
+	_data.channelid = channelid;
 }
 
 CConnectionStateResponse::CConnectionStateResponse(unsigned char* data) :

@@ -246,7 +246,6 @@ void CClientsMgr::Brodcast(CCemiFrame& msg)
 			}
 			//positive confirmations will be forwarded only to "Relay" clients
 			if(client->GetClientType() == EIB_TYPE_RELAY_SERVER){
-				printf("YGYG2\n");
 				client->InsertToBuffer(msg);
 				continue;
 			}

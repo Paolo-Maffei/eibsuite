@@ -132,7 +132,7 @@ void CTunnelingConnection::DisConnect()
 
 	UDPSocket sock(0);
 	sock.SendTo(buffer,dis_req.GetTotalSize(),_device_control_address,_device_control_port);
-	LOG_DEBUG("[Send] [Disconnect Request]");
+	LOG_DEBUG("[Send] [BUS] [Disconnect Request]");
 	_connection_status = WAITING_DISCONNECT_RESPONSE;
 
 	_heartbeat->Close();
@@ -178,10 +178,10 @@ bool CTunnelingConnection::ReceiveDataFrame(CCemiFrame &frame)
 	case EIBNETIP_REMLOG:
 	case EIBNETIP_REMCONF:
 	case EIBNETIP_OBJSRV:
-		LOG_ERROR("[Received] [Unsupported service type message] Service type: %d",header->servicetype >> 8);
+		LOG_ERROR("[Received] [BUS] [Unsupported service type message] Service type: %d",header->servicetype >> 8);
 		break;
 	default:
-		LOG_ERROR("[Received] [Unknown service type message]");
+		LOG_ERROR("[Received] [BUS] [Unknown service type message]");
 		break;
 	}
 
@@ -195,19 +195,19 @@ void CTunnelingConnection::HandleCoreServices(unsigned char* recvdData)
 	switch (header->servicetype)
 	{
 	case CONNECTIONSTATE_RESPONSE:
-		LOG_DEBUG("[Received][Connection state response]");
+		LOG_DEBUG("[Received] [BUS] [Connection state response]");
 		HandleConnectionStateResponse(recvdData);
 		break;
 	case DISCONNECT_REQUEST:
-		LOG_DEBUG("[Received][Disconnect Request]");
+		LOG_DEBUG("[Received] [BUS] [Disconnect Request]");
 		HandleDisconnectRequest(recvdData);
 		break;
 	case DISCONNECT_RESPONSE:
-		LOG_DEBUG("[Received] [Disconnect Response]");
+		LOG_DEBUG("[Received] [BUS] [Disconnect Response]");
 		HandleDisconnectResponse(recvdData);
 		break;
 	default:
-		LOG_ERROR("[Received] [Unknown Core-service message]");
+		LOG_ERROR("[Received] [BUS] [Unknown Core-service message]");
 		break;
 	}
 }
@@ -226,7 +226,7 @@ bool CTunnelingConnection::HandleTunnelingServices(unsigned char* recvdData, CCe
 		HandleTunnelingAck(recvdData);
 		break;
 	default:
-		LOG_ERROR("[Received] [Unknown Tunnel service message]");
+		LOG_ERROR("[Received] [BUS] [Unknown Tunnel service message]");
 		break;
 	}
 	return res;
@@ -256,7 +256,7 @@ void CTunnelingConnection::HandleDisconnectResponse(unsigned char* buffer)
 	if(dis_resp.GetStatus() != E_NO_ERROR ||
 		dis_resp.GetChannelID() != _state._channelid){
 		//error
-		LOG_ERROR("[Received] Disconnect response with wrong channel id. disconnecting anyway.");
+		LOG_ERROR("[Received] [BUS] [Disconnect response with wrong channel id. disconnecting anyway.]");
 	}
 
 	JTCSynchronized s(*this);
@@ -270,7 +270,7 @@ void CTunnelingConnection::HandleDisconnectResponse(unsigned char* buffer)
 void CTunnelingConnection::HandleTunnelingAck(unsigned char* buffer)
 {
 	CTunnelingAck ack(buffer);
-	LOG_DEBUG("[Received] [Tunnel Ack] Sequence: %d", ack.GetSequenceNumber());
+	LOG_DEBUG("[Received] [BUS] [Tunnel Ack] Sequence: %d", ack.GetSequenceNumber());
 
 	if(ack.GetChannelId() == _state._channelid && ack.GetSequenceNumber() == _state._send_sequence)
 	{
@@ -290,7 +290,7 @@ void CTunnelingConnection::HandleConnectionStateResponse(unsigned char* buffer)
 	CConnectionStateResponse cs_resp(buffer);
 	if(cs_resp.GetStatus() != E_NO_ERROR){
 		//error
-		LOG_ERROR("[Received] Connecation state response contains error flag: %d",cs_resp.GetStatus());
+		LOG_ERROR("[Received] [BUS] Connection state response contains error flag: %d",cs_resp.GetStatus());
 		return;
 	}
 
@@ -303,7 +303,7 @@ bool CTunnelingConnection::HandleTunnelRequest(unsigned char* buffer,CCemiFrame 
 
 	if(req.GetChannelId() != _state._channelid){
 		//error
-		LOG_ERROR("Received CEMI frame with invalid channel id. [ignored]");
+		LOG_ERROR("[Received] [BUS] CEMI frame with invalid channel id. [ignored]");
 		return false;
 	}
 
@@ -313,29 +313,29 @@ bool CTunnelingConnection::HandleTunnelRequest(unsigned char* buffer,CCemiFrame 
 		if(req.GetSequenceNumber() == _state._recv_sequence){
 			_num_out_of_sync_pkts = 0;
 			const CCemiFrame& tmpfrm = req.GetcEMI();
-			LOG_DEBUG("[Received] [Tunnel request] Sequence: %d Dest Address: %s",req.GetSequenceNumber(),
+			LOG_DEBUG("[Received] [BUS] [Tunnel request] Sequence: %d Dest Address: %s",req.GetSequenceNumber(),
 					tmpfrm.GetDestAddress().ToString().GetBuffer());
 		}else{
-			LOG_ERROR("[Received] [Tunnel request] Packet has invalid sequence number (%d). [sending ack but ignoring frame]",req.GetSequenceNumber());
+			LOG_ERROR("[Received] [BUS] [Tunnel request] Packet has invalid sequence number (%d). [sending ack but ignoring frame]",req.GetSequenceNumber());
 		}
 		unsigned char buf[20];
 		CTunnelingAck ack(req.GetChannelId(),req.GetSequenceNumber(),E_NO_ERROR);
 		ack.FillBuffer(buf,20);
-		LOG_DEBUG("[Send] [Tunnel Ack] Sequence: %d",req.GetSequenceNumber());
+		LOG_DEBUG("[Send] [BUS] [Tunnel Ack] Sequence: %d",req.GetSequenceNumber());
 		_data_sock.SendTo(buf,ack.GetTotalSize(),_device_data_address,_device_data_port);
 	}else{
 		_num_out_of_sync_pkts++;
 		//we have many pkts out of sync consecutively
 		if(_num_out_of_sync_pkts > 3){
 			//we are totally out of sync. reconnect.
-			LOG_ERROR("[Received] [Tunnel request] Packet has invalid sequence number (%d). reconnecting is 3 seconds.",req.GetSequenceNumber());
+			LOG_ERROR("[Received] [BUS] [Tunnel request] Packet has invalid sequence number (%d). reconnecting is 3 seconds.",req.GetSequenceNumber());
 			Reconnect();
 		}
 	}
 
 	if(req.GetSequenceNumber() != _state._recv_sequence)
 	{
-		LOG_ERROR("[Received] [Tunnel request] Packet has invalid sequence number (%d). [ignoring]",req.GetSequenceNumber());
+		LOG_ERROR("[Received] [BUS] [Tunnel request] Packet has invalid sequence number (%d). [ignoring]",req.GetSequenceNumber());
 		return false;
 	}
 
@@ -354,7 +354,7 @@ bool CTunnelingConnection::HandleTunnelRequest(unsigned char* buffer,CCemiFrame 
 		if(req.GetcEMI().IsPositiveConfirmation()){
 			//positive confirmation was received
 			frame = req.GetcEMI();
-			LOG_DEBUG("[Received] [Positive confirmation]");
+			LOG_DEBUG("[Received] [BUS] [Positive confirmation] Sequence: %d", _state._recv_sequence);
 			map<int,JTCMonitor*>::iterator it = _waiting_for_confirms.find(_state._recv_sequence);
 			if(it != _waiting_for_confirms.end()){
 				JTCMonitor* monitor = it->second;
@@ -366,11 +366,11 @@ bool CTunnelingConnection::HandleTunnelRequest(unsigned char* buffer,CCemiFrame 
 		}
 		else
 		{
-			LOG_ERROR("[Received] [Not supported message control field in cEMI frame (negative confirmation)]");
+			LOG_ERROR("[Received] [BUS] [Not supported message control field in cEMI frame (negative confirmation)]");
 			return false;
 		}
 	}else{
-		LOG_ERROR("[Received] [Not supported message control field in cEMI frame]");
+		LOG_ERROR("[Received] [BUS] [Not supported message control field in cEMI frame]");
 	}
 
 	return true;
@@ -395,9 +395,8 @@ bool CTunnelingConnection::SendDataFrame(const KnxElementQueue& elem)
 	else if(elem._mode == WAIT_FOR_CONFRM && elem._optional_mon != NULL){
 		_waiting_for_confirms.insert(pair<int,JTCMonitor*>(_state._recv_sequence + 1,elem._optional_mon));
 	}
+	LOG_DEBUG("[Send] [BUS] [Tunnel Request] Sequence: %d. Dest Address: %s", req.GetSequenceNumber(), elem._frame.GetDestAddress().ToString().GetBuffer());
 	_data_sock.SendTo(buffer,req.GetTotalSize(),_device_data_address,_device_data_port);
-
-	LOG_DEBUG("[Send] [Tunnel Request] Sequence: %d Dest Address: %s", req.GetSequenceNumber(), elem._frame.GetDestAddress().ToString().GetBuffer());
 	return true;
 }
 
@@ -453,6 +452,7 @@ void CTunnelHeartBeat::run()
 			break;
 		}
 		
+		LOG_DEBUG("[Send] [BUS] [Connection State Request]");
 		_sock.SendTo(buffer,cs_req.GetTotalSize(),device_address,device_port);
 		++_counter;
 

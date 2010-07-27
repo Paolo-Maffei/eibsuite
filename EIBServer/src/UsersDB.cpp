@@ -255,7 +255,11 @@ bool CUsersDB::AddOrUpdateUser(CUser& user)
 	}
 
 	if(ConsoleCLI::Getbool("Allow this user to connect through EIBConsole?",bval, user.IsConsoleAccessAllowed())){
-		user.SetPriviliges(user._priviliges | USER_POLICY_CONSOLE_ACCESS);
+		if(bval){
+			user.SetPriviliges(user._priviliges | USER_POLICY_CONSOLE_ACCESS);
+		}else{
+			user.SetPriviliges(user._priviliges & ~USER_POLICY_CONSOLE_ACCESS);
+		}
 	}
 	return true;
 }

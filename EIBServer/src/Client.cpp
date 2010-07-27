@@ -128,10 +128,10 @@ void CClient::HandleIncomingPktsFromClient(char* buffer, int max_len, const CUse
 		if(header->_client_type == this->_client_type && user.IsWritePolicyAllowed())
 		{
 			msg.Parse((unsigned char*)(buffer + sizeof(EibNetworkHeader)));
+			//log message
+			LOG_DEBUG("[Received] [%s] [Action: Relaying raw CEMI to KNX bus]", this->_client_name.GetBuffer());
 			//write the message through EIB handler
 			CEIBServer::GetInstance().GetOutputHandler()->Write(msg,(BlockingMode)header->_mode, &_pkt_mon);
-			//log message
-			LOG_DEBUG("Relay raw CEMI frame from client \"%s\" to KNX bus",_client_name.GetBuffer());
 		}
 
 		break;

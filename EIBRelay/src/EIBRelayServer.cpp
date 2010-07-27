@@ -67,9 +67,12 @@ bool CEIBRelayServer::Init()
 
 	START_TRY
 		_handler.Init(&_conf,&_log);
-		_log.Log(LOG_LEVEL_INFO,"Initializing EIB Realy handler...Successful.");
+		LOG_INFO("Initializing EIB Relay handler...Successful.");
+		const CString& laddr = _handler.GetLocalCtrlAddr();
+		int lport = _handler.GetLocalCtrlPort();
+		LOG_INFO("EIB Relay is listening for new KNX/IP connections on [%s:%d]",laddr.GetBuffer(), lport);
 	END_TRY_START_CATCH(e)
-		_log.Log(LOG_LEVEL_ERROR,"Initializing EIB Realy handler...Failed. Reason: %s",e.what());
+		_log.Log(LOG_LEVEL_ERROR,"Initializing EIB Relay handler...Failed. Reason: %s",e.what());
 		res = false;
 	END_CATCH
 

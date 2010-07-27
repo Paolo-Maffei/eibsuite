@@ -146,15 +146,15 @@ void CRelayHandler::CRelayControlHandler::run()
 		switch (header->servicetype)
 		{
 		case CONNECTIONSTATE_REQUEST:
-			LOG_DEBUG("[Received][Connection state response]");
+			LOG_DEBUG("[Received] [Client %d] [Connection state Request]", _relay->_state._channelid);
 			HandleConnectionStateRequest(buffer,sizeof(buffer));
 			break;
 		case DISCONNECT_REQUEST:
-			LOG_DEBUG("[Received][Disconnect Request]");
+			LOG_DEBUG("[Received] [Client %d] [Disconnect Request]", _relay->_state._channelid);
 			HandleDisconnectRequest(buffer,sizeof(buffer));
 			break;
 		case DISCONNECT_RESPONSE:
-			LOG_DEBUG("[Received] [Disconnect Response]");
+			LOG_DEBUG("[Received] [Client %d] [Disconnect Response]", _relay->_state._channelid);
 			HandleDisconnectResponse(buffer,sizeof(buffer));
 			break;
 		case SEARCH_REQUEST:
@@ -173,10 +173,10 @@ void CRelayHandler::CRelayControlHandler::run()
 			break;
 		case TUNNELLING_ACK:
 			HandleTunnelAck(buffer, sizeof(buffer));
-			LOG_DEBUG("[Received] [Tunnel Ack]");
+			LOG_DEBUG("[Received] [Client %d] [Tunnel Ack]", _relay->_state._channelid);
 			break;
 		default:
-			LOG_ERROR("[Received] [Unknown Core-service message]");
+			LOG_ERROR("[Received] [Client %d] [Unknown Core-service message]", _relay->_state._channelid);
 			break;
 		}
 	}
@@ -234,7 +234,7 @@ void CRelayHandler::CRelayControlHandler::HandleTunnelRequest(unsigned char* buf
 			CTunnelingAck ack(_relay->_state._channelid, 0, E_CONNECTION_ID);
 			ack.FillBuffer(buffer, max_len);
 			_sock.SendTo(buffer, ack.GetTotalSize(), _relay->_state._remote_ctrl_addr, _relay->_state._remote_ctrl_port);
-			LOG_ERROR("Error: Wrong channel id in tunnel request (sending error ack)");
+			LOG_ERROR("[Received] [Client %d] [Tunnel Request] Error: Wrong channel id (sending error ack)", _relay->_state._channelid);
 			return;
 		}
 		if(req.GetSequenceNumber() != _relay->_state._recv_sequence){
@@ -242,28 +242,28 @@ void CRelayHandler::CRelayControlHandler::HandleTunnelRequest(unsigned char* buf
 			CTunnelingAck ack(_relay->_state._channelid, 0, E_SEQUENCE_NUMBER);
 			ack.FillBuffer(buffer, max_len);
 			_sock.SendTo(buffer, ack.GetTotalSize(), _relay->_state._remote_ctrl_addr, _relay->_state._remote_ctrl_port);
-			LOG_ERROR("Error: Wrong sequence id in tunnel request (sending error ack)");
+			LOG_ERROR("[Received] [Client %d] [Tunnel Request] Error: Wrong sequence id (sending error ack)", _relay->_state._channelid);
 			return;
 		}
 		
 		switch(req.GetcEMI().GetMessageCode())
 		{
 		case L_DATA_REQ:
-			LOG_DEBUG("[Received] [Tunnel Request] Data Request");
+			LOG_DEBUG("[Received] [Client %d] [Tunnel Request] Data Request", _relay->_state._channelid);
 			break;
 		case L_DATA_CON:
-			LOG_DEBUG("[Received] [Tunnel Request] Data Confirmation");
+			LOG_DEBUG("[Received] [Client %d] [Tunnel Request] Data Confirmation", _relay->_state._channelid);
 			break;
 		case L_DATA_IND:
-			LOG_DEBUG("[Received] [Tunnel Request] Data Indication");
+			LOG_DEBUG("[Received] [Client %d] [Tunnel Request] Data Indication", _relay->_state._channelid);
 			break;
 		default:
-			LOG_DEBUG("[Received] [Tunnel Request] UNKNOWN");
+			LOG_DEBUG("[Received] [Client %d] [Tunnel Request] UNKNOWN", _relay->_state._channelid);
 			break;
 		}
 
-		req.GetcEMI().Dump();
-
+		//req.GetcEMI().Dump();
+		LOG_DEBUG("[Send] [EIB] [Raw frame from client]");
 		//everything is ok. we send forward the request to EIB Sever and waiting for confirmation
 		_relay->SendEIBNetwork(req.GetcEMI(), WAIT_FOR_CONFRM);
 		//sending an ack back
@@ -301,6 +301,8 @@ void CRelayHandler::CRelayControlHandler::HandleDisconnectRequest(unsigned char*
 			return;
 		}
 
+		LOG_DEBUG("[Send] [Client %d] [Disconnect Response]", _relay->_state._channelid);
+
 		CDisconnectResponse resp(_relay->_state._channelid, E_NO_ERROR);
 		resp.FillBuffer(buffer, max_len);
 		_sock.SendTo(buffer, resp.GetTotalSize(), _relay->_state._remote_ctrl_addr, _relay->_state._remote_ctrl_port);
@@ -335,6 +337,7 @@ void CRelayHandler::CRelayControlHandler::HandleConnectionStateRequest(unsigned 
 
 		CConnectionStateResponse resp(_relay->_state._channelid, E_NO_ERROR);
 		resp.FillBuffer(buffer, max_len);
+		LOG_DEBUG("[Send] [Connection State Response]");
 		_sock.SendTo(buffer, resp.GetTotalSize(), _relay->_state._remote_ctrl_addr, _relay->_state._remote_ctrl_port);
 
 	END_TRY_START_CATCH(e)
@@ -381,6 +384,7 @@ void CRelayHandler::CRelayControlHandler::HandleConnectRequest(unsigned char* bu
 		//send response back
 		CConnectResponse resp(_relay->_state._channelid, E_NO_ERROR, _ctrl_addr, _ctrl_port, req.GetConnectionType());
 		resp.FillBuffer(buffer, max_len);
+		LOG_DEBUG("[Send] [Connect Response] --> %s:%d", req.GetControlAddress().GetBuffer(), req.GetControlPort());
 		_sock.SendTo(buffer, resp.GetTotalSize(), req.GetControlAddress(), req.GetControlPort());
 
 	END_TRY_START_CATCH(e)
@@ -443,14 +447,15 @@ void CRelayHandler::CRelayDataOutputHandler::run()
 		if(len == 0){
 			continue;
 		}
-
+		LOG_DEBUG("[Received] [EIB] [Raw frame]");
 		JTCSynchronized sync(_relay->_state_monitor);
 		if(_relay->_state._is_connected){
+			LOG_DEBUG("[send] [Client %d] [Raw frame]", _relay->_state._channelid);
 			CTunnelingRequest req(_relay->_state._channelid, _relay->_state._send_sequence, frame);
 			req.FillBuffer(buffer, sizeof(buffer));
 			_relay->_control_handler->_sock.SendTo(buffer, req.GetTotalSize(), _relay->_state._remote_ctrl_addr, _relay->_state._remote_ctrl_port);
 		}else{
-			LOG_DEBUG("[Received] Packet from EIB Server. no client connected [ignoring]");
+			LOG_DEBUG("[Received] [EIB] Raw frame. no client connected: ignoring.");
 		}
 	}
 }

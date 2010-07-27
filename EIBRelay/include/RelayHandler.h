@@ -20,6 +20,9 @@ public:
 	void Close();
 	bool Connect();
 
+	const CString& GetLocalCtrlAddr() const { return _control_handler->_ctrl_addr; }
+	int GetLocalCtrlPort() const { return _control_handler->_ctrl_port; }
+
 private:
 	void InitState();
 	void OnClientConnectionClose();
@@ -47,6 +50,8 @@ public:
 		virtual void run();
 		void Close();
 		void Init();
+
+
 
 		friend class CRelayHandler;
 

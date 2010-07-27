@@ -21,27 +21,27 @@ void CEIBRelayServer::Run(void *arg)
 	bool connected = _handler.Connect();
 	if (!connected)
 	{
-		_log.Log(LOG_LEVEL_INFO,"\nCannot establish connection with EIB Server!\n");
+		LOG_ERROR("\nCannot establish connection with EIB Server!\n");
 		return;
 	}
 	else{
-		_log.Log(LOG_LEVEL_INFO,"\nEIB Server Connection established.\n");
+		LOG_INFO("\nEIB Server Connection established.\n");
 		_handler.Start();
 	}
 }
 
 void CEIBRelayServer::Close()
 {
-	_log.Log(LOG_LEVEL_INFO,"Saving Configuration file...");
+	LOG_INFO("Saving Configuration file...");
 	_conf.Save(RELAY_CONF_FILE_NAME);
 
 	//close the heart beat thread
-	_log.Log(LOG_LEVEL_INFO,"Closing Generic Server module...");
+	LOG_INFO("Closing Generic Server module...");
 	_handler.Close();
 	
 	CTime t;
 	//indicate user
-	_log.Log(LOG_LEVEL_INFO,"EIB Relay Server closed on %s",t.Format().GetBuffer());
+	LOG_INFO("EIB Relay Server closed on %s",t.Format().GetBuffer());
 }
 
 bool CEIBRelayServer::Init()
@@ -59,9 +59,10 @@ bool CEIBRelayServer::Init()
 	START_TRY
 		//load configuration from file
 		_conf.Load(RELAY_CONF_FILE_NAME);
-		_log.Log(LOG_LEVEL_INFO,"Reading Configuration file...Successful.");
+		_log.SetLogLevel((LogLevel)_conf.GetLogLevel());
+		LOG_INFO("Reading Configuration file...Successful.");
 	END_TRY_START_CATCH(e)
-		_log.Log(LOG_LEVEL_ERROR,"Reading Configuration file...Failed. Reason: %s",e.what());
+		LOG_ERROR("Reading Configuration file...Failed. Reason: %s",e.what());
 		res = false;
 	END_CATCH
 
@@ -72,14 +73,14 @@ bool CEIBRelayServer::Init()
 		int lport = _handler.GetLocalCtrlPort();
 		LOG_INFO("EIB Relay is listening for new KNX/IP connections on [%s:%d]",laddr.GetBuffer(), lport);
 	END_TRY_START_CATCH(e)
-		_log.Log(LOG_LEVEL_ERROR,"Initializing EIB Relay handler...Failed. Reason: %s",e.what());
+		LOG_ERROR("Initializing EIB Relay handler...Failed. Reason: %s",e.what());
 		res = false;
 	END_CATCH
 
 	CTime t;
 	CString time_str = t.Format();
 	//indicate user
-	_log.Log(LOG_LEVEL_INFO,"EIB Relay Server started on %s\n",time_str.GetBuffer());
+	LOG_INFO("EIB Relay Server started on %s\n",time_str.GetBuffer());
 	
 	return res;
 }
@@ -124,6 +125,14 @@ void CEIBRelayServer::InteractiveConf()
 	}
 	if(ConsoleCLI::GetCString("RELAY Server password (used to connect to EIB Server)?",sval, _conf.GetPassword())){
 		_conf.SetPassword(sval);
+	}
+
+	map<int,CString> map1;
+	map1.insert(map1.end(),pair<int,CString>(LOG_LEVEL_ERROR,"ERROR"));
+	map1.insert(map1.end(),pair<int,CString>(LOG_LEVEL_INFO,"INFO"));
+	map1.insert(map1.end(),pair<int,CString>(LOG_LEVEL_DEBUG,"DEBUG"));
+	if(ConsoleCLI::GetStrOption("Program Logging Level?", map1, ival, _conf.GetLogLevel())){
+		_conf.SetLogLevel(ival);
 	}
 
 	map<CString,CString> map2;

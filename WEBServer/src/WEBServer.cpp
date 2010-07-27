@@ -83,7 +83,7 @@ bool CWEBServer::Init()
 
 	START_TRY
 		_log.Init(CURRENT_LOGS_FOLDER + DEFAULT_LOG_FILE_NAME);
-		_log.Log(LOG_LEVEL_INFO,"Initializing Log manager...Successful");
+		LOG_INFO("Initializing Log manager...Successful");
 	END_TRY_START_CATCH_ANY
 		cerr << "Initializing Log manager...Failed." << endl;
 		return false;
@@ -92,9 +92,10 @@ bool CWEBServer::Init()
 	START_TRY
 		//load configuration from file
 		_conf.Load(WEB_CONF_FILE_NAME);
-		_log.Log(LOG_LEVEL_INFO,"Reading Configuration file...Successful.");
+		_log.SetLogLevel((LogLevel)_conf.GetLogLevel());
+		LOG_INFO("Reading Configuration file...Successful.");
 	END_TRY_START_CATCH(e)
-		_log.Log(LOG_LEVEL_ERROR,"Reading Configuration file...Failed. Reason: %s",e.what());
+		LOG_ERROR("Reading Configuration file...Failed. Reason: %s",e.what());
 		res = false;
 	END_CATCH
 	
@@ -104,17 +105,17 @@ bool CWEBServer::Init()
 		if(_users.GetNumOfUsers() == 0)	{
 			throw CEIBException(ConfigFileError,"No Users defined in \"%s\".",DEFAULT_USERS_DB_FILE_NAME);
 		}
-		_log.Log(LOG_LEVEL_INFO,"Initializing Users DB...Successful.");
+		LOG_INFO("Initializing Users DB...Successful.");
 	END_TRY_START_CATCH(e)
-		_log.Log(LOG_LEVEL_ERROR,"Initializing Users DB...Failed. Reason: %s",e.what());
+		LOG_ERROR("Initializing Users DB...Failed. Reason: %s",e.what());
 		res = false;
 	END_CATCH
 	
 	START_TRY
 		_dispatcher->Init();
-		_log.Log(LOG_LEVEL_INFO,"Initializing WEB Interface...Successful.");
+		LOG_INFO("Initializing WEB Interface...Successful.");
 	END_TRY_START_CATCH(e)
-		_log.Log(LOG_LEVEL_ERROR,"Initializing WEB Interface...Failed. Reason: %s",e.what());
+		LOG_ERROR("Initializing WEB Interface...Failed. Reason: %s",e.what());
 		res = false;
 	END_CATCH
 	
@@ -123,12 +124,12 @@ bool CWEBServer::Init()
 		_domain += ':';
 		_domain += _dispatcher->GetServerPort();
 	}
-	_log.Log(LOG_LEVEL_INFO,"WEB Server Address is http://%s/",_domain.GetBuffer());
+	LOG_INFO("WEB Server Address is http://%s/",_domain.GetBuffer());
 
 	CTime t;
 	CString time_str = t.Format();
 	//indicate user
-	_log.Log(LOG_LEVEL_INFO,"WEB Server started on %s\n",time_str.GetBuffer());
+	LOG_INFO("WEB Server started on %s\n",time_str.GetBuffer());
 	
 	return res;
 }
@@ -176,6 +177,14 @@ void CWEBServer::InteractiveConf()
 	}
 	if(ConsoleCLI::GetCString("WEB Server password (used to connect to EIB Server)?",sval, _conf.GetPassword())){
 		_conf.SetPassword(sval);
+	}
+
+	map<int,CString> map1;
+	map1.insert(map1.end(),pair<int,CString>(LOG_LEVEL_ERROR,"ERROR"));
+	map1.insert(map1.end(),pair<int,CString>(LOG_LEVEL_INFO,"INFO"));
+	map1.insert(map1.end(),pair<int,CString>(LOG_LEVEL_DEBUG,"DEBUG"));
+	if(ConsoleCLI::GetStrOption("Program Logging Level?", map1, ival, _conf.GetLogLevel())){
+		_conf.SetLogLevel(ival);
 	}
 
 	map<CString,CString> map2;

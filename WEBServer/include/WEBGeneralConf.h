@@ -6,6 +6,7 @@ CONF_ENTRY(int,WEBServerPort,"WEB_SERVER_PORT",8080)
 CONF_ENTRY(CString,Name,"WEB_SERVER_NAME","WEB")
 CONF_ENTRY(CString,NetworkName,"WEB_NETWORK_NAME","WEB")
 CONF_ENTRY(CString,Password,"WEB_SERVER_PASSWORD","WEB")
+CONF_ENTRY(int,LogLevel,"LOG_LEVEL",3)
 #ifdef WIN32
 CONF_ENTRY(CString,ImagesFolder,"WEB_SERVER_IMAGES_FOLDER","C:\\Documents and Settings\\Yosi\\Desktop\\EIBProject\\WEBServer\\Images")
 CONF_ENTRY(int,ListenInterface,"LISTEN_INTERFACE",1)

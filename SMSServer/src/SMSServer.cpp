@@ -22,7 +22,7 @@ bool CSMSServer::Init()
 	START_TRY
 		//initialize log file
 		_log.Init(CURRENT_LOGS_FOLDER + CString(DEFAULT_LOG_FILE_NAME));
-		_log.Log(LOG_LEVEL_INFO,"Initializing Log manager...Successful.");
+		LOG_INFO("Initializing Log manager...Successful.");
 	END_TRY_START_CATCH(e)
 		cerr << "Initializing Log manager...Failed: " << e.what() << endl;
 		return false;
@@ -31,24 +31,25 @@ bool CSMSServer::Init()
 	START_TRY
 		//load configuration from file
 		_conf.Load(SMS_CONF_FILE_NAME);
-		_log.Log(LOG_LEVEL_INFO,"Reading Configuration file...Successful.");
+		_log.SetLogLevel((LogLevel)_conf.GetLogLevel());
+		LOG_INFO("Reading Configuration file...Successful.");
 	END_TRY_START_CATCH(e)
-		_log.Log(LOG_LEVEL_ERROR,"Reading Configuration file...Failed: %s",e.what());
+		LOG_ERROR("Reading Configuration file...Failed: %s",e.what());
 		res = false;
 	END_CATCH
 
 	START_TRY
 		_db.Init(CURRENT_CONF_FOLDER + SMS_DB_FILE);
 		_db.Load();
-		_log.Log(LOG_LEVEL_INFO,"Initializing SMS Messages Database...Successful");
+		LOG_INFO("Initializing SMS Messages Database...Successful");
 	END_TRY_START_CATCH(e)
-		_log.Log(LOG_LEVEL_ERROR,"Initializing SMS Messages Database...Failed: %s",e.what());
+		LOG_ERROR("Initializing SMS Messages Database...Failed: %s",e.what());
 		res = false;
 	END_CATCH
 	
 
 	START_TRY
-		_log.Log(LOG_LEVEL_INFO,"Initializing Cellular Modem connection...");
+		LOG_INFO("Initializing Cellular Modem connection...");
 		CString device = _conf.GetDevice();
 		_meta = new MeTa(new SerialPort(device.GetSTDString(),_conf.GetDeviceBaudRate(),DEFAULT_INIT_STRING, false));
 		if(_meta == NULL){
@@ -56,19 +57,19 @@ bool CSMSServer::Init()
 		}
 		//DeleteAllMessages();
 		_listener->start();
-		_log.Log(LOG_LEVEL_INFO,"Starting SMS Listener... Successful.");
+		LOG_INFO("Starting SMS Listener... Successful.");
 	END_TRY_START_CATCH_GSM(e)
-		_log.Log(LOG_LEVEL_ERROR,"Cellular Modem connection Failed: %s",e.what());
+		LOG_ERROR("Cellular Modem connection Failed: %s",e.what());
 		res = false;
 	END_CATCH
 	
 	if(res){
-		_log.Log(LOG_LEVEL_INFO,"Cellular Modem connection OK");
+		LOG_INFO("Cellular Modem connection OK");
 	}
 
 	CTime t;
 	//indicate user
-	_log.Log(LOG_LEVEL_INFO,"SMS Server started on %s",t.Format().GetBuffer());
+	LOG_INFO("SMS Server started on %s",t.Format().GetBuffer());
 	
 	return res;
 }
@@ -92,11 +93,11 @@ void CSMSServer::Run()
 {
 	if (!_agent->ConnectToEIB())
 	{
-		_log.Log(LOG_LEVEL_INFO,"\nCannot establish connection with EIB Server!\n");
+		LOG_INFO("\nCannot establish connection with EIB Server!\n");
 		return;
 	}
 
-	_log.Log(LOG_LEVEL_INFO,"\nEIB Server Connection established.\n");
+	LOG_INFO("\nEIB Server Connection established.\n");
 
 	_agent->start();
 }
@@ -176,6 +177,14 @@ void CSMSServer::InteractiveConf()
 	}
 	if(ConsoleCLI::GetCString("SMS Server password (used to connect to EIB Server)?",sval, _conf.GetPassword())){
 		_conf.SetPassword(sval);
+	}
+
+	map<int,CString> map1;
+	map1.insert(map1.end(),pair<int,CString>(LOG_LEVEL_ERROR,"ERROR"));
+	map1.insert(map1.end(),pair<int,CString>(LOG_LEVEL_INFO,"INFO"));
+	map1.insert(map1.end(),pair<int,CString>(LOG_LEVEL_DEBUG,"DEBUG"));
+	if(ConsoleCLI::GetStrOption("Program Logging Level?", map1, ival, _conf.GetLogLevel())){
+		_conf.SetLogLevel(ival);
 	}
 
 	map<CString,CString> map2;

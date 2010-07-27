@@ -20,6 +20,20 @@ using namespace std;
 #define AMX_SERVER_PROCESS_NAME "AMXserver"
 
 #ifdef WIN32
+#define LOG(level,msg,...) CAMXServer::GetInstance().GetLog().Log(level,msg,__VA_ARGS__)
+#define LOG_INFO(msg,...) LOG(LOG_LEVEL_INFO,msg,##__VA_ARGS__)
+#define LOG_ERROR(msg,...) LOG(LOG_LEVEL_ERROR,msg,##__VA_ARGS__)
+#define LOG_DEBUG(msg,...) LOG(LOG_LEVEL_DEBUG,msg,##__VA_ARGS__)
+#define LOG_SCREEN(msg,...) printf(msg,##__VA_ARGS__)
+#else
+#define LOG(level,msg,args...) CAMXServer::GetInstance().GetLog().Log(level,msg,##args)
+#define LOG_INFO(msg,args...) LOG(LOG_LEVEL_INFO,msg,##args)
+#define LOG_ERROR(msg,args...) LOG(LOG_LEVEL_ERROR,msg,##args)
+#define LOG_DEBUG(msg,args...) LOG(LOG_LEVEL_DEBUG,msg,##args)
+#define LOG_SCREEN(msg, args...) printf(msg,##args)
+#endif
+
+#ifdef WIN32
 #include <direct.h>
 #else
 #define _MAX_PATH 256

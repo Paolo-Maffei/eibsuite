@@ -91,17 +91,22 @@ void CLogFile::AppendTimeLine()
 
 void CLogFile::Log(LogLevel level, const char* format,...)
 {
+	if(_log_level < level){
+		return;
+	}
 	//only one thread can write the the same log at the same time ... (prevent jibrish)
 	JTCSynchronized sync(*this);
+
+#if 0
+	bool print2file = true;
+	if(_log_level > level){
+		print2file = false;
+	}
+#endif
 
 	if (level == LOG_LEVEL_ERROR)
 	{
 		this->SetConsoleColor(RED);
-	}
-
-	bool print2file = true;
-	if(_log_level > level){
-		print2file = false;
 	}
 
 //YGYG: for now, avoid logging to files
@@ -148,10 +153,12 @@ void CLogFile::Log(LogLevel level, const char* format,...)
 	    va_start(arglist,format);
 		len = vsprintf(status,format,arglist);
 		va_end(arglist);
+#if 0
 		if(print2file){
 			//print to the file
 			_file << status << endl;
 		}
+#endif
 		//print to screen
 		if(_print2screen){
 			cout.flush();

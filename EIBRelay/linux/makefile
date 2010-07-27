@@ -7,6 +7,9 @@ OUT_EXE := EIBRelay
 # All of the sources participating in the build are defined here
 -include objects.mk
 
+DEPS := $(OBJS:%.o=%.d)
+-include $(DEPS)
+
 # All Target
 all: $(OUT_EXE)
 

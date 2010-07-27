@@ -54,8 +54,9 @@ $(EIB_EXE_DIRS-y): force_look
 install: $(EIB_ROOT)/.config all $(EIB_LIB_DIRS-y:%=%_install) $(EIB_EXE_DIRS-y:%=%_install)
 	$(ecolor) "33;1" 'Installing tools & scripts...'	
 	@mkdir -p $(INSTALL_DIR)
+	@mkdir -p $(INSTALL_DIR)/templates
 	@cp -u ./scripts/run.sh $(INSTALL_DIR)
-	@cp -uR templates/ $(INSTALL_DIR)/templates
+	@cp -u templates/* $(INSTALL_DIR)/templates
 	$(ecolor) "32;1" '**********************************************************************************'
 	$(ecolor) "32;1" 'EIB Suite Compiled & installed successfully into "$(INSTALL_DIR)"'
 	$(ecolor) "32;1" '**********************************************************************************'

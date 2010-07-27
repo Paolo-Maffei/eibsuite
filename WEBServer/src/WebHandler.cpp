@@ -46,6 +46,7 @@ void CWebHandler::run()
 		END_TRY_START_CATCH(e)
 			//send error page to user
 			CContentGenerator::Generate_Error_Line(reply_buf,e.what());
+			LOG_ERROR("[WEB Handler] %s", e.what());
 		END_CATCH
 
 		reply.Finalize(reply_buf);
@@ -160,12 +161,11 @@ void CWebHandler::HandleImageRequest(const CString& file_name, CHttpReply& reply
 	reply.SetStatusCode(STATUS_OK);
 	reply.AddHeader("Accept-Ranges","bytes");
 
-	LOG_DEBUG("[WEB Handler] Serving file: %s", file_name.GetBuffer());
+	//LOG_DEBUG("[WEB Handler] Serving file: %s", file_name.GetBuffer());
 
 	const CString& file = CWEBServer::GetInstance().GetConfig().GetImagesFolder() + PATH_DELIM + file_name;
 	int clen;
 	CWebHandler::FillRawFile(file, reply.GetContent(), clen);
-	//reply.AddHeader(CONTENT_LENGTH_HEADER, clen);
 }
 
 void CWebHandler::HandleFavoritsIconRequest(CHttpReply& reply)

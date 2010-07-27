@@ -553,8 +553,12 @@ void CHeartBeatThread::run()
 				server.GetLog()->Log(LOG_LEVEL_DEBUG,"[EIB] Heart beat --> [OK].");
 				this->wait((int)(_heartbeat_interval - difftime(end,start)));
 			}
+			else if(msg._header._msg_type == EIB_MSG_TYPE_SERVER_DISCONNECT && msg._header._client_type == EIB_TYPE_EIB_SERVER){
+				server.GetLog()->Log(LOG_LEVEL_ERROR,"[EIB] EIB Server closed the connection. Exit.");
+				break;
+			}
 			else{
-				server.GetLog()->Log(LOG_LEVEL_ERROR,"[EIB] Incorrect Heart beat Ack recevied. Exit.");
+				server.GetLog()->Log(LOG_LEVEL_ERROR,"[EIB] Incorrect Heart beat Ack received. Exit.");
 				break;
 			}
 		END_TRY_START_CATCH_SOCKET(e)

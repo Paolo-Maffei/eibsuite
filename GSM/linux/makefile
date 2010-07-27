@@ -7,6 +7,9 @@ OUT_LIB := libGSM.so
 # All of the sources participating in the build are defined here
 -include objects.mk
 
+DEPS := $(OBJS:%.o=%.d)
+-include $(DEPS)
+
 # All Target
 all: $(OUT_LIB)
 

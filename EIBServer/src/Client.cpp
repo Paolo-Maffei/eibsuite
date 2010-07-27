@@ -379,6 +379,23 @@ CListenerThread::CListenerThread() : _sock(0),_run(true)
 
 void CListenerThread::Close()
 {
+	CClient& client = *_parent;
+	const CString* key = &client.GetSharedKey();
+	//Send disconnect message
+	ClientHeartBeatMsg msg;
+	memset(&msg,0,sizeof(msg));
+	//local network header
+	msg._header._client_type = 	EIB_TYPE_EIB_SERVER;
+	msg._header._msg_type = EIB_MSG_TYPE_SERVER_DISCONNECT;
+	msg._session_id = client.GetSessionID();
+	//encrypt the data using the shared key
+	CDataBuffer::Encrypt(&msg, sizeof(msg), key);
+	START_TRY
+		//send the data to the network
+		_sock.SendTo(&msg, sizeof(msg), client.GetClientIP(), client.GetClientKeepAlivePort());
+	END_TRY_START_CATCH_ANY
+		//do nothing in case of socket error
+	END_CATCH
 	_run = false;
 }
 
@@ -474,5 +491,5 @@ void CListenerThread::run()
 	_sock.Close();
 
 	client.SetLoggedIn(false);
-	LOG_ERROR("Client HeartBeat [%s] Exit.",client_name.GetBuffer());
+	LOG_ERROR("Client HeartBeat Thread: [%s] Now stopped.",client_name.GetBuffer());
 }

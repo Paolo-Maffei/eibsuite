@@ -13,8 +13,9 @@
 #define EIB_MSG_TYPE_EIB_CMD			0x3
 #define EIB_MSG_TYPE_EIB_STATUS			0x4
 #define EIB_MSG_TYPE_CMD_ACK			0x5
-#define EIB_MSG_TYPE_CLINET_DISCONNECT	0x6
-#define EIB_MSG_TYPE_RELAY				0x7
+#define EIB_MSG_TYPE_CLINET_DISCONNECT	0x6 //When Client notifies the EIB Server about "Connection closed" event
+#define EIB_MSG_TYPE_SERVER_DISCONNECT	0x7 //When EIB Server notifies the client about "Connection closed" event
+#define EIB_MSG_TYPE_RELAY				0x8
 
 #include <stdio.h>
 #include <time.h>

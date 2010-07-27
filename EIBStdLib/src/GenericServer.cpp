@@ -230,7 +230,8 @@ void CGenericServer::Close()
 		END_TRY_START_CATCH_ANY
 			//do nothing in case of socket error
 		END_CATCH
-		
+	}
+	if(_thread->isAlive()){
 		_thread->Close();
 		_thread->join();
 	}

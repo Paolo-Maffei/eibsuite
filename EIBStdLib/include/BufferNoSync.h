@@ -87,17 +87,13 @@ template <class T, int MaxSize> CBufferNoSync<T,MaxSize>::~CBufferNoSync()
 // Retruns true if buffer is empty
 template <class T, int MaxSize> bool CBufferNoSync<T,MaxSize>::IsEmpty()
 {
-	bool ret;
-	ret=_empty;
-    return ret;
+	return _empty;
 }
 
 // Returns true if buffer is full
 template <class T, int MaxSize> bool CBufferNoSync<T,MaxSize>::IsFull()
 {
-    bool ret;
-    ret=_full;
-    return ret;
+    return _full;
 }
 
 
@@ -111,13 +107,11 @@ template <class T, int MaxSize> bool CBufferNoSync<T,MaxSize>::Read(T& data)
 		// Updating BufferFull Flag
 		_full=false;
 		// Updating BufferEmpty Flag
-		_tail = (_tail+1) % MaxSize;
-		if (_tail == _head)
-		{
+		_tail = (_tail +1 ) % MaxSize;
+		if (_tail == _head)	{
 			_empty=true;
 		}
-		else
-		{
+		else {
 			_empty=false;
 		}
 		ret=true;
@@ -130,19 +124,16 @@ template <class T, int MaxSize> bool CBufferNoSync<T,MaxSize>::Read(T& data)
 template <class T, int MaxSize> bool CBufferNoSync<T,MaxSize>::Write(const T& data)
 {
 	bool ret=false;
-	if (!_full)
-	{
+	if (!_full)	{
 		_data[_head] = data;
 		// Updating BufferEmpty Flag
 		_empty=false;
 		// Updating BufferFull Flag
-		_head= (_head+1) % MaxSize;
-		if  (_tail==_head)
-		{
+		_head= (_head + 1) % MaxSize;
+		if  (_tail ==_head) {
 			_full=true;
 		}
-		else
-		{
+		else {
 			_full=false;
 		}
 		ret=true;

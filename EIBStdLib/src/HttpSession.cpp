@@ -31,7 +31,7 @@ void CSessionManager::GenerateNewSession(const CString& user_name,CString& sessi
 	tmp += now.GetTime();
 
 	CDigest digest;
-	session_id = digest.HashString(tmp);
+	digest.HashString(tmp, session_id);
 
 	CHttpSessionData sd;
 	sd._session_id = session_id;
@@ -81,7 +81,7 @@ bool CHttpSessionData::IsExpired() const
 	CTime now;
 	now.SetNow();
 
-	if (_expiration_time > now){
+	if (_expiration_time >= now){
 		return false;
 	}
 	return true;

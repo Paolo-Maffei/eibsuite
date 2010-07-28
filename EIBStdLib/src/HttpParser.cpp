@@ -24,13 +24,13 @@ CHttpParser::CHttpParser(CHttpRequest& request,const char* data, int length, TCP
 	if (this->ParseRequestMethod(request,data,position) != PARSE_OK){
 		_legal = false;
 	}
-	if (!this->ParseRequestLine(request,data,position)){
+	if (!this->ParseRequestLine(request,data,position) != PARSE_OK){
 		_legal = false;
 	}
-	if(!this->ParseRequestVersion(request,data,position)){
+	if(this->ParseRequestVersion(request,data,position) != PARSE_OK){
 		_legal = false;
 	}
-	if(!this->ParseRequestHeaders(request,data,position)){
+	if(this->ParseRequestHeaders(request,data,position) != PARSE_OK){
 		_legal = false;
 	}
 	if(!this->RequestContentHandler(request,position,data,length,socket)){
@@ -113,13 +113,13 @@ bool CHttpParser::ParseRequest(CHttpRequest& request,const char* data, int lengt
 	if (this->ParseRequestMethod(request,data,position) != PARSE_OK){
 		return false;
 	}
-	if (!this->ParseRequestLine(request,data,position)){
+	if (!this->ParseRequestLine(request,data,position) != PARSE_OK){
 		return false;
 	}
-	if(!this->ParseRequestVersion(request,data,position)){
+	if(this->ParseRequestVersion(request,data,position) != PARSE_OK){
 		return false;
 	}
-	if(!this->ParseRequestHeaders(request,data,position)){
+	if(this->ParseRequestHeaders(request,data,position) != PARSE_OK){
 		return false;
 	}
 	request._content.Clear();
@@ -146,12 +146,12 @@ INTERNAL_PARSER_STATUS CHttpParser::ParseRequestMethod(CHttpRequest& request,con
 			request.SetMethod(POST_M);
 			return PARSE_OK;
 		}
-		return UNKNOW_METHOD;
+		return UNKNOWN_METHOD;
 	}
-	return UNKNOW_METHOD;
+	return UNKNOWN_METHOD;
 }
 
-bool CHttpParser::ParseRequestLine(CHttpRequest& request,const char* data,int& position)
+INTERNAL_PARSER_STATUS CHttpParser::ParseRequestLine(CHttpRequest& request,const char* data,int& position)
 {
 	int new_pos = position;
 	bool include_params = false;
@@ -169,7 +169,7 @@ bool CHttpParser::ParseRequestLine(CHttpRequest& request,const char* data,int& p
 				CString uri(&data[position],new_pos - position);
 				request.SetRequestURI(uri);
 				position = ++new_pos;
-				return true;
+				return PARSE_OK;
 			}
 		}
 		++new_pos; 
@@ -189,20 +189,20 @@ bool CHttpParser::ParseRequestLine(CHttpRequest& request,const char* data,int& p
 		CString param(&data[new_pos],current - new_pos);
 		request.AddParameter(CHttpParameter(param));
 		position = current + 1;
-		return true;
+		return PARSE_OK;
 	}
 
-	return false;
+	return MALFORMED_URL;
 }
 
-bool CHttpParser::ParseRequestVersion(CHttpRequest& request,const char* data,int& position)
+INTERNAL_PARSER_STATUS CHttpParser::ParseRequestVersion(CHttpRequest& request,const char* data,int& position)
 {
 	bool legal = false;
 	char tmp[MAX_HTTP_VERSION_STR_LENGTH + 1];
 	int len = sscanf(&data[position],"%s ",tmp);
 	
 	if(!len == 1){
-		return false;
+		return UNKNOWN_HTTP_VERSION;
 	}
 
 	if (!strcmp(tmp,HTTP_1_0_STR)){
@@ -217,12 +217,12 @@ bool CHttpParser::ParseRequestVersion(CHttpRequest& request,const char* data,int
 	}
 	
 	if(legal && data[position++] == CR && data[position++] == LF){
-		return true;
+		return PARSE_OK;
 	}	
-	return false;
+	return UNKNOWN_HTTP_VERSION;
 }
 
-bool CHttpParser::ParseRequestHeaders(CHttpRequest& request,const char* data, int& position)
+INTERNAL_PARSER_STATUS CHttpParser::ParseRequestHeaders(CHttpRequest& request,const char* data, int& position)
 {
 	CString name,value;
 	request._cookies.clear();
@@ -243,7 +243,7 @@ bool CHttpParser::ParseRequestHeaders(CHttpRequest& request,const char* data, in
 		value = header.SubString(index + 1,header.GetLength() - index - 1);
 		
 		if(name.GetLength() == 0 || value.GetLength() == 0){
-			return false;
+			return MALFORMED_HEADER;
 		}
 
 		name.Trim();
@@ -260,7 +260,6 @@ bool CHttpParser::ParseRequestHeaders(CHttpRequest& request,const char* data, in
 			}
 		}
 		
-
 		current += 2;
 		position = current;
 
@@ -269,7 +268,7 @@ bool CHttpParser::ParseRequestHeaders(CHttpRequest& request,const char* data, in
 		}
 	}
 	
-	return true;
+	return PARSE_OK;
 }
 
 

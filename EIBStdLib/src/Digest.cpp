@@ -8,17 +8,17 @@ CDigest::~CDigest()
 {
 }
 
-CString CDigest::HashFile(const CString& file_name)
+void CDigest::HashFile(const CString& file_name, CString& hash)
 {
 	switch (_algorithm)
 	{
-	case ALGORITHM_MD5: return HashFile_MD5(file_name);
+	case ALGORITHM_MD5:
+		HashFile_MD5(file_name, hash);
 		break;
 	default:
+		throw CEIBException(GeneralError, "Trying to compute hash on file: %s - Unknown Algorithm!", file_name.GetBuffer());
 		break;
 	}
-
-	return EMPTY_STRING;
 }
 
 bool CDigest::Decode(const CString& cipher, CString& result)
@@ -36,7 +36,7 @@ bool CDigest::Decode(const CString& cipher, CString& result)
 	return false;
 }
 
-CString CDigest::HashFile_MD5(const CString& file_name)
+void CDigest::HashFile_MD5(const CString& file_name, CString& hash)
 {
 	MD5* md5 = new MD5();
 	FILE *file;
@@ -48,7 +48,7 @@ CString CDigest::HashFile_MD5(const CString& file_name)
 	//open file
   	if ((file = fopen (file_name.GetBuffer(), "rb")) == NULL)
 	{
-		return EMPTY_STRING;
+		throw CEIBException(FileError, "Cannot open file: %s", file_name.GetBuffer());
 	}
 
 	//init md5
@@ -66,23 +66,22 @@ CString CDigest::HashFile_MD5(const CString& file_name)
 	*/
 	md5->MD5Final (digest, &context);
  	fclose (file);
-	return ConvertToString(digest);
+	ConvertToString(digest, hash);
 }
 
-CString CDigest::HashString(const CString& input)
+void CDigest::HashString(const CString& input, CString& hash)
 {
 	switch (_algorithm)
 	{
-	case ALGORITHM_MD5: return HashString_MD5(input);
+	case ALGORITHM_MD5: HashString_MD5(input, hash);
 		break;
 	default:
+		throw CEIBException(GeneralError, "Trying to compute hash on string: %s - Unknown Algorithm!", input.GetBuffer());
 		break;
 	}
-
-	return EMPTY_STRING;
 }
 
-CString CDigest::HashString_MD5(const CString& input)
+void CDigest::HashString_MD5(const CString& input, CString& hash)
 {
 	MD5* md5 = new MD5();
 
@@ -99,11 +98,11 @@ CString CDigest::HashString_MD5(const CString& input)
 
 	delete md5;
 
-	//converte the hash to a string and return it
-	return ConvertToString(buff);
+	//convert the hash to a string and return it
+	ConvertToString(buff, hash);
 }
 
-CString CDigest::ConvertToString(unsigned char* buffer)
+void CDigest::ConvertToString(unsigned char* buffer, CString& hash)
 {
 	char asciihash[33];
 
@@ -114,6 +113,5 @@ CString CDigest::ConvertToString(unsigned char* buffer)
 		p += 2;
 	}
 	asciihash[32] = '\0';
-	CString ret(asciihash);
-	return ret;
+	hash.Assign(asciihash);
 }

@@ -19,8 +19,8 @@ public:
 	CDigest(DigestAlgorithm algorithm = ALGORITHM_MD5);
 	virtual ~CDigest();
 
-	virtual CString HashString(const CString& input);
-	virtual CString HashFile(const CString& file_name);
+	virtual void HashString(const CString& input, CString& hash);
+	virtual void HashFile(const CString& file_name, CString& hash);
 
 	virtual bool Decode(const CString& cipher, CString& result);
 
@@ -28,9 +28,9 @@ public:
 	//virtual CString HashFile(const char* file_name);
 
 private:
-	CString HashString_MD5(const CString& input);
-	CString HashFile_MD5(const CString& file_name);
-	CString ConvertToString(unsigned char* buffer);
+	void HashString_MD5(const CString& input, CString& hash);
+	void HashFile_MD5(const CString& file_name, CString& hash);
+	void ConvertToString(unsigned char* buffer, CString& hash);
 
 protected:
 	DigestAlgorithm _algorithm;

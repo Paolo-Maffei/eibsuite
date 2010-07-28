@@ -15,7 +15,7 @@ public:
 	CBase64();
 	virtual ~CBase64();
 
-	static CString Encode(const CString& clear);
+	static bool Encode(const CString& clear, CString& result);
 	static bool Decode(const CString& cipher, CString& result);
 
 private:

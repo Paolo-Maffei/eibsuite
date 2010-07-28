@@ -1,4 +1,10 @@
-#include <Base64.h>
+#include "Base64.h"
+#include "CException.h"
+
+bool CBase64::Encode(const CString& clear, CString& result)
+{
+	throw CEIBException(NotImplementedError, "Base64 Encoding is not yet implemented.");
+}
 
 bool CBase64::Decode(const CString& cipher, CString& result)
 {

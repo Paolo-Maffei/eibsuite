@@ -27,9 +27,12 @@
 enum INTERNAL_PARSER_STATUS
 {
 	WAITING_FOR_MORE_DATA,
-	UNKNOW_METHOD,
+	UNKNOWN_METHOD,
+	UNKNOWN_HTTP_VERSION,
 	MISSING_CRLF_SEPARAOTR,
 	MISSING_CONTENT_TYPE_HEADER,
+	MALFORMED_URL,
+	MALFORMED_HEADER,
 	PARSE_OK,
 };
 
@@ -79,9 +82,9 @@ private:
 
 	//request
 	INTERNAL_PARSER_STATUS ParseRequestMethod(CHttpRequest& request,const char* data, int& position);
-	bool ParseRequestLine(CHttpRequest& request,const char* data,int& position);
-	bool ParseRequestVersion(CHttpRequest& request,const char* data,int& position);
-	bool ParseRequestHeaders(CHttpRequest& request,const char* data, int& position);
+	INTERNAL_PARSER_STATUS ParseRequestLine(CHttpRequest& request,const char* data,int& position);
+	INTERNAL_PARSER_STATUS ParseRequestVersion(CHttpRequest& request,const char* data,int& position);
+	INTERNAL_PARSER_STATUS ParseRequestHeaders(CHttpRequest& request,const char* data, int& position);
 	INTERNAL_PARSER_STATUS ParseRequestContent(CHttpRequest& request,const char* data, int& position, int length);
 	bool ParseRequestCookie(const CHttpHeader& header,CHttpCookie& cookie);
 	bool RequestContentHandler(CHttpRequest& request,int& position,const char* data, int length, TCPSocket& socket);

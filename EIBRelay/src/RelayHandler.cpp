@@ -18,10 +18,10 @@ CGenericServer(EIB_TYPE_RELAY_SERVER),
 _server_conf(NULL),
 _log_file(NULL)
 {
-	_control_handler = new CRelayControlHandler();
-	_data_output_handler = new CRelayDataOutputHandler();
+	_input_handler = new CRelayInputHandler();
+	_data_output_handler = new CRelayOutputHandler();
 
-	_control_handler->_relay = this;
+	_input_handler->_relay = this;
 	_data_output_handler->_relay = this;
 
 	InitState();
@@ -47,15 +47,15 @@ void CRelayHandler::Init(CRelayServerConfig* server_conf, CLogFile* log_file)
 	_server_conf = server_conf;
 
 	CGenericServer::Init(log_file);
-	_control_handler->Init();
+	_input_handler->Init();
 }
 
 void CRelayHandler::Close()
 {
 	CGenericServer::Close();
 
-	_control_handler->Close();
-	_control_handler->join();
+	_input_handler->Close();
+	_input_handler->join();
 
 	_data_output_handler->Close();
 	_data_output_handler->join();
@@ -92,50 +92,52 @@ bool CRelayHandler::Connect()
 
 void CRelayHandler::Start()
 {
-	_control_handler->start();
+	_input_handler->start();
 	_data_output_handler->start();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-CRelayHandler::CRelayControlHandler::CRelayControlHandler() :
+CRelayHandler::CRelayInputHandler::CRelayInputHandler() :
 JTCThread("CRelayControlHandler"),
 _relay(NULL),
 _stop(false),
-_ctrl_addr(EMPTY_STRING),
-_ctrl_port(0)
+_local_addr(EMPTY_STRING),
+_local_port(0)
 {
 
 }
 
-CRelayHandler::CRelayControlHandler::~CRelayControlHandler()
+CRelayHandler::CRelayInputHandler::~CRelayInputHandler()
 {
 }
 
-void CRelayHandler::CRelayControlHandler::Init()
+void CRelayHandler::CRelayInputHandler::Init()
 {
 	//set the source port to default EIB Port (3671)
-	_ctrl_addr = Socket::LocalAddress(_relay->_server_conf->GetListenInterface());
-	_sock.SetLocalAddressAndPort(_ctrl_addr,EIB_PORT);
-	_ctrl_port = _sock.GetLocalPort();
-	_sock.JoinGroup(_ctrl_addr,EIB_MULTICAST_ADDRESS);
+	_local_addr = Socket::LocalAddress(_relay->_server_conf->GetListenInterface());
+	_sock.SetLocalAddressAndPort(_local_addr,EIB_PORT);
+	_local_port = _sock.GetLocalPort();
+	_sock.JoinGroup(_local_addr,EIB_MULTICAST_ADDRESS);
 }
 
-void CRelayHandler::CRelayControlHandler::run()
+void CRelayHandler::CRelayInputHandler::run()
 {
 	unsigned char buffer[256];
 	CString src_ip;
 	int len = 0, src_port, timeout_interval = 1000;
-	CTime timeout;
-	timeout.SetNow();
 
 	while (!_stop)
 	{
+		if(_relay->_state._is_connected && _relay->_state._timeout.secTo() == 0){
+			// Connection time out...
+			// force close connection
+			LOG_ERROR("[Connection timeout] Closing connection with client %d.", _relay->_state._channelid);
+		}
+
 		len = _sock.RecvFrom(buffer, sizeof(buffer), src_ip, src_port, timeout_interval);
 
 		if(len == 0){
-			//reduce the timeout
-			
 			//check if timeout expired
 			continue;
 		}
@@ -184,11 +186,11 @@ void CRelayHandler::CRelayControlHandler::run()
 	}
 }
 
-void CRelayHandler::CRelayControlHandler::HandleTunnelAck(unsigned char* buffer, int max_len)
+void CRelayHandler::CRelayInputHandler::HandleTunnelAck(unsigned char* buffer, int max_len)
 {
 	START_TRY
 		CTunnelingAck ack(buffer);
-		JTCSynchronized sync(_relay->_state_monitor);	
+		JTCSynchronized sync(_relay->_state._state_monitor);
 		if(ack.GetChannelId()  != _relay->_state._channelid){
 			LOG_ERROR("Error: Wrong channel id in tunnel ack (ignoring)");
 			return;
@@ -205,11 +207,11 @@ void CRelayHandler::CRelayControlHandler::HandleTunnelAck(unsigned char* buffer,
 	END_CATCH
 }
 
-void CRelayHandler::CRelayControlHandler::HandleDisconnectResponse(unsigned char* buffer, int max_len)
+void CRelayHandler::CRelayInputHandler::HandleDisconnectResponse(unsigned char* buffer, int max_len)
 {
 	START_TRY
 		CDisconnectResponse resp(buffer);
-		JTCSynchronized sync(_relay->_state_monitor);	
+		JTCSynchronized sync(_relay->_state._state_monitor);
 		if(resp.GetChannelID() != _relay->_state._channelid){
 			LOG_ERROR("Error: Wrong channel id in disconnect response (ignoring)");
 			return;
@@ -226,11 +228,11 @@ void CRelayHandler::CRelayControlHandler::HandleDisconnectResponse(unsigned char
 	END_CATCH
 }
 
-void CRelayHandler::CRelayControlHandler::HandleTunnelRequest(unsigned char* buffer, int max_len)
+void CRelayHandler::CRelayInputHandler::HandleTunnelRequest(unsigned char* buffer, int max_len)
 {
 	START_TRY
 		CTunnelingRequest req(buffer);
-		JTCSynchronized sync(_relay->_state_monitor);
+		JTCSynchronized sync(_relay->_state._state_monitor);
 		if(req.GetChannelId() != _relay->_state._channelid){
 			//wrong channel -> send error ack
 			CTunnelingAck ack(_relay->_state._channelid, 0, E_CONNECTION_ID);
@@ -260,7 +262,7 @@ void CRelayHandler::CRelayControlHandler::HandleTunnelRequest(unsigned char* buf
 			LOG_DEBUG("[Received] [Client %d] [Tunnel Request] Data Indication", _relay->_state._channelid);
 			break;
 		default:
-			LOG_DEBUG("[Received] [Client %d] [Tunnel Request] UNKNOWN", _relay->_state._channelid);
+			LOG_DEBUG("[Received] [Client %d] [Tunnel Request] UNKNOWN message code!!!", _relay->_state._channelid);
 			break;
 		}
 
@@ -271,7 +273,8 @@ void CRelayHandler::CRelayControlHandler::HandleTunnelRequest(unsigned char* buf
 		//sending an ack back
 		CTunnelingAck ack(_relay->_state._channelid, _relay->_state._recv_sequence, E_NO_ERROR);
 		ack.FillBuffer(buffer, max_len);
-		_sock.SendTo(buffer, ack.GetTotalSize(), _relay->_state._remote_ctrl_addr, _relay->_state._remote_ctrl_port);
+		//We send the ACK back over the Data channel (the channel that the request was received from)
+		_sock.SendTo(buffer, ack.GetTotalSize(), _relay->_state._remote_data_addr, _relay->_state._remote_data_port);
 		//last thing - we increment the recv sequence
 		++_relay->_state._recv_sequence;
 
@@ -284,11 +287,11 @@ void CRelayHandler::CRelayControlHandler::HandleTunnelRequest(unsigned char* buf
 	END_CATCH
 }
 
-void CRelayHandler::CRelayControlHandler::HandleDisconnectRequest(unsigned char* buffer, int max_len)
+void CRelayHandler::CRelayInputHandler::HandleDisconnectRequest(unsigned char* buffer, int max_len)
 {
 	START_TRY
 		CDisconnectRequest req(buffer);
-		JTCSynchronized sync(_relay->_state_monitor);
+		JTCSynchronized sync(_relay->_state._state_monitor);
 
 		if(!_relay->_state._is_connected){
 			LOG_ERROR("Error: Recevied disconnect request when no connection is open. (ignoring)");
@@ -320,11 +323,11 @@ void CRelayHandler::CRelayControlHandler::HandleDisconnectRequest(unsigned char*
 	END_CATCH
 }
 
-void CRelayHandler::CRelayControlHandler::HandleConnectionStateRequest(unsigned char* buffer, int max_len)
+void CRelayHandler::CRelayInputHandler::HandleConnectionStateRequest(unsigned char* buffer, int max_len)
 {
 	START_TRY
 		CConnectionStateRequest req(buffer);
-		JTCSynchronized sync(_relay->_state_monitor);
+		JTCSynchronized sync(_relay->_state._state_monitor);
 		if(!_relay->_state._is_connected){
 			return;
 		}
@@ -336,6 +339,10 @@ void CRelayHandler::CRelayControlHandler::HandleConnectionStateRequest(unsigned 
 			LOG_ERROR("Error: Wrong channel id in connection state request (sending error connection state response)");
 			return;
 		}
+
+		_relay->_state._timeout.SetNow();
+		//reset the timeout
+		_relay->_state._timeout += 60;
 
 		CConnectionStateResponse resp(_relay->_state._channelid, E_NO_ERROR);
 		resp.FillBuffer(buffer, max_len);
@@ -351,7 +358,7 @@ void CRelayHandler::CRelayControlHandler::HandleConnectionStateRequest(unsigned 
 	END_CATCH
 }
 
-void CRelayHandler::CRelayControlHandler::HandleDescriptionRequest(unsigned char* buffer, int max_len)
+void CRelayHandler::CRelayInputHandler::HandleDescriptionRequest(unsigned char* buffer, int max_len)
 {
 	START_TRY
 		CDescriptionRequest req(buffer);
@@ -365,15 +372,15 @@ void CRelayHandler::CRelayControlHandler::HandleDescriptionRequest(unsigned char
 	END_CATCH
 }
 
-void CRelayHandler::CRelayControlHandler::HandleConnectRequest(unsigned char* buffer, int max_len)
+void CRelayHandler::CRelayInputHandler::HandleConnectRequest(unsigned char* buffer, int max_len)
 {
 	START_TRY
 		CConnectRequest req(buffer);
-		JTCSynchronized sync(_relay->_state_monitor);
+		JTCSynchronized sync(_relay->_state._state_monitor);
 		
 		if(_relay->_state._is_connected){
 			//we already have an open connection. we do not support more than one
-			CConnectResponse resp(0, E_NO_MORE_CONNECTIONS, _ctrl_addr, _ctrl_port, req.GetConnectionType());
+			CConnectResponse resp(0, E_NO_MORE_CONNECTIONS, _local_addr, _local_port, req.GetConnectionType());
 			resp.FillBuffer(buffer, max_len);
 			_sock.SendTo(buffer, resp.GetTotalSize(), req.GetControlAddress(), req.GetControlPort());
 			LOG_ERROR("Error: EIB Relay is already connected. only one connection is supported. (sending error connect response)");
@@ -391,17 +398,19 @@ void CRelayHandler::CRelayControlHandler::HandleConnectRequest(unsigned char* bu
 		_relay->_state._remote_ctrl_port = req.GetControlPort();
 		
 		//data channel
-		//_relay->_state._remote_data_addr = req.GetDataAddress();
-		//_relay->_state._remote_data_port = req.GetDataPort();
+		_relay->_state._remote_data_addr = req.GetDataAddress();
+		_relay->_state._remote_data_port = req.GetDataPort();
 		
 		//mark connection is open
 		_relay->_state._is_connected = true;
+		_relay->_state._timeout.SetNow();
+		_relay->_state._timeout += 60; // the connection will expire in 60 secs from now (if no connection state request will be received)
 
-		//send response back
-		CConnectResponse resp(_relay->_state._channelid, E_NO_ERROR, _ctrl_addr, _ctrl_port, req.GetConnectionType());
+		//send response back (we state the our Data endpoint is the same as our control endpoint)
+		CConnectResponse resp(_relay->_state._channelid, E_NO_ERROR, _local_addr, _local_port, req.GetConnectionType());
 		resp.FillBuffer(buffer, max_len);
-		LOG_DEBUG("[Send] [Connect Response] --> %s:%d", req.GetControlAddress().GetBuffer(), req.GetControlPort());
-		_sock.SendTo(buffer, resp.GetTotalSize(), req.GetControlAddress(), req.GetControlPort());
+		LOG_DEBUG("[Send] [Connect Response] [%s:%d]", _relay->_state._remote_ctrl_addr.GetBuffer(), _relay->_state._remote_ctrl_port);
+		_sock.SendTo(buffer, resp.GetTotalSize(), _relay->_state._remote_ctrl_addr, _relay->_state._remote_ctrl_port);
 
 	END_TRY_START_CATCH(e)
 		LOG_ERROR("Error in connect request parsing: %s",e.what());
@@ -412,12 +421,12 @@ void CRelayHandler::CRelayControlHandler::HandleConnectRequest(unsigned char* bu
 	END_CATCH
 }
 
-void CRelayHandler::CRelayControlHandler::HandleSearchRequest(unsigned char* buffer, int max_len)
+void CRelayHandler::CRelayInputHandler::HandleSearchRequest(unsigned char* buffer, int max_len)
 {
 	START_TRY
 		CSearchRequest req(buffer);
 		//send search response back to the sender
-		CSearchResponse resp(_ctrl_addr,_ctrl_port);
+		CSearchResponse resp(_local_addr,_local_port);
 		resp.FillBuffer(buffer, max_len);
 		_sock.SendTo(buffer,resp.GetTotalSize(),req.GetRemoteIPAddress(),req.GetRemotePort());
 	END_TRY_START_CATCH(e)
@@ -429,30 +438,30 @@ void CRelayHandler::CRelayControlHandler::HandleSearchRequest(unsigned char* buf
 	END_CATCH
 }
 
-void CRelayHandler::CRelayControlHandler::Close()
+void CRelayHandler::CRelayInputHandler::Close()
 {
 	_stop = true;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-CRelayHandler::CRelayDataOutputHandler::CRelayDataOutputHandler() :
+CRelayHandler::CRelayOutputHandler::CRelayOutputHandler() :
 JTCThread("CRelayDataOutputHandler"),
 _relay(NULL),
 _stop(false)
 {
 }
 
-CRelayHandler::CRelayDataOutputHandler::~CRelayDataOutputHandler()
+CRelayHandler::CRelayOutputHandler::~CRelayOutputHandler()
 {
 }
 
-void CRelayHandler::CRelayDataOutputHandler::Close()
+void CRelayHandler::CRelayOutputHandler::Close()
 {
 	_stop = true;
 }
 
-void CRelayHandler::CRelayDataOutputHandler::run()
+void CRelayHandler::CRelayOutputHandler::run()
 {
 	CCemiFrame frame;
 	unsigned char buffer[256];
@@ -464,12 +473,12 @@ void CRelayHandler::CRelayDataOutputHandler::run()
 			continue;
 		}
 		LOG_DEBUG("[Received] [EIB] [Raw frame]");
-		JTCSynchronized sync(_relay->_state_monitor);
+		JTCSynchronized sync(_relay->_state._state_monitor);
 		if(_relay->_state._is_connected){
 			LOG_DEBUG("[send] [Client %d] [Raw frame]", _relay->_state._channelid);
 			CTunnelingRequest req(_relay->_state._channelid, _relay->_state._send_sequence, frame);
 			req.FillBuffer(buffer, sizeof(buffer));
-			_relay->_control_handler->_sock.SendTo(buffer, req.GetTotalSize(), _relay->_state._remote_ctrl_addr, _relay->_state._remote_ctrl_port);
+			_relay->_input_handler->_sock.SendTo(buffer, req.GetTotalSize(), _relay->_state._remote_data_addr, _relay->_state._remote_data_port);
 		}else{
 			LOG_DEBUG("[Received] [EIB] Raw frame. no client connected: ignoring.");
 		}

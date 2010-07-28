@@ -6,10 +6,11 @@
 #include "GenericServer.h"
 #include "Socket.h"
 
-class CRelayControlHandler;
+class CRelayInputHandler;
 class CRelayDataInputHandler;
-class CRelayDataOutputHandler;
+class CRelayOutputHandler;
 
+// This class is responsible to maintain a single KNX/IP connection with remote client
 class CRelayHandler : public CGenericServer
 {
 public:
@@ -20,8 +21,8 @@ public:
 	void Close();
 	bool Connect();
 
-	const CString& GetLocalCtrlAddr() const { return _control_handler->_ctrl_addr; }
-	int GetLocalCtrlPort() const { return _control_handler->_ctrl_port; }
+	const CString& GetLocalCtrlAddr() const { return _input_handler->_local_addr; }
+	int GetLocalCtrlPort() const { return _input_handler->_local_port; }
 
 private:
 	void InitState();
@@ -37,16 +38,19 @@ private:
 
 		CString _remote_ctrl_addr;
 		int 	_remote_ctrl_port;
-		//CString _remote_data_addr; YGYG : should we still keep that?
-		//int 	_remote_data_port; YGYG : should we still keep that?
+		CString _remote_data_addr; //??? YGYG : should we still keep that?
+		int 	_remote_data_port; //??? YGYG : should we still keep that?
+
+		JTCMonitor _state_monitor;
+		CTime 	   _timeout;
 	}ConnectionState;
 
 public:
-	class CRelayControlHandler : public JTCThread
+	class CRelayInputHandler : public JTCThread
 	{
 	public:
-		CRelayControlHandler();
-		virtual ~CRelayControlHandler();
+		CRelayInputHandler();
+		virtual ~CRelayInputHandler();
 		virtual void run();
 		void Close();
 		void Init();
@@ -69,17 +73,17 @@ public:
 		CRelayHandler* _relay;
 		bool _stop;
 		UDPSocket _sock;
-		CString _ctrl_addr;
-		int _ctrl_port;
+		CString _local_addr; //used for Control + Data channels
+		int _local_port; //used for Control + Data channels
 	};
 
 	//This handler will be response of receiving data from the EIBServer and writing 
 	//out this data to the connected client
-	class CRelayDataOutputHandler : public JTCThread
+	class CRelayOutputHandler : public JTCThread
 	{
 	public:
-		CRelayDataOutputHandler();
-		virtual ~CRelayDataOutputHandler();
+		CRelayOutputHandler();
+		virtual ~CRelayOutputHandler();
 		virtual void run();
 		void Close();
 		friend class CRelayHandler;
@@ -88,19 +92,18 @@ public:
 		bool _stop;
 	};
 
-	typedef JTCHandleT<CRelayHandler::CRelayControlHandler> CRelayControlHandlerHandle;
-	typedef JTCHandleT<CRelayHandler::CRelayDataOutputHandler> CRelayDataOutputHandlerHandle;
+	typedef JTCHandleT<CRelayHandler::CRelayInputHandler> CRelayInputHandlerHandle;
+	typedef JTCHandleT<CRelayHandler::CRelayOutputHandler> CRelayOutputHandlerHandle;
 
-	friend class CRelayControlHandler;
-	friend class CRelayDataOutputHandler;
+	friend class CRelayInputHandler;
+	friend class CRelayOutputHandler;
 
 private:
 	CRelayServerConfig* _server_conf;
 	CLogFile* _log_file;
 	ConnectionState _state;
-	JTCMonitor _state_monitor;
-	CRelayControlHandlerHandle _control_handler;
-	CRelayDataOutputHandlerHandle _data_output_handler;
+	CRelayInputHandlerHandle _input_handler;
+	CRelayOutputHandlerHandle _data_output_handler;
 };
 
 #endif

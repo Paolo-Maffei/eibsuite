@@ -6,6 +6,7 @@
 #include "EIBNetIP.h"
 #include "EibNetPacket.h"
 #include "HPAI.h"
+#include "EIBAddress.h"
 
 namespace EibStack
 {
@@ -14,6 +15,14 @@ class EIB_STD_EXPORT CDescriptionResponse : public CEIBNetPacket<EIBNETIP_DESCRI
 {
 public:
 	CDescriptionResponse();
+	CDescriptionResponse(unsigned char knxMedium,
+						 const CEibAddress& devAddr,
+						 short projInstallId,
+						 unsigned char serial[],
+						 unsigned char multicatAddr[],
+						 unsigned char macAddr[],
+						 unsigned char name[]
+						 );
 	CDescriptionResponse(unsigned char* data);
 
 	virtual ~CDescriptionResponse();

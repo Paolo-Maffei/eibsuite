@@ -12,6 +12,47 @@ CEIBNetPacket<EIBNETIP_DESCRIPTION_RESPONSE>(DESCRIPTION_RESPONSE)
 	//Note: this version of the constructor is used in option 2 !!!
 }
 
+CDescriptionResponse::CDescriptionResponse(
+		 unsigned char knxMedium,
+		 const CEibAddress& devAddr,
+		 short projInstallId,
+		 unsigned char serial[],
+		 unsigned char multicatAddr[],
+		 unsigned char macAddr[],
+		 unsigned char name[]
+		 ):
+CEIBNetPacket<EIBNETIP_DESCRIPTION_RESPONSE>(DESCRIPTION_RESPONSE)
+{
+	EIBNETIP_DEVINF_DIB* dib = &_data.devicehardware;
+
+	dib->structlength = sizeof(EIBNETIP_DEVINF_DIB);
+
+	dib->descriptiontypecode                = DEVICE_INFO;
+
+	dib->knxmedium                          = knxMedium;
+
+	dib->devicestatus                       = 0x01;                                 // program mode
+
+	dib->eibaddress                         = htons( devAddr.ToByteArray() );
+
+	dib->projectinstallationidentifier      = projInstallId;
+
+	dib->serialnumber[0]                    = serial[0];
+	dib->serialnumber[1]                    = serial[1];
+	dib->serialnumber[2]                    = serial[2];
+	dib->serialnumber[3]                    = serial[3];
+	dib->serialnumber[4]                    = serial[4];
+	dib->serialnumber[5]                    = serial[5];
+
+	int mcast = htonl( inet_addr("224.0.23.12") );
+	memcpy( dib->multicastaddress, &mcast, sizeof(mcast));
+
+	memcpy( dib->macaddress, macAddr, 6 );
+
+	memset( dib->name, '\0', 30 );
+	snprintf( (char *)dib->name, 30, "%s", name);
+}
+
 CDescriptionResponse::CDescriptionResponse(unsigned char* data) :
 CEIBNetPacket<EIBNETIP_DESCRIPTION_RESPONSE>(data)
 {

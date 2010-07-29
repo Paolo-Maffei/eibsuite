@@ -116,6 +116,7 @@ void CClientsMgr::HandleServiceDiscovery(char* buffer, int maxlen)
 
 	CHttpParser parser(request,raw_request);
 	if(!parser.IsLegalRequest() || request.GetRequestURI() != EIB_SERVER_AUTO_DISCOVERY_REQ){
+		LOG_ERROR("Illegal HTTP Discovery request. Ignoring.");
 		return;
 	}
 

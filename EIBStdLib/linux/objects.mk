@@ -39,6 +39,7 @@ RoutingIndication.o \
 SearchRequest.o \
 SearchResponse.o \
 DescriptionRequest.o \
+DescriptionResponse.o \
 ServiceBase.o \
 SharedMemory.o \
 SingletonValidation.o \

@@ -24,7 +24,7 @@ CHttpParser::CHttpParser(CHttpRequest& request,const char* data, int length, TCP
 	if (this->ParseRequestMethod(request,data,position) != PARSE_OK){
 		_legal = false;
 	}
-	if (!this->ParseRequestLine(request,data,position) != PARSE_OK){
+	if (this->ParseRequestLine(request,data,position) != PARSE_OK){
 		_legal = false;
 	}
 	if(this->ParseRequestVersion(request,data,position) != PARSE_OK){
@@ -113,7 +113,7 @@ bool CHttpParser::ParseRequest(CHttpRequest& request,const char* data, int lengt
 	if (this->ParseRequestMethod(request,data,position) != PARSE_OK){
 		return false;
 	}
-	if (!this->ParseRequestLine(request,data,position) != PARSE_OK){
+	if (this->ParseRequestLine(request,data,position) != PARSE_OK){
 		return false;
 	}
 	if(this->ParseRequestVersion(request,data,position) != PARSE_OK){

@@ -22,6 +22,10 @@ CEIBNetPacket<EIBNETIP_SEARCH_RESPONSE>(data)
 
 	_control_ip = discovered.GetAddress();
 	_control_port = discovered.GetPort();
+
+	if((_header.totalsize - _header.headersize) > sizeof(EIBNETIP_HPAI)){
+		_desc.Parse((unsigned char*)&_data.devdesc);
+	}
 }
 
 CSearchResponse::~CSearchResponse()

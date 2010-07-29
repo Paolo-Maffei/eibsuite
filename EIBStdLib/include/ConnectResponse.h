@@ -8,6 +8,7 @@
 #include "CString.h"
 #include "EibNetPacket.h"
 #include "ConnectRequest.h"
+#include "EIBAddress.h"
 
 namespace EibStack
 {
@@ -48,11 +49,14 @@ public:
 	const CString& GetDataIPAddress() const { return _data_address; }
 	unsigned short GetDataPort() const { return _data_port; }
 
+	const CEibAddress& GetDevKNXAddress() const { return _dev_addr; }
+
 	void FillBuffer(unsigned char* buffer, int max_len);
 
 private:
 	CString _data_address;
 	unsigned short _data_port;
+	CEibAddress _dev_addr;
 };
 
 }

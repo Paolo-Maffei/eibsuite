@@ -362,6 +362,14 @@ void CRelayHandler::CRelayInputHandler::HandleDescriptionRequest(unsigned char* 
 {
 	START_TRY
 		CDescriptionRequest req(buffer);
+
+		EIBNETIP_DEVINF_DIB dib;
+		dib.structlength = sizeof(EIBNETIP_DEVINF_DIB);
+		dib.descriptiontypecode = DEVICE_INFO;
+		dib.knxmedium = TP1; //YGYG - get this info from real device
+		dib.devicestatus = 0x1;
+
+
 		//throw CEIBException(NotImplementedError,"Not implemented yet!!!");
 	END_TRY_START_CATCH(e)
 		LOG_ERROR("Error in description request parsing: %s",e.what());

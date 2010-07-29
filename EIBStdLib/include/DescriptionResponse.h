@@ -13,6 +13,7 @@ namespace EibStack
 class EIB_STD_EXPORT CDescriptionResponse : public CEIBNetPacket<EIBNETIP_DESCRIPTION_RESPONSE>
 {
 public:
+	CDescriptionResponse();
 	CDescriptionResponse(unsigned char* data);
 
 	virtual ~CDescriptionResponse();
@@ -21,7 +22,9 @@ public:
 	void FillBuffer(unsigned char* buffer, int max_length);
 
 private:
-
+	void ParseDevInfoDIB(unsigned char* data);
+	void ParseSuppFamiliesDIB(unsigned char* data);
+	void ParseManufacturerDIB(unsigned char* data);
 };
 
 }

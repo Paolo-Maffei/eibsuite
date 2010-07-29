@@ -4,15 +4,12 @@ using namespace EibStack;
 
 CCRI_CRD::CCRI_CRD(unsigned char* data)
 {
+	ASSERT_ERROR(data[0] == 4, "wrong CRI_CRD length");
+
 	_data.structlength = data[0];
     _data.connectiontypecode = data[1];
     _data.protocolindependentdata = data[2];
 	_data.protocoldependentdata = data[3];
-
-    if (_data.structlength != sizeof(_data))
-	{
-		throw CEIBException(NotImplementedError,"wrong CRI_CRD length");
-	}
 }
 
 CCRI_CRD::CCRI_CRD(unsigned char connection_typecode,unsigned char* data)

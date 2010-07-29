@@ -45,6 +45,7 @@ CEIBNetPacket<EIBNETIP_CONNECT_RESPONSE>(data)
 
 	CCRI_CRD crd(&data[10]);
 	memcpy(&_data.crd,crd.ToByteArray(),crd.GetDataSize());
+	_dev_addr = CEibAddress(((crd.GetProtocolIndependentData() << 8) | (crd.GetProtocolDependentData())), false);
 }
 
 void CConnectResponse::FillBuffer(unsigned char* buffer, int max_len)

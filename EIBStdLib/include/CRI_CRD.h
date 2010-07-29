@@ -20,6 +20,9 @@ public:
 	unsigned short GetData();
 	unsigned short GetLength();
 
+	unsigned char GetProtocolIndependentData() const { return _data.protocolindependentdata; }
+	unsigned char GetProtocolDependentData() const { return _data.protocoldependentdata; }
+
 	int GetDataSize() { return sizeof(_data);}
 	unsigned char* ToByteArray() { return (unsigned char*)&_data;}
 

@@ -4,6 +4,7 @@
 #include "EIBNetIP.h"
 #include "HPAI.h"
 #include "EibNetPacket.h"
+#include "DescriptionResponse.h"
 
 namespace EibStack
 {
@@ -23,6 +24,7 @@ public:
 private:
 	CString _control_ip;
 	int _control_port;
+	CDescriptionResponse _desc;
 };
 
 }

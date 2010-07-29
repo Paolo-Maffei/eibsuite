@@ -240,10 +240,13 @@ typedef struct EIB_STD_EXPORT{
 typedef struct EIB_STD_EXPORT{
     byte structlength;
     byte descriptiontypecode;
-    byte descriptiontypecode1;
-    byte descriptiontypecode2;
-    byte descriptiontypecode3;
-    byte descriptiontypecode4;
+    byte *data;
+    /*
+    word serviceidandversion1; // EIBNETIP_CORE
+    word serviceidandversion2; // EIBNETIP_DEVMGMT
+    word serviceidandversion3; // EIBNETIP_TUNNELING
+    word serviceidandversion4; // EIBNETIP_ROUTING
+    */
 } EIBNETIP_SUPPFAM_DIB;
 
 typedef struct EIB_STD_EXPORT{
@@ -256,7 +259,7 @@ typedef struct EIB_STD_EXPORT{
 typedef struct EIB_STD_EXPORT{
     EIBNETIP_DEVINF_DIB devicehardware;
     EIBNETIP_SUPPFAM_DIB supported;
-    EIBNETIP_MANUFACTURER_DIB manufacturer;
+    EIBNETIP_MANUFACTURER_DIB* manufacturer;
 } EIBNETIP_DESCRIPTION_RESPONSE;
 
 typedef struct EIB_STD_EXPORT{

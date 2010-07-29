@@ -21,8 +21,9 @@ public:
 	//c'tor to parse packet
 	CEIBNetPacket(unsigned char*& data)
 	{
-		size_t size = sizeof(_header) + sizeof(_data);
+		size_t size = sizeof(_header);// + sizeof(_data);
 		memcpy(&this->_header,data,size);
+		_header.totalsize = htons(_header.totalsize);
 		data += HEADER_SIZE_10;
 		ASSERT_ERROR(_header.headersize == HEADER_SIZE_10,"Incorrect header size in packet");
 		ASSERT_ERROR(_header.version == EIBNETIP_VERSION_10,"Incorrect version in packet");

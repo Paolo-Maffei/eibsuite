@@ -4,6 +4,9 @@ using namespace EibStack;
 
 CHPAI::CHPAI(unsigned char* data)
 {
+	ASSERT_ERROR(data[0] == 8,"Wrong length in HPAI.")
+	ASSERT_ERROR(data[1] == IPV4_UDP, "Unsupported protocol found in HPAI")
+
 	_data.structlength = data[0];
 	_data.hostprotocol = data[1];
 	_data.ip1 = data[2];
@@ -11,13 +14,9 @@ CHPAI::CHPAI(unsigned char* data)
     _data.ip3 = data[4];
     _data.ip4 = data[5];
 
-	int high = data[6] & 0x000000FF;
-    int low = data[7] & 0x000000FF;
-	_data.port = (high << 8 | low);
-
-	//if (_data.hostprotocol != IPV4_UDP){
-	//	throw CEIBException(NotImplementedError,"Unsupported protocol found in HPAI");
-	//}
+	//short high = data[6] & 0x00FF;
+    //short low = data[7] & 0x00FF;
+	_data.port = (data[6] << 8 | data[7]);
 }
 
 CHPAI::CHPAI(int port, const CString& ipaddress)

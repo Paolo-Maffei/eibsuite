@@ -121,7 +121,8 @@ namespace EIBEmulator
                     IPAddress maddr = IPAddress.Parse(DEFAULT_MULTICAST_ADDRESS);
                     MulticastOption opt = new MulticastOption(maddr);
                     _sock.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, opt);
-                    _recv_sequence = 0;
+					_sock.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, 1);
+					_recv_sequence = 0;
                     _send_sequence = 0;
                     this.ipAddressControl1.Text = local_addr;
                     break;

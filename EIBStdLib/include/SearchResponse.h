@@ -12,7 +12,15 @@ namespace EibStack
 class EIB_STD_EXPORT CSearchResponse : public CEIBNetPacket<EIBNETIP_SEARCH_RESPONSE>
 {
 public:
-	CSearchResponse(const CString& ctrl_addr, int ctrl_port);
+	CSearchResponse(const CString& ctrl_addr,
+				    int ctrl_port,
+				    KNXMedium knxMedium,
+				    const CEibAddress& devAddr,
+				    short projInstallId,
+				    unsigned char serial[],
+				    unsigned char multicatAddr[],
+				    unsigned char macAddr[],
+				    unsigned char name[]);
 	CSearchResponse(unsigned char* data);
 	virtual ~CSearchResponse();
 
@@ -20,6 +28,8 @@ public:
 	unsigned short GetControlPort() const { return _control_port; }
 
 	void FillBuffer(unsigned char* buffer, int max_length);
+
+	void Dump();
 
 private:
 	CString _control_ip;

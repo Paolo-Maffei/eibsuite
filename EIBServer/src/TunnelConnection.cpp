@@ -32,7 +32,12 @@ bool CTunnelingConnection::Connect()
 	int tmp_port,len = 0,timeout;
 	unsigned char buffer[256];
 	
-	InitConnectionParams();
+	START_TRY
+		InitConnectionParams();
+	END_TRY_START_CATCH(e)
+		LOG_ERROR("Error: %s", e.what());
+		return false;
+	END_CATCH
 
 	//sanity
 	if(_device_control_address.GetLength() == 0 || _device_control_port == 0){
@@ -92,9 +97,9 @@ void CTunnelingConnection::InitConnectionParams()
 		_data_sock.SetNonBlocking();
 	}
 
-	bool auto_d = CEIBServer::GetInstance().GetConfig().GetAutoDetectEibDeviceAddress();
+	bool auto_discover = CEIBServer::GetInstance().GetConfig().GetAutoDetectEibDeviceAddress();
 
-	if(auto_d)
+	if(auto_discover)
 	{
 		//send search request to multicast address
 		CSearchRequest search_req(_data_sock.GetLocalPort(),_ipaddress);
@@ -111,6 +116,8 @@ void CTunnelingConnection::InitConnectionParams()
 			CSearchResponse search_resp(buffer);
 			_device_control_address = search_resp.GetControlIPAddress();
 			_device_control_port = search_resp.GetControlPort();
+			LOG_DEBUG("Searching for KNX/IP on local network... Device found!");
+			search_resp.Dump();
 		}
 	}
 	else

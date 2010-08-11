@@ -26,8 +26,8 @@ CEibAddress::CEibAddress(unsigned char* body, bool is_group) : _group_type(GROUP
 
 CEibAddress::CEibAddress(unsigned int address, bool is_group) : _group_type(GROUP_3_LEVEL_FORMAT)
 {
-    _high = (unsigned short) ((address & 0x0000FF00) >> 8);
-    _low = (unsigned short) ((address) & 0x000000FF);
+    _high = (unsigned short) ((address & 0xFF00) >> 8);
+    _low = (unsigned short) ((address) & 0x00FF);
     _is_logical = is_group;
 }
 
@@ -103,7 +103,7 @@ unsigned char CEibAddress::GetLine() const
 	if (_is_logical){
 		throw CEIBException(GeneralError,"EIBAddress: Operation not appropriate for a group address");
 	}
-    return (unsigned char) (_high & 0x000F);
+    return (unsigned char) ((_high & 0x000F));
 }
 
 unsigned char CEibAddress::GetDevice() const

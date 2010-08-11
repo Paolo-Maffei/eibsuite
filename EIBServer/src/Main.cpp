@@ -31,7 +31,6 @@ void eibserver_main(bool interactive_conf, bool interactive_usersdb)
 
 int main(int argc, char **argv)
 {
-	JTCInitialize init;
 	bool interactive_conf = false, interactive_usersdb = false;
 	int c;
 	opterr = 0;

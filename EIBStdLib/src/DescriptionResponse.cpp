@@ -5,15 +5,14 @@ using namespace EibStack;
 CDescriptionResponse::CDescriptionResponse():
 CEIBNetPacket<EIBNETIP_DESCRIPTION_RESPONSE>(DESCRIPTION_RESPONSE)
 {
-	// This constructor is used since the Description response can be constructor in 2 ways:
-	// 1. By itself as stand alone response the description request
-	// 2. as part of the search response
-
-	//Note: this version of the constructor is used in option 2 !!!
+	// This constructor is used since the Description response can be constructed in 2 ways:
+	// 1. By itself as a stand alone response the description request
+	// 2. As part of the search response
+	//Note: this version of the constructor is used ONLY in option 2 !!!
 }
 
 CDescriptionResponse::CDescriptionResponse(
-		 unsigned char knxMedium,
+		 KNXMedium knxMedium,
 		 const CEibAddress& devAddr,
 		 short projInstallId,
 		 unsigned char serial[],
@@ -29,7 +28,7 @@ CEIBNetPacket<EIBNETIP_DESCRIPTION_RESPONSE>(DESCRIPTION_RESPONSE)
 
 	dib->descriptiontypecode                = DEVICE_INFO;
 
-	dib->knxmedium                          = knxMedium;
+	dib->knxmedium                          = (unsigned char)knxMedium;
 
 	dib->devicestatus                       = 0x01;                                 // program mode
 
@@ -80,7 +79,8 @@ void CDescriptionResponse::Parse(unsigned char* data)
 
 void CDescriptionResponse::ParseDevInfoDIB(unsigned char* data)
 {
-	ASSERT_ERROR(data[0] != sizeof(EIBNETIP_DEVINF_DIB), "Wrong size in DIB (device info).");
+	ASSERT_ERROR(data[0] == sizeof(EIBNETIP_DEVINF_DIB), "Wrong size in DIB (device info).");
+	ASSERT_ERROR(data[1] == DEVICE_INFO, "Wrong device description code");
 
 	_data.devicehardware.structlength = data[0];
 	_data.devicehardware.descriptiontypecode = data[1];
@@ -95,20 +95,22 @@ void CDescriptionResponse::ParseDevInfoDIB(unsigned char* data)
 	memcpy(&_data.devicehardware.projectinstallationidentifier, ptr, sizeof(_data.devicehardware.projectinstallationidentifier));
 	ptr += sizeof(_data.devicehardware.projectinstallationidentifier);
 
-	memcpy(&_data.devicehardware.serialnumber, ptr, sizeof(_data.devicehardware.serialnumber));
+	memcpy(_data.devicehardware.serialnumber, ptr, sizeof(_data.devicehardware.serialnumber));
 	ptr += sizeof(_data.devicehardware.serialnumber);
 
-	memcpy(&_data.devicehardware.multicastaddress, ptr, sizeof(_data.devicehardware.multicastaddress));
+	memcpy(_data.devicehardware.multicastaddress, ptr, sizeof(_data.devicehardware.multicastaddress));
 	ptr += sizeof(_data.devicehardware.multicastaddress);
 
-	memcpy(&_data.devicehardware.macaddress, ptr, sizeof(_data.devicehardware.macaddress));
+	memcpy(_data.devicehardware.macaddress, ptr, sizeof(_data.devicehardware.macaddress));
 	ptr += sizeof(_data.devicehardware.macaddress);
 
-	memcpy(&_data.devicehardware.name, ptr, sizeof(_data.devicehardware.name));
+	memcpy(_data.devicehardware.name, ptr, sizeof(_data.devicehardware.name));
 }
 
 void CDescriptionResponse::ParseSuppFamiliesDIB(unsigned char* data)
 {
+	ASSERT_ERROR(data[1] == SUPP_SVC_FAMILIES, "Wrong device description code (supp families)");
+
 	_data.supported.structlength = data[0];
 	_data.supported.descriptiontypecode = data[1];
 	_data.supported.data = new unsigned char[data[0] - 2];
@@ -119,4 +121,52 @@ void CDescriptionResponse::ParseManufacturerDIB(unsigned char* data)
 {
 	//YGYG - Manufacturer DIB is optional and there's no documentation available - leave it out
 	_data.manufacturer = NULL;
+}
+
+void CDescriptionResponse::Dump()
+{
+	//Medium
+	printf("Medium: ");
+	switch((KNXMedium)_data.devicehardware.knxmedium)
+	{
+	case MEDIUM_TP0: printf("twisted pair 0 (2400 bit/s)\n");
+		break;
+	case MEDIUM_TP1: printf("twisted pair 1 (9600 bit/s)\n");
+		break;
+	case MEDIUM_PL110: printf("power line 110 kHz (1200 bit/s)\n");
+		break;
+	case MEDIUM_PL132: printf("power line 132 kHz (2400 bit/s)\n");
+		break;
+	case MEDIUM_RF: printf("radio frequency (868 MHz)\n");
+		break;
+	default: printf("Unknown (%u)\n", _data.devicehardware.knxmedium);
+		break;
+	}
+	//Status
+	printf("Status: %u\n", _data.devicehardware.devicestatus);
+	//EIB Address
+	CEibAddress addr(_data.devicehardware.eibaddress, false);
+	printf("Physical Address: %s\n", addr.ToString().GetBuffer());
+	//Project installation ID
+	printf("Project installation ID: %d\n", _data.devicehardware.projectinstallationidentifier);
+	//Serial number
+	printf("Serial number: ");
+	int i;
+	for(i = 0; i < 6; i++)
+		printf("%x", _data.devicehardware.serialnumber[i]);
+	printf("\n");
+	//ip address
+	unsigned char* ip = _data.devicehardware.multicastaddress;
+	printf("Multicast Address: %u.%u.%u.%u\n", ip[0], ip[1], ip[2], ip[3]);
+	//MAC address
+	printf("MAC Address: ");
+	for(i = 0; i < 6; i++){
+		printf("%x", _data.devicehardware.macaddress[i]);
+		if(i != 5) printf(":");
+	}
+	printf("\n");
+	//Name
+	if(_data.devicehardware.name[0] != '\0'){
+		printf("Name: %s\n", _data.devicehardware.name);
+	}
 }

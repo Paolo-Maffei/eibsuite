@@ -2,8 +2,17 @@
 
 using namespace EibStack;
 
-CSearchResponse::CSearchResponse(const CString& ctrl_addr, int ctrl_port) :
-CEIBNetPacket<EIBNETIP_SEARCH_RESPONSE>(SEARCH_RESPONSE)
+CSearchResponse::CSearchResponse(const CString& ctrl_addr,
+								 int ctrl_port,
+								 KNXMedium knxMedium,
+								 const CEibAddress& devAddr,
+								 short projInstallId,
+								 unsigned char serial[],
+								 unsigned char multicatAddr[],
+								 unsigned char macAddr[],
+								 unsigned char name[]) :
+CEIBNetPacket<EIBNETIP_SEARCH_RESPONSE>(SEARCH_RESPONSE),
+_desc(knxMedium, devAddr, projInstallId, serial, multicatAddr, macAddr, name)
 {
 	_control_ip = ctrl_addr;
 	_control_port = ctrl_port;
@@ -11,7 +20,7 @@ CEIBNetPacket<EIBNETIP_SEARCH_RESPONSE>(SEARCH_RESPONSE)
 	CHPAI ctrl_ep(ctrl_port,ctrl_addr);
 	memcpy(&_data.endpoint,ctrl_ep.ToByteArray(),ctrl_ep.GetDataSize());
 	//add the other field here...
-	//DIB, Supported families, manufactor details
+	//DIB, Supported families, manufacture details
 }
 
 CSearchResponse::CSearchResponse(unsigned char* data):
@@ -23,8 +32,8 @@ CEIBNetPacket<EIBNETIP_SEARCH_RESPONSE>(data)
 	_control_ip = discovered.GetAddress();
 	_control_port = discovered.GetPort();
 
-	if((_header.totalsize - _header.headersize) > sizeof(EIBNETIP_HPAI)){
-		_desc.Parse((unsigned char*)&_data.devdesc);
+	if((unsigned)(_header.totalsize - _header.headersize) > sizeof(EIBNETIP_HPAI)){
+		_desc.Parse(data + _data.endpoint.structlength);
 	}
 }
 
@@ -41,3 +50,9 @@ void CSearchResponse::FillBuffer(unsigned char* buffer, int max_length)
 	ptr->discoveryendpoint.port = htons(_data.endpoint.port);
 }
 
+void CSearchResponse::Dump()
+{
+	printf("************************************\n");
+	_desc.Dump();
+	printf("************************************\n");
+}

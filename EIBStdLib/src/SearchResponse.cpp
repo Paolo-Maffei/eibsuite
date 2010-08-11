@@ -7,10 +7,10 @@ CSearchResponse::CSearchResponse(const CString& ctrl_addr,
 								 KNXMedium knxMedium,
 								 const CEibAddress& devAddr,
 								 short projInstallId,
-								 unsigned char serial[],
-								 unsigned char multicatAddr[],
-								 unsigned char macAddr[],
-								 unsigned char name[]) :
+								 const char serial[],
+								 const char multicatAddr[],
+								 const char macAddr[],
+								 const char name[]) :
 CEIBNetPacket<EIBNETIP_SEARCH_RESPONSE>(SEARCH_RESPONSE),
 _desc(knxMedium, devAddr, projInstallId, serial, multicatAddr, macAddr, name)
 {

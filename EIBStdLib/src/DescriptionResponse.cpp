@@ -15,10 +15,10 @@ CDescriptionResponse::CDescriptionResponse(
 		 KNXMedium knxMedium,
 		 const CEibAddress& devAddr,
 		 short projInstallId,
-		 unsigned char serial[],
-		 unsigned char multicatAddr[],
-		 unsigned char macAddr[],
-		 unsigned char name[]
+		 const char serial[],
+		 const char multicatAddr[],
+		 const char macAddr[],
+		 const char name[]
 		 ):
 CEIBNetPacket<EIBNETIP_DESCRIPTION_RESPONSE>(DESCRIPTION_RESPONSE)
 {

@@ -438,7 +438,7 @@ void CRelayHandler::CRelayInputHandler::HandleSearchRequest(unsigned char* buffe
 		char mcast[4] = { 224, 0, 23, 12 };
 		const char* name = "EIB Relay Device";
 		CSearchResponse resp(_local_addr,_local_port, MEDIUM_TP1, CEibAddress((unsigned int)0, false),
-				0, serial, mcast, serial, name);
+				0, serial, mcast, serial, name, (SERVICE_CORE | SERVICE_DEV_MNGMT | SERVICE_TUNNELING));
 		resp.FillBuffer(buffer, max_len);
 		_sock.SendTo(buffer,resp.GetTotalSize(),req.GetRemoteIPAddress(),req.GetRemotePort());
 	END_TRY_START_CATCH(e)

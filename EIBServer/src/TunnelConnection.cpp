@@ -8,7 +8,6 @@ IConnection(),
 _device_data_address(EMPTY_STRING),
 _device_data_port(0),
 _connection_status(DISCONNECTED),
-_heartbeat(NULL),
 _ipaddress(ipaddress),
 _num_out_of_sync_pkts(0)
 {
@@ -17,8 +16,6 @@ _num_out_of_sync_pkts(0)
 
 CTunnelingConnection::~CTunnelingConnection()
 {
-	delete _heartbeat;
-	_heartbeat = NULL;
 }
 
 bool CTunnelingConnection::IsConnected() const
@@ -69,9 +66,7 @@ bool CTunnelingConnection::Connect()
 	_device_data_address = con_resp.GetDataIPAddress();
 	_device_data_port = con_resp.GetDataPort();
 
-	if(_heartbeat == NULL){
-		_heartbeat = new CTunnelHeartBeat();
-	}
+	_heartbeat = new CTunnelHeartBeat();
 	_heartbeat->start();
 
 	_connection_status = CONNECTED;
@@ -113,7 +108,7 @@ void CTunnelingConnection::InitConnectionParams()
 			_device_control_port = EIB_PORT;
 		}
 		else{
-			CSearchResponse search_resp(buffer);
+			CSearchResponse search_resp(buffer, len);
 			_device_control_address = search_resp.GetControlIPAddress();
 			_device_control_port = search_resp.GetControlPort();
 			LOG_DEBUG("Searching for KNX/IP on local network... Device found!");
@@ -143,10 +138,6 @@ void CTunnelingConnection::DisConnect()
 	_connection_status = WAITING_DISCONNECT_RESPONSE;
 
 	_heartbeat->Close();
-	while(_connection_status != DISCONNECTED){
-		JTCThread::sleep(100);
-	}
-	_heartbeat = NULL;
 }
 
 //receives frames from the EIB Router
@@ -416,7 +407,8 @@ void CTunnelingConnection::Reconnect()
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-CTunnelHeartBeat::CTunnelHeartBeat() : _counter(0)
+CTunnelHeartBeat::CTunnelHeartBeat() :
+_counter(0),_stop(false),_self_quit(false)
 {
 }
 
@@ -426,9 +418,16 @@ CTunnelHeartBeat::~CTunnelHeartBeat()
 
 void CTunnelHeartBeat::Close()
 {
-	if(this->isAlive()){
-		JTCSynchronized sync(*this);
-		notify();
+	//if the self_quit flag is set - it means that the hearbeat thread has quited
+	//the main loop for internal reason, and raised SIGUSR1 which will, eventually, make the same
+	//thread calling this "Close" function, so to prevent deadlock, we don't execute this code
+	if(!_self_quit){
+		{
+			JTCSynchronized sync(*this);
+			_stop = true;
+			notify();
+		}
+		join();
 	}
 }
 
@@ -452,10 +451,11 @@ void CTunnelHeartBeat::run()
 	
 	JTCSynchronized sync(*this);
 
-	while (ptr->IsConnected())
+	while (!_stop)
 	{
 		if(_counter == 3){
 			LOG_ERROR("[EIB Interface] Heartbeat to Device timeout. Stopping heartbeat thread.");
+			_self_quit = true;
 			break;
 		}
 		
@@ -463,24 +463,34 @@ void CTunnelHeartBeat::run()
 		_sock.SendTo(buffer,cs_req.GetTotalSize(),device_address,device_port);
 		++_counter;
 
-		try
-		{
-			//1 Minute wait before sending new "connection state request..." packet
-			wait(60000);
-		}
-		catch (const JTCInterruptedException& e)
-		{
+		START_TRY
+			/*
+			 * Wait 2 seconds to response:
+			 * if we got one, the go to sleep againg for more 58 seconds
+			 * else try to send again
+			*/
+			wait(2000);
+			if(_counter > 0){
+				continue;
+			}else{
+				wait(5000);
+			}
+		END_TRY_START_CATCH_JTC(e)
 			LOG_ERROR("[JTC ERROR][%s]",e.getMessage());
+			_self_quit = true;
 			break;
-		}
-		catch (...)
-		{
+		END_TRY_START_CATCH_ANY
 			LOG_ERROR("UnKnown Exception in Tunnel heartbit thread.");
-		}
+			_self_quit = true;
+			break;
+		END_CATCH
 	}
-
-	LOG_DEBUG("Tunnel connection heartbit closed.");
-	ptr->SetStatusDisconnected();
 	LOG_DEBUG("Tunnel connection with EIB Device is now closed.");
+
+	//if the heartbeat thread quited the main loop for internal reason - then notify the other
+	//modules by raising SIGUSR1
+	if(!_stop){
+		raise(SIGUSR1);
+	}
 }
 

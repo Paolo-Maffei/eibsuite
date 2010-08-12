@@ -526,6 +526,7 @@ void CHeartBeatThread::run()
 	CGenericServer& server = *_parent;
 	const CString* key = &server.GetSharedKey();
 	ClientHeartBeatMsg msg;
+	int num_unacked_msgs = 0;
 	while (!_stop)
 	{
 		msg._header._client_type = server.GetNetworkID();
@@ -543,15 +544,22 @@ void CHeartBeatThread::run()
 			int len = _sock.RecvFrom(&msg,sizeof(ClientHeartBeatMsg),_server_address,_server_port, _heartbeat_interval);
 			time_t end = time(NULL);
 
-			if(len == 0){
+			if(len == 0 && num_unacked_msgs == 3){
 				server.GetLog()->Log(LOG_LEVEL_ERROR,"[EIB] Heart beat Ack Timeout. EIB Server is probably dead. Exit");
 				break;
+			}
+			if(len == 0){
+				server.GetLog()->Log(LOG_LEVEL_ERROR,"[EIB] Heart beat Ack Timeout. [Retry]");
+				++num_unacked_msgs;
+				continue;
 			}
 
 			CDataBuffer::Decrypt(&msg,sizeof(ClientHeartBeatMsg),key);
 			if(msg._header._msg_type == EIB_MSG_TYPE_KEEP_ALIVE_ACK && msg._header._client_type == EIB_TYPE_EIB_SERVER){
 				server.GetLog()->SetConsoleColor(YELLOW);
 				server.GetLog()->Log(LOG_LEVEL_DEBUG,"[EIB] Heart beat --> [OK].");
+				//reset the "un-acked" counter
+				num_unacked_msgs = 0;
 				this->wait((int)(_heartbeat_interval - difftime(end,start)));
 			}
 			else if(msg._header._msg_type == EIB_MSG_TYPE_SERVER_DISCONNECT && msg._header._client_type == EIB_TYPE_EIB_SERVER){

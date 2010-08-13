@@ -2,18 +2,8 @@
 
 using namespace std;
 
-void terminate(int arg)
-{
-	CEIBServer::GetInstance().Close();
-	CEIBServer::Destroy();
-}
-
 void eibserver_main(bool interactive_conf, bool interactive_usersdb)
 {
-	if(signal(SIGUSR1, terminate) == SIG_ERR){
-		cerr << "Server Failed to start: failed to register signal." << endl;
-	}
-
 	CEIBServer::Create();
 	
 	if(interactive_conf){
@@ -31,8 +21,7 @@ void eibserver_main(bool interactive_conf, bool interactive_usersdb)
 		CEIBServer::GetInstance().Start();
 	}
 	else{
-		cerr << endl << "Server Failed to start: initialization of EIB Server failed." << endl << endl;
-		exit(1);
+		cerr << endl << "Server Failed to start: initialization of EIB Server failed." << endl;
 	}
 
 	CUtils::WaitForCharInput('q', "Press q to stop EIB Server: ", true);

@@ -10,10 +10,9 @@ CSearchResponse::CSearchResponse(const CString& ctrl_addr,
 								 const char serial[],
 								 const char multicatAddr[],
 								 const char macAddr[],
-								 const char name[],
-								 int suppServices) :
+								 const char name[]) :
 CEIBNetPacket<EIBNETIP_SEARCH_RESPONSE>(SEARCH_RESPONSE),
-_desc(knxMedium, devAddr, projInstallId, serial, multicatAddr, macAddr, name, suppServices)
+_desc(knxMedium, devAddr, projInstallId, serial, multicatAddr, macAddr, name)
 {
 	_control_ip = ctrl_addr;
 	_control_port = ctrl_port;
@@ -24,7 +23,7 @@ _desc(knxMedium, devAddr, projInstallId, serial, multicatAddr, macAddr, name, su
 	//DIB, Supported families, manufacture details
 }
 
-CSearchResponse::CSearchResponse(unsigned char* data, int len):
+CSearchResponse::CSearchResponse(unsigned char* data):
 CEIBNetPacket<EIBNETIP_SEARCH_RESPONSE>(data)
 {
 	CHPAI discovered(data);
@@ -34,7 +33,7 @@ CEIBNetPacket<EIBNETIP_SEARCH_RESPONSE>(data)
 	_control_port = discovered.GetPort();
 
 	if((unsigned)(_header.totalsize - _header.headersize) > sizeof(EIBNETIP_HPAI)){
-		_desc.Parse(data + _data.endpoint.structlength, len - _header.headersize - _data.endpoint.structlength);
+		_desc.Parse(data + _data.endpoint.structlength);
 	}
 }
 
@@ -53,7 +52,7 @@ void CSearchResponse::FillBuffer(unsigned char* buffer, int max_length)
 
 void CSearchResponse::Dump()
 {
-	printf("****************************************************************\n");
+	printf("************************************\n");
 	_desc.Dump();
-	printf("****************************************************************\n");
+	printf("************************************\n");
 }

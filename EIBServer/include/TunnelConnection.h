@@ -42,11 +42,7 @@ public:
 private:
 	int _counter;
 	UDPSocket _sock;
-	bool _stop;
-	bool _self_quit;
 };
-
-typedef JTCHandleT<CTunnelHeartBeat> CTunnelHeartBeatHandle;
 
 class CTunnelingConnection : public IConnection, public JTCMonitor
 {
@@ -109,7 +105,7 @@ protected:
 
 	CConnectionState _state;
 	CONNECTION_STATUS _connection_status;
-	CTunnelHeartBeatHandle _heartbeat;
+	CTunnelHeartBeat* _heartbeat;
 	CString _ipaddress;
 	int _num_out_of_sync_pkts;
 	map<int, JTCMonitor*> _waiting_for_acks;

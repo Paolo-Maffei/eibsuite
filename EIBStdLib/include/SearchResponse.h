@@ -20,9 +20,8 @@ public:
 				    const char serial[],
 				    const char multicatAddr[],
 				    const char macAddr[],
-				    const char name[],
-				    int suppServices);
-	CSearchResponse(unsigned char* data, int len);
+				    const char name[]);
+	CSearchResponse(unsigned char* data);
 	virtual ~CSearchResponse();
 
 	const CString& GetControlIPAddress() const { return _control_ip; }

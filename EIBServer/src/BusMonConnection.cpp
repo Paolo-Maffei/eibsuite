@@ -50,7 +50,9 @@ bool CBusMonConnection::Connect()
 	_device_data_address = con_resp.GetDataIPAddress();
 	_device_data_port = con_resp.GetDataPort();
 
-	_heartbeat = new CTunnelHeartBeat();
+	if(_heartbeat == NULL){
+		_heartbeat = new CTunnelHeartBeat();
+	}
 	_heartbeat->start();
 
 	_connection_status = CONNECTED;

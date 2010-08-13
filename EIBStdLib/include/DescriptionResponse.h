@@ -25,14 +25,6 @@ enum KNXMedium
 	MEDIUM_RF = 0x10
 };
 
-enum SupportedServices
-{
-	SERVICE_CORE = 0x1,
-	SERVICE_DEV_MNGMT = 0x2,
-	SERVICE_TUNNELING = 0x4,
-	SERVICE_ROUTING = 0x8
-};
-
 class EIB_STD_EXPORT CDescriptionResponse : public CEIBNetPacket<EIBNETIP_DESCRIPTION_RESPONSE>
 {
 public:
@@ -43,14 +35,13 @@ public:
 						 const char serial[],
 						 const char multicatAddr[],
 						 const char macAddr[],
-						 const char name[],
-						 int suppServices
+						 const char name[]
 						 );
-	CDescriptionResponse(unsigned char* data, int len);
+	CDescriptionResponse(unsigned char* data);
 
 	virtual ~CDescriptionResponse();
 
-	void Parse(unsigned char* data, int len);
+	void Parse(unsigned char* data);
 	void FillBuffer(unsigned char* buffer, int max_length);
 
 	void Dump();

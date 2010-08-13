@@ -9,8 +9,6 @@ CEIBNetPacket<EIBNETIP_DESCRIPTION_RESPONSE>(DESCRIPTION_RESPONSE)
 	// 1. By itself as a stand alone response the description request
 	// 2. As part of the search response
 	//Note: this version of the constructor is used ONLY in option 2 !!!
-	_data.manufacturer = NULL;
-	_data.supported.data = NULL;
 }
 
 CDescriptionResponse::CDescriptionResponse(
@@ -20,92 +18,48 @@ CDescriptionResponse::CDescriptionResponse(
 		 const char serial[],
 		 const char multicatAddr[],
 		 const char macAddr[],
-		 const char name[],
-		 int suppServices
+		 const char name[]
 		 ):
 CEIBNetPacket<EIBNETIP_DESCRIPTION_RESPONSE>(DESCRIPTION_RESPONSE)
 {
-	EIBNETIP_DEVINF_DIB* devinfodib = &_data.devicehardware;
+	EIBNETIP_DEVINF_DIB* dib = &_data.devicehardware;
 
-	devinfodib->structlength = sizeof(EIBNETIP_DEVINF_DIB);
+	dib->structlength = sizeof(EIBNETIP_DEVINF_DIB);
 
-	devinfodib->descriptiontypecode                = DEVICE_INFO;
+	dib->descriptiontypecode                = DEVICE_INFO;
 
-	devinfodib->knxmedium                          = (unsigned char)knxMedium;
+	dib->knxmedium                          = (unsigned char)knxMedium;
 
-	devinfodib->devicestatus                       = 0x01;                                 // program mode
+	dib->devicestatus                       = 0x01;                                 // program mode
 
-	devinfodib->eibaddress                         = htons( devAddr.ToByteArray() );
+	dib->eibaddress                         = htons( devAddr.ToByteArray() );
 
-	devinfodib->projectinstallationidentifier      = projInstallId;
+	dib->projectinstallationidentifier      = projInstallId;
 
-	devinfodib->serialnumber[0]                    = serial[0];
-	devinfodib->serialnumber[1]                    = serial[1];
-	devinfodib->serialnumber[2]                    = serial[2];
-	devinfodib->serialnumber[3]                    = serial[3];
-	devinfodib->serialnumber[4]                    = serial[4];
-	devinfodib->serialnumber[5]                    = serial[5];
+	dib->serialnumber[0]                    = serial[0];
+	dib->serialnumber[1]                    = serial[1];
+	dib->serialnumber[2]                    = serial[2];
+	dib->serialnumber[3]                    = serial[3];
+	dib->serialnumber[4]                    = serial[4];
+	dib->serialnumber[5]                    = serial[5];
 
 	int mcast = htonl( inet_addr("224.0.23.12") );
-	memcpy( devinfodib->multicastaddress, &mcast, sizeof(mcast));
+	memcpy( dib->multicastaddress, &mcast, sizeof(mcast));
 
-	memcpy( devinfodib->macaddress, macAddr, 6 );
+	memcpy( dib->macaddress, macAddr, 6 );
 
-	memset( devinfodib->name, '\0', 30 );
-	snprintf( (char *)devinfodib->name, 30, "%s", name);
-
-	EIBNETIP_SUPPFAM_DIB* supporteddib = &_data.supported;
-
-	//fast algorithm to count the number of set bits in an integer.
-	suppServices = suppServices - ((suppServices >> 1) & 0x55555555);
-	suppServices = (suppServices & 0x33333333) + ((suppServices >> 2) & 0x33333333);
-	int sum = ((suppServices + ((suppServices >> 4) & 0xF0F0F0F)) * 0x1010101) >> 24;
-
-	if(sum > 0){
-		supporteddib->structlength = (sum * 2) + 2;
-		supporteddib->data = new unsigned char[(sum * 2)];
-	}else{
-		supporteddib->structlength = 2;
-		supporteddib->data = NULL;
-	}
-	supporteddib->descriptiontypecode = SUPP_SVC_FAMILIES;
-	sum = 0;
-	if(suppServices & SERVICE_CORE){
-		supporteddib->data[sum++] = EIBNETIP_CORE;
-		supporteddib->data[sum++] = 0x01;
-	}
-	if(suppServices & SERVICE_DEV_MNGMT){
-		supporteddib->data[sum++] = EIBNETIP_DEVMGMT;
-		supporteddib->data[sum++] = 0x01;
-	}
-	if(suppServices & SERVICE_TUNNELING){
-		supporteddib->data[sum++] = EIBNETIP_TUNNELING;
-		supporteddib->data[sum++] = 0x01;
-	}
-	if(suppServices & SERVICE_ROUTING){
-		supporteddib->data[sum++] = EIBNETIP_ROUTING;
-		supporteddib->data[sum++] = 0x01;
-	}
-
-	_data.manufacturer = NULL;
+	memset( dib->name, '\0', 30 );
+	snprintf( (char *)dib->name, 30, "%s", name);
 }
 
-CDescriptionResponse::CDescriptionResponse(unsigned char* data, int len) :
+CDescriptionResponse::CDescriptionResponse(unsigned char* data) :
 CEIBNetPacket<EIBNETIP_DESCRIPTION_RESPONSE>(data)
 {
-	_data.manufacturer = NULL;
-	_data.supported.data = NULL;
-	Parse(data, len - _header.headersize);
+	Parse(data);
 }
 
 CDescriptionResponse::~CDescriptionResponse()
 {
-	if(_data.manufacturer != NULL){
-		delete _data.manufacturer;
-	}
-	if(_data.supported.data != NULL){
-		delete _data.supported.data;
-	}
 }
 
 void CDescriptionResponse::FillBuffer(unsigned char* buffer, int max_length)
@@ -113,18 +67,14 @@ void CDescriptionResponse::FillBuffer(unsigned char* buffer, int max_length)
 	CEIBNetPacket<EIBNETIP_DESCRIPTION_RESPONSE>::FillBuffer(buffer,max_length);
 }
 
-void CDescriptionResponse::Parse(unsigned char* data, int len)
+void CDescriptionResponse::Parse(unsigned char* data)
 {
 	unsigned char* ptr = data;
 	ParseDevInfoDIB(ptr);
 	ptr += _data.devicehardware.structlength;
-	len -= _data.devicehardware.structlength;
 	ParseSuppFamiliesDIB(ptr);
 	ptr += _data.supported.structlength;
-	len -= _data.supported.structlength;
-	if(len > 0){
-		ParseManufacturerDIB(ptr);
-	}
+	ParseManufacturerDIB(ptr);
 }
 
 void CDescriptionResponse::ParseDevInfoDIB(unsigned char* data)
@@ -160,12 +110,11 @@ void CDescriptionResponse::ParseDevInfoDIB(unsigned char* data)
 void CDescriptionResponse::ParseSuppFamiliesDIB(unsigned char* data)
 {
 	ASSERT_ERROR(data[1] == SUPP_SVC_FAMILIES, "Wrong device description code (supp families)");
+
 	_data.supported.structlength = data[0];
 	_data.supported.descriptiontypecode = data[1];
-	if(data[0] > 2){
-		_data.supported.data = new unsigned char[data[0] - 2];
-		memcpy(_data.supported.data, &data[2], data[0] - 2);
-	}
+	_data.supported.data = new unsigned char[data[0] - 2];
+	memcpy(&_data.supported.data, &data[2], data[0] - 2);
 }
 
 void CDescriptionResponse::ParseManufacturerDIB(unsigned char* data)
@@ -194,7 +143,7 @@ void CDescriptionResponse::Dump()
 		break;
 	}
 	//Status
-	printf("Status: %s\n", _data.devicehardware.devicestatus == 0 ? "OK" : "Unknown");
+	printf("Status: %u\n", _data.devicehardware.devicestatus);
 	//EIB Address
 	CEibAddress addr(_data.devicehardware.eibaddress, false);
 	printf("Physical Address: %s\n", addr.ToString().GetBuffer());
@@ -219,33 +168,5 @@ void CDescriptionResponse::Dump()
 	//Name
 	if(_data.devicehardware.name[0] != '\0'){
 		printf("Name: %s\n", _data.devicehardware.name);
-	}
-	//supported services
-	if(_data.supported.structlength > 2){
-		printf("Supported services: ");
-		for(i = 0; i < _data.supported.structlength - 2; i += 2){
-			switch(_data.supported.data[i])
-			{
-			case EIBNETIP_CORE: printf("Core");
-				break;
-			case EIBNETIP_DEVMGMT: printf("Device management");
-				break;
-			case EIBNETIP_TUNNELING: printf("Tunneling");
-				break;
-			case EIBNETIP_ROUTING: printf("Routing");
-				break;
-			case EIBNETIP_REMLOG: printf("Remote log");
-				break;
-			case EIBNETIP_REMCONF: printf("Remote configuration");
-				break;
-			case EIBNETIP_OBJSRV: printf("Object server");
-				break;
-			}
-
-			if(i < _data.supported.structlength - 4){
-				printf(", ");
-			}
-		}
-		printf(".\n");
 	}
 }

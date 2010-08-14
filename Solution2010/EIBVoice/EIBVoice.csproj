@@ -196,6 +196,9 @@
     <Content Include="..\..\EIBVoice\Images\DeleteHS.png">
       <Link>Images\DeleteHS.png</Link>
     </Content>
+    <Content Include="..\..\EIBVoice\Images\eib-logo.bmp">
+      <Link>Images\eib-logo.bmp</Link>
+    </Content>
     <Content Include="..\..\EIBVoice\Images\Folder_Closed.png">
       <Link>Images\Folder_Closed.png</Link>
     </Content>

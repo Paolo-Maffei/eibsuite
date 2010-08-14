@@ -17,6 +17,7 @@ void webserver_main(bool interactive_conf, bool interactive_usersdb)
 	}
 	else{
 		cerr << "Error during initialization of WEB Server." << endl;
+		exit(1);
 	}
 	//wait for connection establishment with EIB Server
 	JTCThread::sleep(1000);

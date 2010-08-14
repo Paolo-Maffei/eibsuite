@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\WEBServer\src\ContentGenerator.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WEBServer\src\Dispatcher.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WEBServer\src\Main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WEBServer\src\UsersDB.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WEBServer\src\WEBCollector.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WEBServer\src\WebHandler.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WEBServer\src\WEBServer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\WEBServer\src\WEBServerConfig.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\WEBServer\include\ContentGenerator.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WEBServer\include\Dispatcher.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WEBServer\include\Html.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WEBServer\include\UsersDB.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WEBServer\include\WEBCollector.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WEBServer\include\WEBGeneralConf.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WEBServer\include\WebHandler.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WEBServer\include\WEBNetwork.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WEBServer\include\WEBServer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\WEBServer\include\WEBServerConfig.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{f026461e-3dfc-454f-b855-b9c84fb9623f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{f4a8fde1-2dc2-487c-a8ad-67b0fd735f96}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

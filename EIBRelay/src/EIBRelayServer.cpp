@@ -22,7 +22,7 @@ void CEIBRelayServer::Run(void *arg)
 	if (!connected)
 	{
 		LOG_ERROR("\nCannot establish connection with EIB Server!\n");
-		return;
+		exit(1);
 	}
 	else{
 		LOG_INFO("\nEIB Server Connection established.\n");

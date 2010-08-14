@@ -12,7 +12,8 @@ void releyserver_main(bool interactive_conf)
 		CEIBRelayServer::GetInstance().Run(NULL);
 	}
 	else{
-		cerr << "Error during initialization of EIB Relay Server." << endl;
+		cerr << "Error initializating EIB Relay Server. EIBRelay Failed to start." << endl;
+		exit(1);
 	}
 
 	CUtils::WaitForCharInput('q', "Press q to stop EIBRelay Server: ");

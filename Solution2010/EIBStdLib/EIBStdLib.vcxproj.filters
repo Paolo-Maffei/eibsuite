@@ -222,9 +222,6 @@
     <ClInclude Include="..\..\EIBStdLib\include\IConfBase.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\EIBStdLib\include\HPAI.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\EIBStdLib\include\Globals.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -430,6 +427,9 @@
       <Filter>include\EIBStack</Filter>
     </ClInclude>
     <ClInclude Include="..\..\EIBStdLib\include\DescriptionResponse.h">
+      <Filter>include\EIBStack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\HPAI.h">
       <Filter>include\EIBStack</Filter>
     </ClInclude>
   </ItemGroup>

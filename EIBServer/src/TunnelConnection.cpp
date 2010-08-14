@@ -113,11 +113,21 @@ void CTunnelingConnection::InitConnectionParams()
 			_device_control_port = EIB_PORT;
 		}
 		else{
-			CSearchResponse search_resp(buffer);
+			CSearchResponse search_resp(buffer, len);
 			_device_control_address = search_resp.GetControlIPAddress();
 			_device_control_port = search_resp.GetControlPort();
 			LOG_DEBUG("Searching for KNX/IP on local network... Device found!");
 			search_resp.Dump();
+
+			EIBInterfaceInfo info;
+			info.IsValid = true;
+			info.KNXAddress = search_resp.GetDeviceDescription().GetAddress();
+			info.MACAddr = search_resp.GetDeviceDescription().GetMACAddress();
+			info.MulticastAddr = search_resp.GetDeviceDescription().GetMulticastAddress();
+			info.Name = search_resp.GetDeviceDescription().GetName();
+			info.SerialNumber = search_resp.GetDeviceDescription().GetSerialNum();
+			info.SupportedServices = search_resp.GetDeviceDescription().GetSupportedServicesMask();
+			CEIBServer::GetInstance().GetEIBInterface().SetInterfaceInfo(info);
 		}
 	}
 	else

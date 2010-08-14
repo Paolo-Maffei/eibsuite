@@ -2,33 +2,24 @@
 
 using namespace EibStack;
 
-CEibAddress::CEibAddress() : _group_type(GROUP_3_LEVEL_FORMAT)
+CEibAddress::CEibAddress()
 {
-	_high = 0;
-	_low = 0;
-	_is_logical = false;
+	Set((unsigned int)0, false);
 }
 
 CEibAddress::CEibAddress(const CEibAddress& rhs)
 {
-	_high = rhs._high;
-	_low = rhs._low;
-	_is_logical = rhs._is_logical;
-	_group_type = rhs._group_type;
+	*this = rhs;
 }
 
-CEibAddress::CEibAddress(unsigned char* body, bool is_group) : _group_type(GROUP_3_LEVEL_FORMAT)
+CEibAddress::CEibAddress(unsigned char* body, bool is_group)
 {
-	_high = (unsigned short)body[0];
-	_low = (unsigned short)body[1];
-	_is_logical = is_group;
+	Set(body, is_group);
 }
 
-CEibAddress::CEibAddress(unsigned int address, bool is_group) : _group_type(GROUP_3_LEVEL_FORMAT)
+CEibAddress::CEibAddress(unsigned int address, bool is_group)
 {
-    _high = (unsigned short) ((address & 0xFF00) >> 8);
-    _low = (unsigned short) ((address) & 0x00FF);
-    _is_logical = is_group;
+    Set(address, is_group);
 }
 
 void CEibAddress::Set(unsigned char* body, bool is_group)
@@ -36,6 +27,14 @@ void CEibAddress::Set(unsigned char* body, bool is_group)
 	_group_type = GROUP_3_LEVEL_FORMAT;
 	_high = (unsigned short)body[0];
 	_low = (unsigned short)body[1];
+	_is_logical = is_group;
+}
+
+void CEibAddress::Set(unsigned int address, bool is_group)
+{
+	_group_type = GROUP_3_LEVEL_FORMAT;
+	_high = (unsigned short) ((address & 0xFF00) >> 8);
+	_low = (unsigned short) ((address) & 0x00FF);
 	_is_logical = is_group;
 }
 

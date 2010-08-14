@@ -77,6 +77,7 @@ public:
 	virtual ~CEibAddress();
 
 	void Set(unsigned char* body, bool is_group);
+	void Set(unsigned int address, bool is_group);
 
 	bool IsGroupAddress() const;
 	unsigned char GetZone() const;

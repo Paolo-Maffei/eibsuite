@@ -20,12 +20,14 @@ public:
 				    const char serial[],
 				    const char multicatAddr[],
 				    const char macAddr[],
-				    const char name[]);
-	CSearchResponse(unsigned char* data);
+				    const char name[],
+				    int suppServices);
+	CSearchResponse(unsigned char* data, int len);
 	virtual ~CSearchResponse();
 
 	const CString& GetControlIPAddress() const { return _control_ip; }
 	unsigned short GetControlPort() const { return _control_port; }
+	const CDescriptionResponse& GetDeviceDescription() const { return _desc; }
 
 	void FillBuffer(unsigned char* buffer, int max_length);
 

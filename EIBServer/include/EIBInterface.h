@@ -38,6 +38,18 @@ typedef struct EIBInterfaceStats
 	int _total_received;
 }EIBInterfaceStats;
 
+typedef struct EIBInterfaceInfo
+{
+	bool IsValid;
+	CString Name;
+	CString MulticastAddr;
+	CString MACAddr;
+	CString SerialNumber;
+	int SupportedServices;
+	CEibAddress KNXAddress;
+
+}EIBInterfaceInfo;
+
 /*! \class CEIBInterface
 	\brief Provides an interface between the EIB Server and the EIB System.
 
@@ -88,6 +100,8 @@ public:
 	IConnection* GetConnection();
 
 	const EIBInterfaceStats& GetInterfaceStats() { return _stats; }
+	const EIBInterfaceInfo& GetInterfaceInfo() { return _info; }
+	void SetInterfaceInfo(EIBInterfaceInfo& info) { _info = info; }
 
 private:
 	//device mode
@@ -96,6 +110,7 @@ private:
 	IConnection* _connection;
 	//statistics object
 	EIBInterfaceStats _stats;
+	EIBInterfaceInfo _info;
 };
 
 #endif

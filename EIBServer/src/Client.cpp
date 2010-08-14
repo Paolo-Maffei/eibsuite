@@ -118,6 +118,8 @@ void CClient::HandleIncomingPktsFromClient(char* buffer, int max_len, const CUse
 		break;
 	case EIB_MSG_TYPE_CLINET_DISCONNECT:
 		if(header->_client_type == this->_client_type){
+			CEIBServer::GetInstance().GetLog().SetConsoleColor(GREEN);
+			LOG_DEBUG("[%s] [Received] Disconnect Request",_client_name.GetBuffer());
 			//close the heart beat thread and leave
 			this->Close();
 			//disconnect (will cause the main loop the break)

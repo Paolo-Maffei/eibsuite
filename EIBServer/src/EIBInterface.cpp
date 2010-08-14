@@ -9,6 +9,9 @@ _connection(NULL)
 	_stats._last_time_sent.SetTime(0);
 	_stats._total_sent = 0;
 	_stats._total_received = 0;
+
+	_info.IsValid = false;
+	_info.SupportedServices = 0;
 }
 
 CEIBInterface::~CEIBInterface()

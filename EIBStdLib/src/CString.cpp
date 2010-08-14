@@ -599,40 +599,40 @@ unsigned int CString::HashCode() const
 	return hash;
 }
 
-CString CString::ToHexFormat(char val)
+CString CString::ToHexFormat(char val, bool include_prefix)
 {
-	return ToHexFormat(sizeof(char) * 2,ToHex((int)val));
+	return ToHexFormat(sizeof(char) * 2,ToHex((int)val), include_prefix);
 }
 
-CString CString::ToHexFormat(unsigned char val)
+CString CString::ToHexFormat(unsigned char val, bool include_prefix)
 {
-	return ToHexFormat(sizeof(unsigned char) * 2,ToHex((unsigned int)val));
+	return ToHexFormat(sizeof(unsigned char) * 2,ToHex((unsigned int)val), include_prefix);
 }
 
-CString CString::ToHexFormat(short val)
+CString CString::ToHexFormat(short val, bool include_prefix)
 {
-	return ToHexFormat(sizeof(short) * 2,ToHex(val));
+	return ToHexFormat(sizeof(short) * 2,ToHex(val), include_prefix);
 }
 
-CString CString::ToHexFormat(unsigned short val)
+CString CString::ToHexFormat(unsigned short val, bool include_prefix)
 {
-	return ToHexFormat(sizeof(unsigned short) * 2,ToHex(val));
+	return ToHexFormat(sizeof(unsigned short) * 2,ToHex(val), include_prefix);
 }
 
-CString CString::ToHexFormat(int val)
+CString CString::ToHexFormat(int val, bool include_prefix)
 {
-	return ToHexFormat(sizeof(unsigned int) * 2,ToHex(val));
+	return ToHexFormat(sizeof(unsigned int) * 2,ToHex(val), include_prefix);
 }
 
-CString CString::ToHexFormat(unsigned int val)
+CString CString::ToHexFormat(unsigned int val, bool include_prefix)
 {
-	return ToHexFormat(sizeof(unsigned int) * 2,ToHex(val));
+	return ToHexFormat(sizeof(unsigned int) * 2,ToHex(val), include_prefix);
 }
 
-CString CString::ToHexFormat(int wanted_length, const CString& current)
+CString CString::ToHexFormat(int wanted_length, const CString& current, bool include_prefix)
 {
 	if (wanted_length > current.GetLength()){
-		CString res = "0x";
+		CString res = include_prefix ? "0x" : EMPTY_STRING;
 		for(int i=0; i < wanted_length - current.GetLength(); ++i){
 			res += '0';
 		}
@@ -640,7 +640,10 @@ CString CString::ToHexFormat(int wanted_length, const CString& current)
 		return res;
 	}
 	else{
-		return (CString("0x") + current);
+		if(include_prefix)
+			return (CString("0x") + current);
+		else
+			return current;
 	}
 }
 

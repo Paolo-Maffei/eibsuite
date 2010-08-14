@@ -440,15 +440,15 @@ public:
 	bool UIntFromHexString(unsigned int& val) const;
 	
 
-	static CString ToHexFormat(char val);
-	static CString ToHexFormat(unsigned char val);
-	static CString ToHexFormat(short val);
-	static CString ToHexFormat(unsigned short val);
-	static CString ToHexFormat(int val);
-	static CString ToHexFormat(unsigned int val);
+	static CString ToHexFormat(char val, bool include_prefix = true);
+	static CString ToHexFormat(unsigned char val, bool include_prefix = true);
+	static CString ToHexFormat(short val, bool include_prefix = true);
+	static CString ToHexFormat(unsigned short val, bool include_prefix = true);
+	static CString ToHexFormat(int val, bool include_prefix = true);
+	static CString ToHexFormat(unsigned int val, bool include_prefix = true);
 
 private:
-	static CString ToHexFormat(int n_left_padding, const CString& current);
+	static CString ToHexFormat(int n_left_padding, const CString& current, bool include_prefix);
 
 private:
 	string _str;

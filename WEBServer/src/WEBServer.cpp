@@ -45,7 +45,7 @@ void CWEBServer::Run(void *arg)
 	if (!established)
 	{
 		_log.Log(LOG_LEVEL_INFO,"\nCannot establish connection with EIB Server!\n");
-		return;
+		exit(1);
 	}
 	else{
 		_log.Log(LOG_LEVEL_INFO,"\nEIB Server Connection established.\n");

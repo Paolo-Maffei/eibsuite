@@ -94,7 +94,7 @@ void CSMSServer::Run()
 	if (!_agent->ConnectToEIB())
 	{
 		LOG_INFO("\nCannot establish connection with EIB Server!\n");
-		return;
+		exit(1);
 	}
 
 	LOG_INFO("\nEIB Server Connection established.\n");

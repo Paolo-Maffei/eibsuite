@@ -9,24 +9,9 @@ int main()
 	}
 	else{
 		cerr << "Error during initialization of AMX Server." << endl;
+		exit(1);
 	}
-	//wait for connection establishment with EIB Server
-	JTCThread::sleep(1000);
-	
-	char x = (char)0 ;
-	while (true)
-	{
-		cout << endl << "Press q to stop AMX Server: ";
-		cin >> x ;
-		if(x != 'q'){
-			cout << "Incorrect Choice." << endl;
-			cin.ignore(INT_MAX,'\n');
-		}
-		else{
-			break;
-		}
-	}
-	
+	CUtils::WaitForCharInput('q', "Press q to stop AMX Server: ", true);
 	CAMXServer::GetInstance().Close();
 	return 0;
 }

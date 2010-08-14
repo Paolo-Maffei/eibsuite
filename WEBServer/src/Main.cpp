@@ -20,22 +20,7 @@ void webserver_main(bool interactive_conf, bool interactive_usersdb)
 		exit(1);
 	}
 	//wait for connection establishment with EIB Server
-	JTCThread::sleep(1000);
-
-	char x = (char)0 ;
-	while (true)
-	{
-		cout << endl << "Press q to stop WEB Server: " << endl;
-		cin >> x ;
-		if(x != 'q'){
-			cout << "Incorrect Choice." << endl;
-			cin.ignore(INT_MAX,'\n');
-		}
-		else{
-			break;
-		}
-	}
-
+	CUtils::WaitForCharInput('q', "Press q to stop WEB Server: ", true);
 	CWEBServer::GetInstance().Close();
 }
 

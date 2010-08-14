@@ -19,6 +19,7 @@ void smsserver_main(bool interactive_conf, bool interactive_smsdb)
 	}
 	else{
 		cerr << "Error during initialization of SMS Server." << endl;
+		exit(1);
 	}
 
 	CUtils::WaitForCharInput('q', "Press q to stop SMS Server: ");

@@ -157,6 +157,8 @@ start:
 		goto start;
 		break;
 	case 5: Save();
+		CEIBServer::GetInstance().GetLog().SetConsoleColor(GREEN);
+		LOG_INFO("\nUsers file: \"%s\" saved successfully. the new file will be loaded automatically.\n", file_name.GetBuffer());
 		break;
 	case 6: return;
 	case NO_DEFAULT_OPTION: goto start;

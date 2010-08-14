@@ -64,8 +64,8 @@ namespace EIBConsole
                 _user.Priviliges |= EIBUsersConf.USER_POLICY_CONSOLE_ACCESS;
             }
 
-            _user.SrcMask = ushort.Parse(this.tbSAMask.Text, System.Globalization.NumberStyles.HexNumber);
-            _user.DstMask = ushort.Parse(this.tbDAMask.Text, System.Globalization.NumberStyles.HexNumber);
+            _user.SrcMask = ushort.Parse(this.tbSAMask.Text.Substring(2, this.tbSAMask.Text.Length - 2), System.Globalization.NumberStyles.HexNumber);
+            _user.DstMask = ushort.Parse(this.tbDAMask.Text.Substring(2, this.tbDAMask.Text.Length - 2), System.Globalization.NumberStyles.HexNumber);
         }
 
         public EIBUserConf CurrentUser
@@ -92,8 +92,8 @@ namespace EIBConsole
 
             try
             {
-                ushort.Parse(this.tbSAMask.Text, System.Globalization.NumberStyles.HexNumber);
-                ushort.Parse(this.tbDAMask.Text, System.Globalization.NumberStyles.HexNumber);
+                ushort.Parse(this.tbSAMask.Text.Substring(2,this.tbSAMask.Text.Length - 2) , System.Globalization.NumberStyles.HexNumber);
+                ushort.Parse(this.tbDAMask.Text.Substring(2, this.tbDAMask.Text.Length - 2), System.Globalization.NumberStyles.HexNumber);
             }
             catch (Exception e)
             {

@@ -36,9 +36,13 @@ void CEIBHandler::RunEIBReader()
 	CEIBInterface& eib_ifc = CEIBServer::GetInstance().GetEIBInterface();
 	CClientsMgrHandle& c_mgr = CEIBServer::GetInstance().GetClientsManager();
 	
+	JTCSynchronized sync(_wait_mon);
+	JTCSynchronized _sync(*this);
+
 	while (!_stop)
 	{
 		START_TRY
+
 			if(eib_ifc.Read(msg))
 			{
 				//insert packet statistics
@@ -54,6 +58,8 @@ void CEIBHandler::RunEIBReader()
 			{
 				_wait_mon.wait();
 			}
+
+			this->wait(1);
 
 		END_TRY_START_CATCH(e)
 			LOG_ERROR("Exception at EIB Reader handler: %s",e.what());
@@ -94,6 +100,7 @@ void CEIBHandler::RunEIBWriter()
 	KnxElementQueue msg2write;
 	CEIBInterface& iface = CEIBServer::GetInstance().GetEIBInterface();
 
+	JTCSynchronized sync(_wait_mon);
 	//sync the reading from the queue
 	JTCSynchronized _sync(*this);
 

@@ -43,12 +43,24 @@ void CEIBInterfaceConf::ToXml(CDataBuffer& xml_str)
 	root.InsertChild(EIB_INTERFACE_TOTAL_PACKETS_RECEIVED_XML).SetValue(stats._total_received);
 	root.InsertChild(EIB_INTERFACE_RUNNING_STATUS_XML).SetValue(eib_interface.GetConnection()->IsConnected());
 	
+	if(eib_interface.GetInterfaceInfo().IsValid)
+	{
+		CXmlElement infoElem = root.InsertChild(EIB_INTERFACE_DEV_DESCRIPTION_XML);
+		const EIBInterfaceInfo& info = eib_interface.GetInterfaceInfo();
+		infoElem.InsertChild(EIB_INTERFACE_DEV_NAME_XML).SetValue(info.Name);
+		infoElem.InsertChild(EIB_INTERFACE_DEV_MAC_ADDRESS_XML).SetValue(info.MACAddr);
+		infoElem.InsertChild(EIB_INTERFACE_DEV_MULTICAST_ADDRESS_XML).SetValue(info.MulticastAddr);
+		infoElem.InsertChild(EIB_INTERFACE_DEV_SERIAL_NUMBER_XML).SetValue(info.SerialNumber);
+		infoElem.InsertChild(EIB_INTERFACE_DEV_SUPPORTED_SERVICES_XML).SetValue(info.SupportedServices);
+		infoElem.InsertChild(EIB_INTERFACE_DEV_PHY_ADDRESS_XML).SetValue(info.KNXAddress.ToString());
+	}
+
 	_doc.ToString(xml_str);
 
 }
 void CEIBInterfaceConf::FromXml(const CDataBuffer& xml_str)
 {
-	
+	throw CEIBException(NotImplementedError, "This method is not implemented.");
 }
 
 bool CEIBInterfaceConf::StopInterface(CDataBuffer& xml_str)

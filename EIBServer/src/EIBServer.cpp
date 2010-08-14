@@ -2,7 +2,6 @@
 #include "Globals.h"
 #include "cli.h"
 
-JTCInitialize init;
 CEIBServer* CEIBServer::_instance = NULL;
 
 CEIBServer::CEIBServer():

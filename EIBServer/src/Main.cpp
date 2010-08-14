@@ -4,6 +4,7 @@ using namespace std;
 
 void eibserver_main(bool interactive_conf, bool interactive_usersdb)
 {
+	JTCInitialize init;
 	CEIBServer::Create();
 	
 	if(interactive_conf){
@@ -22,6 +23,7 @@ void eibserver_main(bool interactive_conf, bool interactive_usersdb)
 	}
 	else{
 		cerr << endl << "Server Failed to start: initialization of EIB Server failed." << endl;
+		exit(1);
 	}
 
 	CUtils::WaitForCharInput('q', "Press q to stop EIB Server: ", true);

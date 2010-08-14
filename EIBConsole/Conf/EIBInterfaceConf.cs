@@ -12,7 +12,19 @@ namespace EIBConsole.Conf
         MODE_TUNNELING,
         MODE_UNKNOWN
     }
-    
+
+    [Flags]
+    public enum SupportedServices
+    {
+        SERVICE_CORE = 0x01,
+        SERVICE_DEV_MNGMT = 0x02,
+        SERVICE_TUNNELING = 0x04,
+        SERVICE_ROUTING = 0x08,
+        SERVICE_REMLOG = 0x10,
+        SERVICE_REMCONF = 0x20,
+        SERVICE_OBJSRV = 0x40
+    };
+
     [XmlRoot("Root")]
     public class EIBInterfaceConf
     {
@@ -34,6 +46,24 @@ namespace EIBConsole.Conf
         public int TotalPacketsReceived { get; set; }
         [XmlElement(ConsoleDefinitions.EIBInterfaceConf.EIB_INTERFACE_TOTAL_PACKETS_SENT_XML)]
         public int TotalPacketsSent { get; set; }
+        [XmlElement(ConsoleDefinitions.EIBInterfaceConf.EIB_INTERFACE_DEV_DESCRIPTION_XML)]
+        public EIBDeviceInfo DeviceInfo { get; set; }
+    }
 
+    [XmlRoot(ConsoleDefinitions.EIBInterfaceConf.EIB_INTERFACE_DEV_DESCRIPTION_XML)]
+    public class EIBDeviceInfo
+    {
+        [XmlElement(ConsoleDefinitions.EIBInterfaceConf.EIB_INTERFACE_DEV_NAME_XML)]
+        public string Name;
+        [XmlElement(ConsoleDefinitions.EIBInterfaceConf.EIB_INTERFACE_DEV_MAC_ADDRESS_XML)]
+        public string MacAddress;
+        [XmlElement(ConsoleDefinitions.EIBInterfaceConf.EIB_INTERFACE_DEV_SERIAL_NUMBER_XML)]
+        public string SerialNumber;
+        [XmlElement(ConsoleDefinitions.EIBInterfaceConf.EIB_INTERFACE_DEV_MULTICAST_ADDRESS_XML)]
+        public string MulticastAddress;
+        [XmlElement(ConsoleDefinitions.EIBInterfaceConf.EIB_INTERFACE_DEV_PHY_ADDRESS_XML)]
+        public string PhysicalAddress;
+        [XmlElement(ConsoleDefinitions.EIBInterfaceConf.EIB_INTERFACE_DEV_SUPPORTED_SERVICES_XML)]
+        public int SupportedServices;
     }
 }

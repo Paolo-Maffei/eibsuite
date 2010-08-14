@@ -54,10 +54,24 @@ namespace EIBConsole.Controls
                 this.lblTotalSent.Text = _conf.TotalPacketsSent.ToString();
 
                 this.pbStatus.Image = this.imageList1.Images[_conf.Running ? "device_running" : "device_stopped"];
-                this.label1.Text = _conf.Running ? "Running" : "Not Running";
+                this.lblStatusValue.Text = _conf.Running ? "Running" : "Not Running";
 
                 this.btnStopInterface.Enabled = _conf.Running;
                 this.btnStartInterface.Enabled = !_conf.Running;
+
+                this.lblDeviceNameValue.Text = _conf.DeviceInfo.Name;
+                this.lblMacAddressValue.Text = _conf.DeviceInfo.MacAddress;
+                this.lblMcastAddressValue.Text = _conf.DeviceInfo.MulticastAddress;
+                this.lblPhyAddressValue.Text = _conf.DeviceInfo.PhysicalAddress;
+                this.lblSerialNumValue.Text = _conf.DeviceInfo.SerialNumber;
+
+                this.cbServiceCore.Checked = (_conf.DeviceInfo.SupportedServices & (int)SupportedServices.SERVICE_CORE) != 0;
+                this.cbServiceDevMngmt.Checked = (_conf.DeviceInfo.SupportedServices & (int)SupportedServices.SERVICE_DEV_MNGMT) != 0;
+                this.cbServiceObjSrv.Checked = (_conf.DeviceInfo.SupportedServices & (int)SupportedServices.SERVICE_OBJSRV) != 0;
+                this.cbServiceRemConf.Checked = (_conf.DeviceInfo.SupportedServices & (int)SupportedServices.SERVICE_REMCONF) != 0;
+                this.cbServiceRemLog.Checked = (_conf.DeviceInfo.SupportedServices & (int)SupportedServices.SERVICE_REMLOG) != 0;
+                this.cbServiceRouting.Checked = (_conf.DeviceInfo.SupportedServices & (int)SupportedServices.SERVICE_ROUTING) != 0;
+                this.cbServiceTunneling.Checked = (_conf.DeviceInfo.SupportedServices & (int)SupportedServices.SERVICE_TUNNELING) != 0;
             }
             else
             {
@@ -69,7 +83,7 @@ namespace EIBConsole.Controls
         {
             this.Dock = DockStyle.Fill;
             this.pbStatus.Image = this.imageList1.Images["device_unknown"];
-            this.label1.Text = "Unknown";
+            this.lblStatusValue.Text = "Unknown";
         }
 
         #region IRefreshable Members
@@ -94,7 +108,7 @@ namespace EIBConsole.Controls
             this.lblTotalSent.Text = "0";
 
             this.pbStatus.Image = this.imageList1.Images["device_unknown"];
-            this.label1.Text = "Unknown";
+            this.lblStatusValue.Text = "Unknown";
 
             this.btnStopInterface.Enabled = false;
             this.btnStartInterface.Enabled = false;

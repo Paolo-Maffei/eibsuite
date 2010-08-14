@@ -282,9 +282,13 @@ bool CGenericServer::FirstPhaseConnection(const CString& key,const char* local_i
 		_data_sock.SendTo(request.GetBuffer(),request.GetLength(),_eib_address,_eib_port);
 		reply_length = _data_sock.RecvFrom(buff,buf_len,s_address,s_port,5000);
 
+	END_TRY_START_CATCH(ex)
+		GetLog()->SetConsoleColor(RED);
+		GetLog()->Log(LOG_LEVEL_ERROR,"[%s] Cannot connect to eib server: %s",GetUserName().GetBuffer(),ex.what());
+ 		return false;
 	END_TRY_START_CATCH_SOCKET(e)
 		GetLog()->SetConsoleColor(RED);
-		GetLog()->Log(LOG_LEVEL_ERROR,"[%s] Cannot connect to eib server..			. Reason: %s",GetUserName().GetBuffer(),e.what());
+		GetLog()->Log(LOG_LEVEL_ERROR,"[%s] Socket Error: Reason: %s",GetUserName().GetBuffer(),e.what());
  		return false;
 	END_TRY_START_CATCH_ANY
 		GetLog()->SetConsoleColor(RED);

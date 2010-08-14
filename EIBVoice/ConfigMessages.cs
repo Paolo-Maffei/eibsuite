@@ -164,6 +164,7 @@ namespace EIBVoice
             {
                 MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 OpenFileDialog ofd = new OpenFileDialog();
+                ofd.InitialDirectory = System.IO.Directory.GetCurrentDirectory();
                 ofd.Multiselect = false;
                 ofd.DefaultExt = "xsd";
                 ofd.Filter = "XML Schema files (*.xsd)|*.xsd";

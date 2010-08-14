@@ -56,7 +56,9 @@ void CEIBHandler::RunEIBReader()
 
 			if(_pause)
 			{
+				LOG_DEBUG("EIB Reader suspended.");
 				_wait_mon.wait();
+				LOG_DEBUG("EIB Reader resumed.");
 			}
 
 			this->wait(1);
@@ -114,11 +116,13 @@ void CEIBHandler::RunEIBWriter()
 
 			if(_pause)
 			{
+				LOG_DEBUG("EIB Writer suspended.");
 				_wait_mon.wait();
+				LOG_DEBUG("EIB Writer resumed.");
 			}
 
-			//release the lock untill the buffer will be filled up
-			this->wait();
+			//release the lock untill the buffer will be filled up or 1 sec passed (to give change to the pause feature)
+			this->wait(1000);
 		END_TRY_START_CATCH_JTC(e)
 			LOG_ERROR("JTC Error: %s",e.getMessage());
 		END_TRY_START_CATCH(ex)

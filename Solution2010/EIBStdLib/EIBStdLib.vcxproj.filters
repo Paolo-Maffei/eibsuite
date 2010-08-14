@@ -190,6 +190,12 @@
     <ClCompile Include="..\..\EIBStdLib\src\EIBAddress.cpp">
       <Filter>src\EIBStack</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\DescriptionRequest.cpp">
+      <Filter>src\EIBStack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBStdLib\src\DescriptionResponse.cpp">
+      <Filter>src\EIBStack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\EIBStdLib\include\xml\action_store.h">
@@ -419,6 +425,12 @@
     </ClInclude>
     <ClInclude Include="..\..\EIBStdLib\include\DummyThread.h">
       <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\DescriptionRequest.h">
+      <Filter>include\EIBStack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EIBStdLib\include\DescriptionResponse.h">
+      <Filter>include\EIBStack</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

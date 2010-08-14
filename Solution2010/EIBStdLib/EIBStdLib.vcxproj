@@ -89,6 +89,8 @@
     <ClCompile Include="..\..\EIBStdLib\src\CMutex.cpp" />
     <ClCompile Include="..\..\EIBStdLib\src\ConfigFile.cpp" />
     <ClCompile Include="..\..\EIBStdLib\src\CTime.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\DescriptionRequest.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\DescriptionResponse.cpp" />
     <ClCompile Include="..\..\EIBStdLib\src\DiffieHellman.cpp" />
     <ClCompile Include="..\..\EIBStdLib\src\Directory.cpp" />
     <ClCompile Include="..\..\EIBStdLib\src\GenericServer.cpp" />
@@ -180,6 +182,8 @@
     <ClInclude Include="..\..\EIBStdLib\include\ConfigFile.h" />
     <ClInclude Include="..\..\EIBStdLib\include\ConsoleColor.h" />
     <ClInclude Include="..\..\EIBStdLib\include\CTime.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\DescriptionRequest.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\DescriptionResponse.h" />
     <ClInclude Include="..\..\EIBStdLib\include\Directory.h" />
     <ClInclude Include="..\..\EIBStdLib\include\DummyThread.h" />
     <ClInclude Include="..\..\EIBStdLib\include\EibNetwork.h" />

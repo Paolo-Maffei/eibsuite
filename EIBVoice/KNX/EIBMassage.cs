@@ -17,9 +17,9 @@ namespace EIBVoice.KNX
         [XmlIgnore()]
         public byte Control2 = 0xd0;
         [XmlIgnore()]
-        public ushort SrceAddress = 0x01;
+        public EIBAddress SrcAddress = new EIBAddress();
         [XmlIgnore()]
-        public ushort DestAddress = 0x00;
+        public EIBAddress DestAddress = new EIBAddress();
         [XmlIgnore()]
         public byte Length = 0x29;
         [XmlElement("TCPI")]
@@ -30,19 +30,20 @@ namespace EIBVoice.KNX
         public byte[] Data = null;
 
         [XmlElement("SourceAddress")]
-        public ushort SourceAddress
+        public EIBAddress SourceAddress
         {
-            get { return SrceAddress; }
-            set { SrceAddress = value;}
+            get { return SrcAddress; }
+            set { SrcAddress = value;}
         }
 
         [XmlElement("DestinationAddress")]
-        public ushort DestinationAddress
+        public EIBAddress DestinationAddress
         {
             get { return DestAddress; }
             set { DestAddress = value;}
         }
 
+        
         public EIBTelegram()
         {
         }
@@ -55,10 +56,8 @@ namespace EIBVoice.KNX
             arr[1] = AddIL;
             arr[2] = Control1;
             arr[3] = Control2;
-            arr[4] = (byte)((SrceAddress & (ushort)0xff00) >> 8);
-            arr[5] = (byte)(SrceAddress & (ushort)0x00ff);
-            arr[6] = (byte)((DestAddress & (ushort)0xff00) >> 8);
-            arr[7] = (byte)(DestAddress & (ushort)0x00ff);
+            SrcAddress.ToByteArray().CopyTo(arr, 4);
+            DestAddress.ToByteArray().CopyTo(arr, 6);
             arr[8] = Data != null ? (byte)(1 + Data.Length) : (byte)1;
             arr[9] = TCPI;
             arr[10] = APCI;

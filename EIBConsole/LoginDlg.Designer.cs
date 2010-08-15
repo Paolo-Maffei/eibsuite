@@ -57,7 +57,7 @@
             this.tbServerAddress.ReadOnly = false;
             this.tbServerAddress.Size = new System.Drawing.Size(124, 20);
             this.tbServerAddress.TabIndex = 0;
-            this.tbServerAddress.Text = "192.168.1.102";
+            this.tbServerAddress.Text = "192.168.1.104";
             // 
             // gbLogin
             // 
@@ -83,7 +83,7 @@
             this.tbPassword.PasswordChar = '*';
             this.tbPassword.Size = new System.Drawing.Size(124, 20);
             this.tbPassword.TabIndex = 3;
-            this.tbPassword.Text = "eibadmin1";
+            this.tbPassword.Text = "1234";
             this.tbPassword.UseSystemPasswordChar = true;
             // 
             // label2
@@ -101,7 +101,7 @@
             this.tbUserName.Name = "tbUserName";
             this.tbUserName.Size = new System.Drawing.Size(124, 20);
             this.tbUserName.TabIndex = 2;
-            this.tbUserName.Text = "eibadmin";
+            this.tbUserName.Text = "admin";
             // 
             // label1
             // 

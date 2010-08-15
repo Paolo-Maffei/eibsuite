@@ -49,10 +49,11 @@ bool CEIBRelayServer::Init()
 	bool res = true;
 
 	START_TRY
+		_log.SetPrinterMethod(printf);
 		_log.Init(CURRENT_LOGS_FOLDER + DEFAULT_LOG_FILE_NAME);
-		_log.Log(LOG_LEVEL_INFO,"Initializing Log manager...Successful");
+		LOG_INFO("Initializing Log manager...Successful");
 	END_TRY_START_CATCH_ANY
-		cerr << "Initializing Log manager...Failed." << endl;
+		LOG_ERROR("Initializing Log manager...Failed.");
 		return false;
 	END_CATCH
 		

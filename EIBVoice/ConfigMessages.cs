@@ -67,24 +67,42 @@ namespace EIBVoice
 
             if (e.SubItem == 2 || e.SubItem == 3)
             {
-                _hex_form.FormHexType = FormHexType.UShort;
+                EditEIBAddress(e);
+                return;
             }
             else
             {
-                _hex_form.FormHexType = FormHexType.Byte;
+                EditHexValue(e);
+                return;
             }
-            string hex_str = e.Item.SubItems[e.SubItem].Text.Remove(0,2);
+        }
+
+        private void EditHexValue(SubItemEventArgs e)
+        {
+            _hex_form.FormHexType = FormHexType.Byte;
+            string hex_str = e.Item.SubItems[e.SubItem].Text.Remove(0, 2);
             int int_val = Convert.ToInt32(hex_str, 16);
 
             _hex_form.SetDecimalValue(int_val);
-            
+
             if (_hex_form.ShowDialog() == DialogResult.OK)
             {
                 e.Item.SubItems[e.SubItem].Text = String.Format("0x{0}", _hex_form.CurrentValue.ToUpper());
                 DataRow telegram_row = ((DataRow)e.Item.Tag).GetChildRows(_ds.Relations[0])[0];
-                
                 telegram_row[e.SubItem - 1] = Convert.ToInt16(_hex_form.CurrentValue, 16);
             }
+        }
+
+        private void EditEIBAddress(SubItemEventArgs e)
+        {
+            EIBAddressForm frm = new EIBAddressForm();
+            frm.CurrentValue = new KNX.EIBAddress(e.Item.SubItems[e.SubItem].Text);
+            if (frm.ShowDialog() == DialogResult.OK)
+            {
+                e.Item.SubItems[e.SubItem].Text = frm.CurrentValue.ToString();
+                DataRow telegram_row = ((DataRow)e.Item.Tag).GetChildRows(_ds.Relations[0])[0];
+                telegram_row[e.SubItem - 1] = frm.CurrentValue;
+             }
         }
 
         public void LoadData(string file_name)
@@ -128,8 +146,8 @@ namespace EIBVoice
                 item.Text = row["Phrase"].ToString();;
                 
                 item.SubItems.Add("0x" + ((byte)data["MessageControl"]).ToString("X"));
-                item.SubItems.Add("0x" + ((ushort)data["SourceAddress"]).ToString("X"));
-                item.SubItems.Add("0x" + ((ushort)data["DestinationAddress"]).ToString("X"));
+                item.SubItems.Add(data["SourceAddress"].ToString());
+                item.SubItems.Add(data["DestinationAddress"].ToString());
                 item.SubItems.Add("0x" + ((byte)data["TCPI"]).ToString("X"));
                 item.SubItems.Add("0x" + ((byte)data["APCI"]).ToString("X"));
 
@@ -255,9 +273,9 @@ namespace EIBVoice
             //control field
             item.SubItems.Add("0x29");
             //source address
-            item.SubItems.Add("0x1102");
+            item.SubItems.Add("0/0/0");
             //destination address
-            item.SubItems.Add("0x1004");
+            item.SubItems.Add("0/0/0");
             //TPCI
             item.SubItems.Add("0x0");
             //ACPI

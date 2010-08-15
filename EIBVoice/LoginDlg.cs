@@ -74,6 +74,7 @@ namespace EIBVoice
                 {
                     if (info.Address.AddressFamily == AddressFamily.InterNetwork && IPAddress.Loopback.ToString() != info.Address.ToString())
                     {
+                        //dbg
                         local_ip = info.Address.ToString();
                         break;
                     }
@@ -82,14 +83,20 @@ namespace EIBVoice
 
             try
             {
+                local_ip = "192.168.1.100";
+                bool res = server.OpenConnection(network_name,
+                                                 ServerAddress,
+                                                 ServerPort,
+                                                 initial_key,
+                                                 local_ip,
+                                                 UserName,
+                                                 Password);
 
-                return server.OpenConnection(network_name,
-                                             ServerAddress,
-                                             ServerPort,
-                                             initial_key,
-                                             local_ip,
-                                             UserName,
-                                             Password);
+                if (!res)
+                {
+                    server.Close();
+                }
+                return res;
             }
             catch (Exception e)
             {

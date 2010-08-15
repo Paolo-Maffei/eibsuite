@@ -25,6 +25,8 @@ enum EIB_STD_EXPORT LogLevel
 	LOG_LEVEL_DEBUG = 3
 };
 
+typedef int (*PRINTER_FUNC)(const char * format, ...);
+
 enum EIB_STD_EXPORT TEXT_COLOR
 {
 	GREEN,
@@ -48,6 +50,8 @@ public:
 
 	void SetLogLevel(LogLevel level) { _log_level = level;}
 
+	void SetPrinterMethod(PRINTER_FUNC func) { _print_meth = func; }
+
 private:
 	void AppendTimeLine();
 
@@ -56,6 +60,7 @@ private:
 	ofstream _file;
 	bool _print2screen;
 	LogLevel _log_level;
+	PRINTER_FUNC _print_meth;
 };
 
 #endif

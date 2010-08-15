@@ -1,7 +1,10 @@
 #include "LogFile.h"
 #include "ConsoleColor.h"
 
-CLogFile::CLogFile():_print2screen(true),_log_level(LOG_LEVEL_INFO)
+CLogFile::CLogFile():
+_print2screen(true),
+_log_level(LOG_LEVEL_INFO),
+_print_meth(NULL)
 {
 }
 
@@ -91,7 +94,7 @@ void CLogFile::AppendTimeLine()
 
 void CLogFile::Log(LogLevel level, const char* format,...)
 {
-	if(_log_level < level){
+	if(_print_meth == NULL || _log_level < level){
 		return;
 	}
 	//only one thread can write the the same log at the same time ... (prevent jibrish)
@@ -161,8 +164,10 @@ void CLogFile::Log(LogLevel level, const char* format,...)
 #endif
 		//print to screen
 		if(_print2screen){
-			cout.flush();
-			cout << status << endl;
+			_print_meth(status);
+			_print_meth("\n");
+			//cout.flush();
+			//cout << status << endl;
 			SetConsoleColor(WHITE);
 		}
 	}

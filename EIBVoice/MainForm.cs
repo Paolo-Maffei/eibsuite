@@ -25,6 +25,7 @@ namespace EIBVoice
         private Hashtable _db = new Hashtable();
         private EventHandler<LoadGrammarCompletedEventArgs> grammer_completed_handler = null;
         private ConfigMessages _cm_form = new ConfigMessages();
+        //private TextBoxWriter _writer;
 
         public MainForm()
         {
@@ -37,6 +38,9 @@ namespace EIBVoice
             this.lblServerStatus.Text = "Disconneted";
             this.tsddbSettings.AutoToolTip = false;
 
+            //_writer = new TextBoxWriter(this.tbLog);
+            //Console.SetOut(_writer);
+            
             DataSet ds = new DataSet();
             try
             {
@@ -50,8 +54,11 @@ namespace EIBVoice
         private void MainForm_Load(object sender, EventArgs e)
         {
             this.splitContainer1.Dock = DockStyle.Fill;
+            this.splitContainer2.Dock = DockStyle.Fill;
             this.lvMessages.Dock = DockStyle.Fill;
+            this.tbLog.Dock = DockStyle.Fill;
             this.btnDisconnect.Enabled = false;
+            
             //generic server
             _server = new CGenericServerWrapper();
             _server.NetworkID = 1;
@@ -60,7 +67,7 @@ namespace EIBVoice
             //voice
             recognizer = new SpeechRecognitionEngine();
             synthesizer = new SpeechSynthesizer();
-
+            
             System.Collections.ObjectModel.ReadOnlyCollection<InstalledVoice> voices = synthesizer.GetInstalledVoices();
             try
             {
@@ -82,6 +89,12 @@ namespace EIBVoice
         private void MainForm_Shown(object sender, EventArgs e)
         {
             this.btnLogin_Click(null, null);
+        }
+
+        private void richTextBox_TextChanged(object sender, EventArgs e)
+        {
+            this.tbLog.SelectionStart = this.tbLog.Text.Length;
+            this.tbLog.ScrollToCaret();
         }
 
         public void ShowCompileErrors(object sender, ValidationEventArgs args)
@@ -142,7 +155,7 @@ namespace EIBVoice
             //read the message + confirmed
             //ReadAloud(text + " confirmed");
             //send the telegram here...
-            _server.SendEIBNetwork(((KNX.EIBTelegram)_db[text]).DestAddress, ((KNX.EIBTelegram)_db[text]).APCI, CGenericServerWrapper.SendMode.NonBlocking);
+            _server.SendEIBNetwork(((KNX.EIBTelegram)_db[text]).DestAddress.RawAddress, ((KNX.EIBTelegram)_db[text]).APCI, CGenericServerWrapper.SendMode.NonBlocking);
         }
 
         #endregion
@@ -154,7 +167,8 @@ namespace EIBVoice
             try
             {
                 synthesizer.SelectVoice("Microsoft Anna");
-                synthesizer.Rate = -3;    
+                synthesizer.Rate = -3;
+                Console.WriteLine("Voice Libaray Initialized successfully.");
             }
             catch (Exception)
             {
@@ -187,10 +201,12 @@ namespace EIBVoice
                 ((Button)sender).Tag = false;
                 TurnSpeechRecognitionOff();
                 this.label2.Text = "";
+                Console.WriteLine("Voice recognition turned off");
             }
             else
             {
                 ((Button)sender).Tag = TurnSpeechRecognitionOn();
+                Console.WriteLine("Voice recognition turned on");
             }
         }
 
@@ -202,10 +218,16 @@ namespace EIBVoice
             if (dlgresult == DialogResult.OK)
             {
                 Cursor = Cursors.WaitCursor;
+                Console.WriteLine("Trying to connect to EIB Server...");
                 bool result = dlg.Login(_server);
                 if (result)
                 {
                     UpdateUI();
+                    Console.WriteLine("Connection to EIB Server Success!");
+                }
+                else
+                {
+                    Console.WriteLine("Connection to EIB Server Failed!");
                 }
                 Cursor = Cursors.Default;
             }

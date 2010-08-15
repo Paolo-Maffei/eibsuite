@@ -58,7 +58,7 @@
             this.tbServerAddress.ReadOnly = false;
             this.tbServerAddress.Size = new System.Drawing.Size(124, 20);
             this.tbServerAddress.TabIndex = 0;
-            this.tbServerAddress.Text = "127.0.0.1";
+            this.tbServerAddress.Text = "192.168.1.100";
             // 
             // gbLogin
             // 
@@ -84,7 +84,7 @@
             this.tbPassword.PasswordChar = '*';
             this.tbPassword.Size = new System.Drawing.Size(124, 20);
             this.tbPassword.TabIndex = 3;
-            this.tbPassword.Text = "voice";
+            this.tbPassword.Text = "Voice";
             // 
             // label2
             // 

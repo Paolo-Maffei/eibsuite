@@ -21,6 +21,7 @@ bool CSMSServer::Init()
 	bool res = true;
 	START_TRY
 		//initialize log file
+		_log.SetPrinterMethod(printf);
 		_log.Init(CURRENT_LOGS_FOLDER + CString(DEFAULT_LOG_FILE_NAME));
 		LOG_INFO("Initializing Log manager...Successful.");
 	END_TRY_START_CATCH(e)

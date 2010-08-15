@@ -47,12 +47,18 @@
             this.lvMessages = new System.Windows.Forms.ListView();
             this.columnPhrase = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnTestBtn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.tbLog = new System.Windows.Forms.RichTextBox();
             this.stripServerStatus.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -77,7 +83,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(23, 128);
+            this.label2.Location = new System.Drawing.Point(23, 93);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(35, 13);
             this.label2.TabIndex = 0;
@@ -141,6 +147,7 @@
             this.btnDBFile.Name = "btnDBFile";
             this.btnDBFile.Size = new System.Drawing.Size(23, 22);
             this.btnDBFile.Text = "toolStripButton1";
+            this.btnDBFile.ToolTipText = "Load Configuration File";
             this.btnDBFile.Click += new System.EventHandler(this.btnDBFile_Click);
             // 
             // toolStripSeparator1
@@ -181,7 +188,7 @@
             // 
             // splitContainer1
             // 
-            this.splitContainer1.Location = new System.Drawing.Point(104, 71);
+            this.splitContainer1.Location = new System.Drawing.Point(27, 30);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -193,8 +200,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.lvMessages);
-            this.splitContainer1.Size = new System.Drawing.Size(458, 203);
-            this.splitContainer1.SplitterDistance = 152;
+            this.splitContainer1.Size = new System.Drawing.Size(385, 162);
+            this.splitContainer1.SplitterDistance = 127;
             this.splitContainer1.TabIndex = 4;
             // 
             // lvMessages
@@ -202,9 +209,9 @@
             this.lvMessages.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnPhrase,
             this.columnTestBtn});
-            this.lvMessages.Location = new System.Drawing.Point(23, 24);
+            this.lvMessages.Location = new System.Drawing.Point(16, 13);
             this.lvMessages.Name = "lvMessages";
-            this.lvMessages.Size = new System.Drawing.Size(251, 142);
+            this.lvMessages.Size = new System.Drawing.Size(205, 128);
             this.lvMessages.TabIndex = 0;
             this.lvMessages.UseCompatibleStateImageBehavior = false;
             this.lvMessages.View = System.Windows.Forms.View.Details;
@@ -217,12 +224,40 @@
             // 
             this.columnTestBtn.Text = "Test";
             // 
+            // splitContainer2
+            // 
+            this.splitContainer2.IsSplitterFixed = true;
+            this.splitContainer2.Location = new System.Drawing.Point(109, 40);
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.splitContainer1);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.tbLog);
+            this.splitContainer2.Size = new System.Drawing.Size(448, 277);
+            this.splitContainer2.SplitterDistance = 200;
+            this.splitContainer2.TabIndex = 5;
+            // 
+            // tbLog
+            // 
+            this.tbLog.Location = new System.Drawing.Point(27, 17);
+            this.tbLog.Name = "tbLog";
+            this.tbLog.ReadOnly = true;
+            this.tbLog.Size = new System.Drawing.Size(385, 39);
+            this.tbLog.TabIndex = 0;
+            this.tbLog.Text = "";
+            this.tbLog.TextChanged += new System.EventHandler(this.richTextBox_TextChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(670, 361);
-            this.Controls.Add(this.splitContainer1);
+            this.Controls.Add(this.splitContainer2);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.stripServerStatus);
             this.Name = "MainForm";
@@ -238,6 +273,10 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            this.splitContainer2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -263,6 +302,8 @@
         private System.Windows.Forms.ColumnHeader columnPhrase;
         private System.Windows.Forms.ColumnHeader columnTestBtn;
         private System.Windows.Forms.ToolStripButton btnDisconnect;
+        private System.Windows.Forms.SplitContainer splitContainer2;
+        private System.Windows.Forms.RichTextBox tbLog;
     }
 }
 

@@ -1,5 +1,6 @@
 // This is the main DLL file.
 #using <mscorlib.dll>
+#include <stdio.h>
 #include "EIB.NetWrapper.h"
 
 using namespace EIBNetWrapper;
@@ -7,7 +8,6 @@ using namespace msclr::interop;
 
 namespace EIBNetWrapper
 {
-
 	CGenericServerWrapper::CGenericServerWrapper() : _ptr(NULL)
 	{
 	}
@@ -19,7 +19,9 @@ namespace EIBNetWrapper
 			char* p_log_file = (char*)Marshal::StringToHGlobalAnsi(log_file_str).ToPointer();
 			_log = new CLogFile();
 			CString log_file_full_name(p_log_file);
+			_log->SetLogLevel(LOG_LEVEL_DEBUG);
 			_log->Init(log_file_full_name);
+			_log->SetPrinterMethod(dummy);
 			Marshal::FreeHGlobal((IntPtr)p_log_file);
 		}
 	}
@@ -100,6 +102,7 @@ namespace EIBNetWrapper
 		_ptr->Init(_log);
 
 		marshal_context  ctx;
+		
 		bool result = false;
 
 		if(_ptr != NULL)
@@ -144,3 +147,19 @@ namespace EIBNetWrapper
 		return 0;
 	}
 };
+
+PrinterWrapper::PrinterWrapper()
+{
+}
+
+PrinterWrapper::~PrinterWrapper()
+{
+}
+
+int PrinterWrapper::Print(const char* format)
+{
+		msclr::interop::marshal_context  ctx;
+		String^ t = ctx.marshal_as<String^>(format);
+		System::Console::Write(t);
+		return 0;
+}

@@ -76,9 +76,20 @@
       <Link>ConfigMessages.designer.cs</Link>
       <DependentUpon>ConfigMessages.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\..\EIBVoice\EIBAddressForm.cs">
+      <Link>EIBAddressForm.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\..\EIBVoice\EIBAddressForm.designer.cs">
+      <Link>EIBAddressForm.designer.cs</Link>
+      <DependentUpon>EIBAddressForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\..\EIBVoice\HexConvertorForm.cs">
       <Link>HexConvertorForm.cs</Link>
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\..\EIBVoice\KNX\EIBAddress.cs">
+      <Link>KNX\EIBAddress.cs</Link>
     </Compile>
     <Compile Include="..\..\EIBVoice\KNX\EIBMassage.cs">
       <Link>KNX\EIBMassage.cs</Link>
@@ -113,9 +124,16 @@
     <Compile Include="..\..\EIBVoice\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\..\EIBVoice\TextBoxWriter.cs">
+      <Link>TextBoxWriter.cs</Link>
+    </Compile>
     <EmbeddedResource Include="..\..\EIBVoice\ConfigMessages.resx">
       <Link>ConfigMessages.resx</Link>
       <DependentUpon>ConfigMessages.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\EIBVoice\EIBAddressForm.resx">
+      <Link>EIBAddressForm.resx</Link>
+      <DependentUpon>EIBAddressForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\EIBVoice\HexConvertorForm.resx">
       <Link>HexConvertorForm.resx</Link>

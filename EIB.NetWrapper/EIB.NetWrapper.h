@@ -4,6 +4,7 @@
 #include "GenericServer.h"
 #include "CException.h"
 #include "EIBEntry.h"
+#include "LogFile.h"
 #include <msclr/marshal.h>
 
 using namespace System;
@@ -11,6 +12,7 @@ using namespace EibStack;
 
 using namespace System::Runtime::InteropServices;
 
+int dummy(const char* data, ...);
 
 namespace EIBNetWrapper
 {
@@ -45,8 +47,6 @@ namespace EIBNetWrapper
 			unsigned char get(){ return _network_id;}
 			void set(unsigned char value) { _network_id = value;}
 		}
-		
-		
 
 	private:
 		CGenericServer* _ptr;
@@ -54,3 +54,18 @@ namespace EIBNetWrapper
 		CLogFile* _log;
 	};
 }
+
+class PrinterWrapper
+{
+	public:
+		PrinterWrapper();
+		virtual ~PrinterWrapper();
+		static int Print(const char* format);
+};
+
+#pragma unmanaged
+int dummy(const char* data, ...)
+{
+	return PrinterWrapper::Print(data);
+}
+#pragma managed

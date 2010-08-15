@@ -82,6 +82,7 @@ bool CWEBServer::Init()
 	bool res = true;
 
 	START_TRY
+		_log.SetPrinterMethod(printf);
 		_log.Init(CURRENT_LOGS_FOLDER + DEFAULT_LOG_FILE_NAME);
 		LOG_INFO("Initializing Log manager...Successful");
 	END_TRY_START_CATCH_ANY

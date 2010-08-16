@@ -413,6 +413,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\src\DescriptionRequest.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\src\DescriptionResponse.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\src\DisconnectRequest.cpp"
 					>
 				</File>
@@ -744,6 +752,14 @@
 				</File>
 				<File
 					RelativePath="..\include\CRI_CRD.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\DescriptionRequest.h"
+					>
+				</File>
+				<File
+					RelativePath="..\include\DescriptionResponse.h"
 					>
 				</File>
 				<File

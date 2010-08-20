@@ -130,9 +130,10 @@ void CRelayHandler::CRelayInputHandler::run()
 	while (!_stop)
 	{
 		if(_relay->_state._is_connected && _relay->_state._timeout.secTo() == 0){
-			// Connection time out...
-			// force close connection
+			JTCSynchronized sync(_relay->_state._state_monitor);
+			// Connection timeout. force close connection
 			LOG_ERROR("[Connection timeout] Closing connection with client %d.", _relay->_state._channelid);
+			_relay->InitState();
 		}
 
 		len = _sock.RecvFrom(buffer, sizeof(buffer), src_ip, src_port, timeout_interval);

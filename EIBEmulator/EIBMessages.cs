@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.IO;
 using System.Xml.Serialization;
+using System.Net.NetworkInformation;
 
 namespace EIBEmulator
 {
@@ -32,20 +33,32 @@ namespace EIBEmulator
 
         public const ushort EIB_MC_SEARCH_REQUEST = 0x0201;
         public const ushort EIB_MC_SEARCH_RESPONSE = 0x0202;
+        public const ushort EIB_MC_DESCRIPTION_REQUEST = 0x0203;
+        public const ushort EIB_MC_DESCRIPTION_RESPONSE = 0x0204;
         public const ushort EIB_MC_CONNECT_REQUEST = 0x0205;
         public const ushort EIB_MC_CONNECT_RESPONSE = 0x0206;
         public const ushort EIB_MC_CONNECTION_STATE_REQUEST = 0x0207;
         public const ushort EIB_MC_CONNECTION_STATE_RESPONSE = 0x0208;
         public const ushort EIB_MC_DISCONNECT_REQUEST = 0x0209;
         public const ushort EIB_MC_DISCONNECT_RESPONSE = 0x020A;
+
         public const ushort EIB_MC_TUNNEL_REQUEST = 0x0420;
-        public const ushort EIB_MC_ROUTING_INDICATION = 0x0530;
         public const ushort EIB_MC_TUNNEL_ACK = 0x0421;
+
+        public const ushort EIB_MC_ROUTING_INDICATION = 0x0530;
 
         public const byte DEFAULT_CHANNEL_ID = 0x4A;
         public const byte L_DATA_CON = 0x2E;
         public const byte L_DATA_REQ = 0x11;
         public const byte MC_LDATA_IND = 0x29;
+
+        /*
+         * *********** description information block ***
+        */
+        public const byte DEVICE_INFO	= 0x01;
+        public const byte SUPP_SVC_FAMILIES = 0x02;
+        public const byte MFR_DATA = 0xFE;
+
     }
 
     public enum DEVICE_MODE
@@ -528,11 +541,22 @@ namespace EIBEmulator
     public class SearchResponse : EIBHeader
     {
         public HPAI _control_endpoint;
+        public DescriptionResponse _desc;
 
-        public SearchResponse(EndPoint control)
+        public SearchResponse(EndPoint control,
+                              PhysicalAddress addr)
             : base(EIBMessages.EIB_MC_SEARCH_RESPONSE)
         {
             _control_endpoint = new HPAI(control);
+            _desc = new DescriptionResponse(true,
+                                            new EIBAddress("0/0/0"),
+                                            "123456",
+                                            IPAddress.Parse("224.0.23.12"),
+                                            addr,
+                                            "EIB Emulator v0.1");
+            total_length += HPAI.length;
+            total_length += DescriptionResponse.dev_dib_structlength;
+            total_length += _desc.supp_dib_structlength;
         }
 
         public new byte[] ToByteArray()
@@ -540,6 +564,8 @@ namespace EIBEmulator
             MemoryStream ms = new MemoryStream();
             ms.Write(base.ToByteArray(), 0, base.ToByteArray().Length);
             ms.Write(_control_endpoint.ToByteArray(),0,_control_endpoint.ToByteArray().Length);
+            byte[] desc = _desc.ToByteArray(false);
+            ms.Write(desc, 0, desc.Length);
             return ms.ToArray();
         }
     }
@@ -569,6 +595,101 @@ namespace EIBEmulator
             ms.Write(base.ToByteArray(),0,base.ToByteArray().Length);
             ms.Write(_cch.ToByteArray(), 0, _cch.ToByteArray().Length);
             ms.Write(_frame.ToByteArray(), 0, _frame.ToByteArray().Length);
+
+            return ms.ToArray();
+        }
+    }
+
+    public class DescriptionResponse : EIBHeader
+    {
+        public const byte dev_dib_structlength = 54;
+        byte descriptiontypecode;
+        byte knxmedium;
+        byte devicestatus;
+        EIBAddress eibaddress;
+        //ushort projectinstallationidentifier;
+        string serialnumber;
+        IPAddress multicastaddress;
+        PhysicalAddress macaddress;
+        string name;
+
+        //supported families dib
+        public byte supp_dib_structlength;
+        byte supp_dib_descriptiontypecode;
+        byte[] supp_dib_data;
+
+        public DescriptionResponse(bool status,
+                                   EIBAddress addr,
+                                   string serial,
+                                   IPAddress mcast,
+                                   PhysicalAddress mac,
+                                   string name) 
+            : base(EIBMessages.EIB_MC_DESCRIPTION_RESPONSE)
+        {
+            Debug.Assert(addr != null, "Address cannot be null");
+            Debug.Assert(serial != null, "SerialNumber cannot be null");
+            Debug.Assert(mcast != null, "Multicast Address cannot be null");
+            Debug.Assert(mac != null, "MAC Address cannot be null");
+            Debug.Assert(name != null, "Name cannot be null");
+
+            descriptiontypecode = EIBMessages.DEVICE_INFO;
+            knxmedium = 0x02; //TP1
+            devicestatus = status ? (byte)0x1 : (byte)0x0;
+            eibaddress = addr;
+            //projectinstallationidentifier = 0x0;
+            serialnumber = serial;
+            multicastaddress = mcast;
+            macaddress = mac;
+            this.name = name;
+
+            this.supp_dib_structlength = 10;
+            this.supp_dib_descriptiontypecode = EIBMessages.SUPP_SVC_FAMILIES;
+            this.supp_dib_data = new byte[8] { 
+                EIBMessages.EIBNETIP_CORE , 0x1,
+                EIBMessages.EIBNETIP_DEVMGMT , 0x1,
+                EIBMessages.EIBNETIP_TUNNELING , 0x1,
+                EIBMessages.EIBNETIP_ROUTING , 0x1
+            };
+        }
+
+        public byte[] ToByteArray(bool include_header)
+        {
+            MemoryStream ms = new MemoryStream();
+            if (include_header)
+            {
+                ms.Write(base.ToByteArray(), 0, base.ToByteArray().Length);
+            }
+            //device info dib
+            //struct length (54)
+            ms.WriteByte(dev_dib_structlength);
+            //description type code
+            ms.WriteByte(descriptiontypecode);
+            //knx medium (TP1)
+            ms.WriteByte(knxmedium);
+            //status
+            ms.WriteByte(devicestatus);
+            //physical address
+            ms.Write(eibaddress.ToByteArray(), 0, eibaddress.ToByteArray().Length);
+            //proj install id
+            ms.WriteByte(0);
+            ms.WriteByte(0);
+            //serial number
+            byte[] tmp = new byte[6] { 0, 0, 0, 0, 0, 0 };
+            Encoding.ASCII.GetBytes(this.serialnumber.Substring(0, this.serialnumber.Length > 6 ? 6 : this.serialnumber.Length)).CopyTo(tmp, 0);
+            ms.Write(tmp, 0, tmp.Length);
+            //multicast address
+            ms.Write(this.multicastaddress.GetAddressBytes(), 0, this.multicastaddress.GetAddressBytes().Length);
+            //mac address
+            ms.Write(this.macaddress.GetAddressBytes(), 0, this.macaddress.GetAddressBytes().Length);
+            //name
+            tmp = new byte[30] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            Encoding.ASCII.GetBytes(this.name.Substring(0, this.name.Length > 30 ? 30 : this.name.Length)).CopyTo(tmp, 0);
+            ms.Write(tmp, 0, tmp.Length);
+            
+            //supported families dib
+            ms.WriteByte(this.supp_dib_structlength);
+            ms.WriteByte(this.supp_dib_descriptiontypecode);
+            ms.Write(this.supp_dib_data, 0, this.supp_dib_data.Length);                  
 
             return ms.ToArray();
         }

@@ -119,9 +119,10 @@ namespace EIBEmulator
                     break;
                 case DEVICE_MODE.MODE_TUNNELING:
                     IPAddress maddr = IPAddress.Parse(DEFAULT_MULTICAST_ADDRESS);
-                    MulticastOption opt = new MulticastOption(maddr);
+                    MulticastOption opt = new MulticastOption(maddr, IPAddress.Parse(local_addr));
                     _sock.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, opt);
-					_sock.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, 1);
+                    _sock.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastLoopback, true);
+					//_sock.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, 1);
 					_recv_sequence = 0;
                     _send_sequence = 0;
                     this.ipAddressControl1.Text = local_addr;
@@ -259,7 +260,7 @@ namespace EIBEmulator
                 this.btnDeviceOff.Enabled = true;
                 this.gbPktGenerator.Enabled = true;
                 this.gbDeviceMode.Enabled = false;
-
+                this.textBox1.Text = string.Empty;
                 //start listener thread
                 this.ListenerThread.RunWorkerAsync();
             }
@@ -370,7 +371,7 @@ namespace EIBEmulator
                 case EIBMessages.EIB_MC_SEARCH_REQUEST:
                     LogReceive("Search Request");
                     SearchRequest sreq = new SearchRequest(s);
-                    SearchResponse sresp = new SearchResponse(_local_endpoint);
+                    SearchResponse sresp = new SearchResponse(_local_endpoint, _current_if.GetPhysicalAddress());
                     _sock.SendTo(sresp.ToByteArray(), sreq._discovery_endpoint.endpoint);
                     LogSend("Search Response");
                     _connected = true;

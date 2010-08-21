@@ -29,6 +29,7 @@ menuconfig :
 
 clean : $(EIB_LIB_DIRS-y:%=%_clean) $(EIB_EXE_DIRS-y:%=%_clean) $(EIB_LIB_DIRS-:%=%_clean) $(EIB_EXE_DIRS-:%=%_clean)
 	$(ecolor) "33;1" 'Cleaning tools & scripts...'
+	make clean -sC $(CONFIG_DIR)
 	@rm -rf $(INSTALL_DIR)
 	@rm -f .config .tmpconfig.h .config.cmd
 

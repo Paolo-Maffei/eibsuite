@@ -241,18 +241,28 @@
     <Content Include="..\..\EIBVoice\Images\server.ico">
       <Link>Images\server.ico</Link>
     </Content>
+    <Content Include="..\..\EIBVoice\Images\status_alert.png">
+      <Link>Images\status_alert.png</Link>
+    </Content>
+    <Content Include="..\..\EIBVoice\Images\status_failed.png">
+      <Link>Images\status_failed.png</Link>
+    </Content>
+    <Content Include="..\..\EIBVoice\Images\status_ok.png">
+      <Link>Images\status_ok.png</Link>
+    </Content>
     <Content Include="..\..\EIBVoice\Images\VSProject_genericproject.ico">
       <Link>Images\VSProject_genericproject.ico</Link>
     </Content>
     <None Include="app.config" />
-    <None Include="Resources\eib-logo.bmp" />
-    <None Include="Resources\disconnect.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EIB.NetWrapper\EIB.NetWrapper.vcxproj">
       <Project>{016D5CD6-2ABD-4CA5-A60B-73FC4D001E83}</Project>
       <Name>EIB.NetWrapper</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

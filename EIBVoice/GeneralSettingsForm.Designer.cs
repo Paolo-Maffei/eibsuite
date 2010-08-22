@@ -88,13 +88,16 @@
             // 
             // GeneralSettingsForm
             // 
+            this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(549, 123);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.gbNetwork);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "GeneralSettingsForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Settings";
             this.gbNetwork.ResumeLayout(false);
             this.gbNetwork.PerformLayout();

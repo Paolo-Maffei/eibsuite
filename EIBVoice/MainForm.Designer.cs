@@ -28,8 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblVoiceStatus = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.stripServerStatus = new System.Windows.Forms.StatusStrip();
@@ -43,13 +44,15 @@
             this.voiceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.messagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.generalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.lvMessages = new System.Windows.Forms.ListView();
             this.columnPhrase = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnTestBtn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.tbLog = new System.Windows.Forms.RichTextBox();
-            this.generalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pboxVoiceStatus = new System.Windows.Forms.PictureBox();
+            this.imageListVoiceStatus = new System.Windows.Forms.ImageList(this.components);
             this.stripServerStatus.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -60,16 +63,17 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pboxVoiceStatus)).BeginInit();
             this.SuspendLayout();
             // 
-            // label1
+            // lblVoiceStatus
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(23, 48);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "label1";
+            this.lblVoiceStatus.AutoSize = true;
+            this.lblVoiceStatus.Location = new System.Drawing.Point(10, 52);
+            this.lblVoiceStatus.Name = "lblVoiceStatus";
+            this.lblVoiceStatus.Size = new System.Drawing.Size(130, 13);
+            this.lblVoiceStatus.TabIndex = 0;
+            this.lblVoiceStatus.Text = "Voice Recognition Status:";
             // 
             // button1
             // 
@@ -95,9 +99,9 @@
             // 
             this.stripServerStatus.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lblServerStatus});
-            this.stripServerStatus.Location = new System.Drawing.Point(0, 339);
+            this.stripServerStatus.Location = new System.Drawing.Point(0, 418);
             this.stripServerStatus.Name = "stripServerStatus";
-            this.stripServerStatus.Size = new System.Drawing.Size(670, 22);
+            this.stripServerStatus.Size = new System.Drawing.Size(740, 22);
             this.stripServerStatus.TabIndex = 2;
             this.stripServerStatus.Text = "statusStrip1";
             // 
@@ -116,7 +120,7 @@
             this.tsddbSettings});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(670, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(740, 25);
             this.toolStrip1.TabIndex = 3;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -174,37 +178,45 @@
             // voiceToolStripMenuItem
             // 
             this.voiceToolStripMenuItem.Name = "voiceToolStripMenuItem";
-            this.voiceToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.voiceToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.voiceToolStripMenuItem.Text = "Voice";
             // 
             // messagesToolStripMenuItem
             // 
             this.messagesToolStripMenuItem.Name = "messagesToolStripMenuItem";
-            this.messagesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.messagesToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.messagesToolStripMenuItem.Text = "Messages";
             this.messagesToolStripMenuItem.Click += new System.EventHandler(this.btnConfigMsgs_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(122, 6);
+            // 
+            // generalToolStripMenuItem
+            // 
+            this.generalToolStripMenuItem.Name = "generalToolStripMenuItem";
+            this.generalToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.generalToolStripMenuItem.Text = "General";
+            this.generalToolStripMenuItem.Click += new System.EventHandler(this.generalToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
-            this.splitContainer1.Location = new System.Drawing.Point(27, 30);
+            this.splitContainer1.Location = new System.Drawing.Point(14, 15);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.pboxVoiceStatus);
             this.splitContainer1.Panel1.Controls.Add(this.label2);
             this.splitContainer1.Panel1.Controls.Add(this.button1);
-            this.splitContainer1.Panel1.Controls.Add(this.label1);
+            this.splitContainer1.Panel1.Controls.Add(this.lblVoiceStatus);
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.lvMessages);
-            this.splitContainer1.Size = new System.Drawing.Size(385, 162);
-            this.splitContainer1.SplitterDistance = 127;
+            this.splitContainer1.Size = new System.Drawing.Size(538, 138);
+            this.splitContainer1.SplitterDistance = 183;
             this.splitContainer1.TabIndex = 4;
             // 
             // lvMessages
@@ -214,7 +226,7 @@
             this.columnTestBtn});
             this.lvMessages.Location = new System.Drawing.Point(16, 13);
             this.lvMessages.Name = "lvMessages";
-            this.lvMessages.Size = new System.Drawing.Size(205, 128);
+            this.lvMessages.Size = new System.Drawing.Size(205, 100);
             this.lvMessages.TabIndex = 0;
             this.lvMessages.UseCompatibleStateImageBehavior = false;
             this.lvMessages.View = System.Windows.Forms.View.Details;
@@ -241,13 +253,13 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.tbLog);
-            this.splitContainer2.Size = new System.Drawing.Size(448, 277);
-            this.splitContainer2.SplitterDistance = 200;
+            this.splitContainer2.Size = new System.Drawing.Size(568, 277);
+            this.splitContainer2.SplitterDistance = 170;
             this.splitContainer2.TabIndex = 5;
             // 
             // tbLog
             // 
-            this.tbLog.Location = new System.Drawing.Point(27, 17);
+            this.tbLog.Location = new System.Drawing.Point(27, 33);
             this.tbLog.Name = "tbLog";
             this.tbLog.ReadOnly = true;
             this.tbLog.Size = new System.Drawing.Size(385, 39);
@@ -255,18 +267,27 @@
             this.tbLog.Text = "";
             this.tbLog.TextChanged += new System.EventHandler(this.richTextBox_TextChanged);
             // 
-            // generalToolStripMenuItem
+            // pboxVoiceStatus
             // 
-            this.generalToolStripMenuItem.Name = "generalToolStripMenuItem";
-            this.generalToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.generalToolStripMenuItem.Text = "General";
-            this.generalToolStripMenuItem.Click += new System.EventHandler(this.generalToolStripMenuItem_Click);
+            this.pboxVoiceStatus.Location = new System.Drawing.Point(145, 43);
+            this.pboxVoiceStatus.Name = "pboxVoiceStatus";
+            this.pboxVoiceStatus.Size = new System.Drawing.Size(32, 32);
+            this.pboxVoiceStatus.TabIndex = 2;
+            this.pboxVoiceStatus.TabStop = false;
+            // 
+            // imageListVoiceStatus
+            // 
+            this.imageListVoiceStatus.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListVoiceStatus.ImageStream")));
+            this.imageListVoiceStatus.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageListVoiceStatus.Images.SetKeyName(0, "status_alert.png");
+            this.imageListVoiceStatus.Images.SetKeyName(1, "status_failed.png");
+            this.imageListVoiceStatus.Images.SetKeyName(2, "status_ok.png");
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(670, 361);
+            this.ClientSize = new System.Drawing.Size(740, 440);
             this.Controls.Add(this.splitContainer2);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.stripServerStatus);
@@ -287,6 +308,7 @@
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pboxVoiceStatus)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -294,7 +316,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblVoiceStatus;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.StatusStrip stripServerStatus;
@@ -315,6 +337,8 @@
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.RichTextBox tbLog;
         private System.Windows.Forms.ToolStripMenuItem generalToolStripMenuItem;
+        private System.Windows.Forms.PictureBox pboxVoiceStatus;
+        private System.Windows.Forms.ImageList imageListVoiceStatus;
     }
 }
 

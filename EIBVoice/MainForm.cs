@@ -37,7 +37,7 @@ namespace EIBVoice
             //general
             this.button1.Tag = false;
             this.button1.Enabled = false;
-            this.label1.Text = "Speech Recognition: OFF";
+            this.pboxVoiceStatus.Image = this.imageListVoiceStatus.Images[1];
             this.label2.Text = "";
             this.lblServerStatus.Text = "Disconneted";
             this.tsddbSettings.AutoToolTip = false;
@@ -135,7 +135,7 @@ namespace EIBVoice
                 recognizer.RecognizeAsyncStop();
                 recognizer.RecognizeAsync(RecognizeMode.Multiple);
                 this.button1.Text = "Stop";
-                this.label1.Text = "Speech Recognition: ON";
+                this.pboxVoiceStatus.Image = this.imageListVoiceStatus.Images[2];
                 Cursor.Current = Cursors.Arrow;
             }
             catch (Exception e)
@@ -156,7 +156,7 @@ namespace EIBVoice
                 ReadAloud("stopping.");
                 recognizer.RecognizeAsyncStop();
                 this.button1.Text = "Start";
-                this.label1.Text = "Speech Recognition: OFF";
+                this.pboxVoiceStatus.Image = this.imageListVoiceStatus.Images[0];
                 Cursor.Current = Cursors.Arrow;
             }
         }
@@ -292,6 +292,7 @@ namespace EIBVoice
             {
                 try
                 {
+                    _logger.Log(String.Format("Loading XML data file: {0}", ofd.FileName));
                     _db_loaded = true;
                     //run the reader. 
                     XmlReaderSettings set = new XmlReaderSettings();
@@ -324,6 +325,8 @@ namespace EIBVoice
                         }
 
                         LoadGrammer();
+                        this.pboxVoiceStatus.Image = this.imageListVoiceStatus.Images[0];
+                        _logger.Log(String.Format("XML data file loaded successfuly"));
                     }
                 }
                 catch (XmlException)

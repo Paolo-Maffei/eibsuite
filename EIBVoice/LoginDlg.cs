@@ -17,10 +17,13 @@ namespace EIBVoice
 {
     public partial class LoginDlg : Form
     {
-        public LoginDlg()
+        Logger _looger;
+
+        public LoginDlg(Logger logger)
         {
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this._looger = logger;
         }
 
         public bool ValidateInput()
@@ -65,25 +68,10 @@ namespace EIBVoice
             string network_name = Settings.Default.NetworkName;
             string initial_key = Settings.Default.InitialKey;
             
-            string local_ip = String.Empty;
-
-            NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
-            foreach (NetworkInterface n in interfaces)
-            {
-                foreach (UnicastIPAddressInformation info in n.GetIPProperties().UnicastAddresses)
-                {
-                    if (info.Address.AddressFamily == AddressFamily.InterNetwork && IPAddress.Loopback.ToString() != info.Address.ToString())
-                    {
-                        //dbg
-                        local_ip = info.Address.ToString();
-                        break;
-                    }
-                }
-            }
-
+            string local_ip = GeneralSettings.LocalAddress.ToString();
+            _looger.Log(String.Format("Connecting through Network interface with address: {0}", local_ip));
             try
             {
-                local_ip = "192.168.1.100";
                 bool res = server.OpenConnection(network_name,
                                                  ServerAddress,
                                                  ServerPort,
@@ -100,6 +88,7 @@ namespace EIBVoice
             }
             catch (Exception e)
             {
+                _looger.Log(String.Format("Error: {0}", e.Message));
                 MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }

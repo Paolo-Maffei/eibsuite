@@ -84,6 +84,14 @@
       <Link>EIBAddressForm.designer.cs</Link>
       <DependentUpon>EIBAddressForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\..\EIBVoice\GeneralSettingsForm.cs">
+      <Link>GeneralSettingsForm.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\..\EIBVoice\GeneralSettingsForm.designer.cs">
+      <Link>GeneralSettingsForm.designer.cs</Link>
+      <DependentUpon>GeneralSettingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\..\EIBVoice\HexConvertorForm.cs">
       <Link>HexConvertorForm.cs</Link>
       <SubType>Form</SubType>
@@ -97,6 +105,9 @@
     <Compile Include="..\..\EIBVoice\ListViewEx.cs">
       <Link>ListViewEx.cs</Link>
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="..\..\EIBVoice\Logger.cs">
+      <Link>Logger.cs</Link>
     </Compile>
     <Compile Include="..\..\EIBVoice\LoginDlg.cs">
       <Link>LoginDlg.cs</Link>
@@ -124,9 +135,6 @@
     <Compile Include="..\..\EIBVoice\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\EIBVoice\TextBoxWriter.cs">
-      <Link>TextBoxWriter.cs</Link>
-    </Compile>
     <EmbeddedResource Include="..\..\EIBVoice\ConfigMessages.resx">
       <Link>ConfigMessages.resx</Link>
       <DependentUpon>ConfigMessages.cs</DependentUpon>
@@ -134,6 +142,10 @@
     <EmbeddedResource Include="..\..\EIBVoice\EIBAddressForm.resx">
       <Link>EIBAddressForm.resx</Link>
       <DependentUpon>EIBAddressForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\EIBVoice\GeneralSettingsForm.resx">
+      <Link>GeneralSettingsForm.resx</Link>
+      <DependentUpon>GeneralSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\EIBVoice\HexConvertorForm.resx">
       <Link>HexConvertorForm.resx</Link>
@@ -232,6 +244,7 @@
     <Content Include="..\..\EIBVoice\Images\VSProject_genericproject.ico">
       <Link>Images\VSProject_genericproject.ico</Link>
     </Content>
+    <None Include="app.config" />
     <None Include="Resources\eib-logo.bmp" />
     <None Include="Resources\disconnect.ico" />
   </ItemGroup>

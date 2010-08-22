@@ -17,5 +17,8 @@
     <Setting Name="RootElementName" Type="System.String" Scope="User">
       <Value Profile="(Default)">Messages</Value>
     </Setting>
+    <Setting Name="NetworkInterface" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

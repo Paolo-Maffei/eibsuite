@@ -25,7 +25,11 @@ namespace EIBVoice
         private Hashtable _db = new Hashtable();
         private EventHandler<LoadGrammarCompletedEventArgs> grammer_completed_handler = null;
         private ConfigMessages _cm_form = new ConfigMessages();
-        //private TextBoxWriter _writer;
+        private GeneralSettingsForm _gen_settings_form = new GeneralSettingsForm();
+        private Logger _logger;
+
+        private Font _nonrecognized_font = new Font("Microsoft Sans Serif", 14, FontStyle.Bold | FontStyle.Strikeout);
+        private Font _recognized_font = new Font("Microsoft Sans Serif", 14, FontStyle.Bold);
 
         public MainForm()
         {
@@ -37,16 +41,20 @@ namespace EIBVoice
             this.label2.Text = "";
             this.lblServerStatus.Text = "Disconneted";
             this.tsddbSettings.AutoToolTip = false;
+            this._logger = new Logger(this.tbLog);
 
-            //_writer = new TextBoxWriter(this.tbLog);
-            //Console.SetOut(_writer);
-            
             DataSet ds = new DataSet();
+            string s_file = "MessagesDB.xml";
             try
             {
-                ds.ReadXml("MessagesDB.xml");
+                _logger.Log(String.Format("Loading Schema file: {0}...", s_file));
+                ds.ReadXml(s_file);
+                _logger.Log("Schema file loaded successfuly");
             }
-            catch { }
+            catch (Exception e)
+            {
+                _logger.Log(String.Format("Error in shcema loading: {0}. skipping.", e.Message));
+            }
             
             grammer_completed_handler = new EventHandler<LoadGrammarCompletedEventArgs>(this.recognizer_LoadGrammarCompleted);            
         }
@@ -60,11 +68,15 @@ namespace EIBVoice
             this.btnDisconnect.Enabled = false;
             
             //generic server
+            _logger.Log("Initializing Client Module...");
             _server = new CGenericServerWrapper();
             _server.NetworkID = 1;
             _server.Init("Voice.log");
+            _logger.Log("Client Module initialized successfuly");
 
             //voice
+            bool error = false;
+            _logger.Log("Initializing Voice recognition Module...");
             recognizer = new SpeechRecognitionEngine();
             synthesizer = new SpeechSynthesizer();
             
@@ -78,11 +90,19 @@ namespace EIBVoice
             }
             catch (ArgumentException ae)
             {
+                error = true;
+                _logger.Log(String.Format("Error in Voice recognition module initialization: {0}. ", ae.Message));
                 MessageBox.Show(ae.Message);
             }
             catch (Exception ex)
             {
+                error = true;
+                _logger.Log(String.Format("Error in Voice recognition module initialization: {0}. ", ex.Message));
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            if (!error)
+            {
+                _logger.Log("Voice recognition Module initialized successfuly");
             }
         }
 
@@ -109,14 +129,18 @@ namespace EIBVoice
         {
             try
             {
+                Cursor.Current = Cursors.WaitCursor;
+                _logger.Log("Turning Voice recognition on.");
                 ReadAloud("starting.");
                 recognizer.RecognizeAsyncStop();
                 recognizer.RecognizeAsync(RecognizeMode.Multiple);
                 this.button1.Text = "Stop";
                 this.label1.Text = "Speech Recognition: ON";
+                Cursor.Current = Cursors.Arrow;
             }
             catch (Exception e)
             {
+                Cursor.Current = Cursors.Arrow;
                 MessageBox.Show(e.Message);
                 return false;
             }
@@ -127,10 +151,13 @@ namespace EIBVoice
         {
             if (recognizer != null)
             {
-                ReadAloud("sleeping.");
+                Cursor.Current = Cursors.WaitCursor;
+                _logger.Log("Turning Voice recognition off.");
+                ReadAloud("stopping.");
                 recognizer.RecognizeAsyncStop();
                 this.button1.Text = "Start";
                 this.label1.Text = "Speech Recognition: OFF";
+                Cursor.Current = Cursors.Arrow;
             }
         }
 
@@ -149,13 +176,29 @@ namespace EIBVoice
         private void SpeechToAction(string text)
         {
             if (_db == null) return;
-            if (_db[text] == null) return;
+            if (_db[text] == null)
+            {
+                this.label2.ForeColor = Color.Red;
+                this.label2.Font = _nonrecognized_font;
+                this.label2.Text = text;
+                return;
+            }
             //text found in Data base
+            this.label2.ForeColor = Color.Black;
+            this.label2.Font = _recognized_font;
             this.label2.Text = text;
             //read the message + confirmed
             //ReadAloud(text + " confirmed");
             //send the telegram here...
-            _server.SendEIBNetwork(((KNX.EIBTelegram)_db[text]).DestAddress.RawAddress, ((KNX.EIBTelegram)_db[text]).APCI, CGenericServerWrapper.SendMode.NonBlocking);
+            int res = _server.SendEIBNetwork(((KNX.EIBTelegram)_db[text]).DestAddress.RawAddress, ((KNX.EIBTelegram)_db[text]).APCI, CGenericServerWrapper.SendMode.NonBlocking);
+            if (res == 0)
+            {
+                _logger.Log(String.Format("Sending command to {0} Failed.", ((KNX.EIBTelegram)_db[text]).DestAddress.ToString()));
+            }
+            else
+            {
+                _logger.Log(String.Format("Sending command to {0} Success.", ((KNX.EIBTelegram)_db[text]).DestAddress.ToString()));
+            }
         }
 
         #endregion
@@ -168,11 +211,10 @@ namespace EIBVoice
             {
                 synthesizer.SelectVoice("Microsoft Anna");
                 synthesizer.Rate = -3;
-                Console.WriteLine("Voice Libaray Initialized successfully.");
             }
             catch (Exception)
             {
-                MessageBox.Show("The synthetic voice is not available.  The default voice will be used instead.");
+                _logger.Log("The synthetic voice is not available.  The default voice will be used instead.");
             }
         }
 
@@ -200,34 +242,32 @@ namespace EIBVoice
             {
                 ((Button)sender).Tag = false;
                 TurnSpeechRecognitionOff();
-                this.label2.Text = "";
-                Console.WriteLine("Voice recognition turned off");
+                this.label2.Text = string.Empty;
             }
             else
             {
                 ((Button)sender).Tag = TurnSpeechRecognitionOn();
-                Console.WriteLine("Voice recognition turned on");
             }
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            LoginDlg dlg = new LoginDlg();
+            LoginDlg dlg = new LoginDlg(_logger);
             
             DialogResult dlgresult = dlg.ShowDialog();
             if (dlgresult == DialogResult.OK)
             {
                 Cursor = Cursors.WaitCursor;
-                Console.WriteLine("Trying to connect to EIB Server...");
+                _logger.Log("Trying to connect to EIB Server...");
                 bool result = dlg.Login(_server);
                 if (result)
                 {
                     UpdateUI();
-                    Console.WriteLine("Connection to EIB Server Success!");
+                    _logger.Log("Connection to EIB Server Success!");
                 }
                 else
                 {
-                    Console.WriteLine("Connection to EIB Server Failed!");
+                    _logger.Log("Connection to EIB Server Failed!");
                 }
                 Cursor = Cursors.Default;
             }
@@ -350,5 +390,13 @@ namespace EIBVoice
         }
 
         #endregion 
+
+        private void generalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_gen_settings_form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+            }
+        }
+
     }
 }

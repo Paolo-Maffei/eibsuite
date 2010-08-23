@@ -46,11 +46,13 @@ namespace EIBVoice
             this.tvCategories.Dock = DockStyle.Fill;
             this.lvRecords.Dock = DockStyle.Fill;
 
-            this.lvRecords.Columns[0].Width += this.lvRecords.Width - (this.lvRecords.Columns[1].Width +
-                                                                       this.lvRecords.Columns[2].Width +
-                                                                       this.lvRecords.Columns[3].Width +
-                                                                       this.lvRecords.Columns[4].Width +
-                                                                       this.lvRecords.Columns[5].Width + 60);
+            int totalColumnsWidth = 60;
+            foreach (var item in this.lvRecords.Columns)
+            {
+                totalColumnsWidth += ((ColumnHeader)item).Width;
+            }
+
+            this.lvRecords.Columns[0].Width += this.lvRecords.Width - totalColumnsWidth;
 
             this.btnSaveFile.Enabled = false;
 
@@ -59,17 +61,20 @@ namespace EIBVoice
        
         void lvRecords_SubItemClicked(object sender, SubItemEventArgs e)
         {
+            //Phrase column
             if (e.SubItem == 0)
             {
                 e.Item.BeginEdit();
                 return;
             }
 
-            if (e.SubItem == 2 || e.SubItem == 3)
+            //Dest Address column
+            if (e.SubItem == 1)
             {
                 EditEIBAddress(e);
                 return;
             }
+            //any other column
             else
             {
                 EditHexValue(e);
@@ -145,8 +150,8 @@ namespace EIBVoice
                 //phrase
                 item.Text = row["Phrase"].ToString();;
                 
-                item.SubItems.Add("0x" + ((byte)data["MessageControl"]).ToString("X"));
-                item.SubItems.Add(data["SourceAddress"].ToString());
+                //item.SubItems.Add("0x" + ((byte)data["MessageControl"]).ToString("X"));
+                //item.SubItems.Add(data["SourceAddress"].ToString());
                 item.SubItems.Add(data["DestinationAddress"].ToString());
                 item.SubItems.Add("0x" + ((byte)data["TCPI"]).ToString("X"));
                 item.SubItems.Add("0x" + ((byte)data["APCI"]).ToString("X"));

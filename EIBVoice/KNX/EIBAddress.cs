@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 namespace EIBVoice.KNX
 {
     public enum GROUP_LEVEL_FORMAT
@@ -73,7 +74,9 @@ namespace EIBVoice.KNX
         {
             get
             {
-                return (ushort)(_high | _low);
+                return (ushort)(_high << 8 | _low);
+                //return this as if called with htons
+                //return (ushort)((byte)_high | (byte)_low);
             }
         }
 

@@ -46,19 +46,20 @@
             this.btnAddRecord = new System.Windows.Forms.ToolStripButton();
             this.btnRemoveRecord = new System.Windows.Forms.ToolStripButton();
             this.lvRecords = new EIBVoice.ListViewEx();
-            this.columnHeaderPhrase = new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderMessageControl = new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderSourceAddress = new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderDestAddress = new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderTCPI = new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderACPI = new System.Windows.Forms.ColumnHeader();
+            this.columnHeaderPhrase = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderDestAddress = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderTCPI = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderACPI = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             this.toolStripCategories.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
             this.splitContainer3.SuspendLayout();
@@ -67,7 +68,7 @@
             // 
             // splitContainer1
             // 
-            this.splitContainer1.Location = new System.Drawing.Point(70, 98);
+            this.splitContainer1.Location = new System.Drawing.Point(12, 12);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -77,8 +78,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer3);
-            this.splitContainer1.Size = new System.Drawing.Size(692, 372);
-            this.splitContainer1.SplitterDistance = 250;
+            this.splitContainer1.Size = new System.Drawing.Size(646, 346);
+            this.splitContainer1.SplitterDistance = 233;
             this.splitContainer1.TabIndex = 0;
             // 
             // splitContainer2
@@ -189,7 +190,7 @@
             // 
             // splitContainer3
             // 
-            this.splitContainer3.Location = new System.Drawing.Point(162, 72);
+            this.splitContainer3.Location = new System.Drawing.Point(17, 72);
             this.splitContainer3.Name = "splitContainer3";
             this.splitContainer3.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -200,7 +201,7 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.lvRecords);
-            this.splitContainer3.Size = new System.Drawing.Size(150, 236);
+            this.splitContainer3.Size = new System.Drawing.Size(374, 236);
             this.splitContainer3.SplitterDistance = 67;
             this.splitContainer3.TabIndex = 0;
             // 
@@ -211,7 +212,7 @@
             this.btnRemoveRecord});
             this.toolStripRecords.Location = new System.Drawing.Point(0, 0);
             this.toolStripRecords.Name = "toolStripRecords";
-            this.toolStripRecords.Size = new System.Drawing.Size(150, 25);
+            this.toolStripRecords.Size = new System.Drawing.Size(374, 25);
             this.toolStripRecords.TabIndex = 0;
             this.toolStripRecords.Text = "toolStrip2";
             // 
@@ -240,8 +241,6 @@
             this.lvRecords.AllowColumnReorder = true;
             this.lvRecords.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeaderPhrase,
-            this.columnHeaderMessageControl,
-            this.columnHeaderSourceAddress,
             this.columnHeaderDestAddress,
             this.columnHeaderTCPI,
             this.columnHeaderACPI});
@@ -249,9 +248,9 @@
             this.lvRecords.FullRowSelect = true;
             this.lvRecords.GridLines = true;
             this.lvRecords.LabelEdit = true;
-            this.lvRecords.Location = new System.Drawing.Point(41, 50);
+            this.lvRecords.Location = new System.Drawing.Point(21, 14);
             this.lvRecords.Name = "lvRecords";
-            this.lvRecords.Size = new System.Drawing.Size(78, 76);
+            this.lvRecords.Size = new System.Drawing.Size(336, 112);
             this.lvRecords.SmallImageList = this.imageList;
             this.lvRecords.TabIndex = 0;
             this.lvRecords.UseCompatibleStateImageBehavior = false;
@@ -262,14 +261,6 @@
             // columnHeaderPhrase
             // 
             this.columnHeaderPhrase.Text = "Phrase";
-            // 
-            // columnHeaderMessageControl
-            // 
-            this.columnHeaderMessageControl.Text = "Message Control";
-            // 
-            // columnHeaderSourceAddress
-            // 
-            this.columnHeaderSourceAddress.Text = "Source Address";
             // 
             // columnHeaderDestAddress
             // 
@@ -287,23 +278,26 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(898, 573);
+            this.ClientSize = new System.Drawing.Size(686, 391);
             this.Controls.Add(this.splitContainer1);
             this.Name = "ConfigMessages";
             this.Text = "ConfigMessages";
             this.Load += new System.EventHandler(this.ConfigMessages_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel1.PerformLayout();
             this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             this.toolStripCategories.ResumeLayout(false);
             this.toolStripCategories.PerformLayout();
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel1.PerformLayout();
             this.splitContainer3.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
             this.toolStripRecords.ResumeLayout(false);
             this.toolStripRecords.PerformLayout();
@@ -328,8 +322,6 @@
         private System.Windows.Forms.ToolStripButton btnSaveFile;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ColumnHeader columnHeaderPhrase;
-        private System.Windows.Forms.ColumnHeader columnHeaderMessageControl;
-        private System.Windows.Forms.ColumnHeader columnHeaderSourceAddress;
         private System.Windows.Forms.ColumnHeader columnHeaderDestAddress;
         private System.Windows.Forms.ColumnHeader columnHeaderTCPI;
         private System.Windows.Forms.ColumnHeader columnHeaderACPI;

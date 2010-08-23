@@ -96,20 +96,20 @@ namespace HexConverter
             this.tbDecimal.Location = new System.Drawing.Point(11, 27);
             this.tbDecimal.Name = "tbDecimal";
             this.tbDecimal.Size = new System.Drawing.Size(144, 20);
-            this.tbDecimal.TabIndex = 2;
+            this.tbDecimal.TabIndex = 1;
             this.tbDecimal.TextChanged += new System.EventHandler(this.tbDecimal_TextChanged);
-            this.tbDecimal.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbDecimal_KeyPress);
             this.tbDecimal.Enter += new System.EventHandler(this.tbDecimal_Enter);
+            this.tbDecimal.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbDecimal_KeyPress);
             // 
             // tbHex
             // 
             this.tbHex.Location = new System.Drawing.Point(11, 74);
             this.tbHex.Name = "tbHex";
             this.tbHex.Size = new System.Drawing.Size(144, 20);
-            this.tbHex.TabIndex = 3;
+            this.tbHex.TabIndex = 2;
             this.tbHex.TextChanged += new System.EventHandler(this.tbHex_TextChanged);
-            this.tbHex.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbHex_KeyPress);
             this.tbHex.Enter += new System.EventHandler(this.tbHex_Enter);
+            this.tbHex.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbHex_KeyPress);
             // 
             // label3
             // 
@@ -130,20 +130,20 @@ namespace HexConverter
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(12, 110);
+            this.btnOK.Location = new System.Drawing.Point(94, 110);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(61, 23);
-            this.btnOK.TabIndex = 6;
+            this.btnOK.TabIndex = 3;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             // 
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(94, 110);
+            this.btnCancel.Location = new System.Drawing.Point(11, 110);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(61, 23);
-            this.btnCancel.TabIndex = 6;
+            this.btnCancel.TabIndex = 4;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -164,7 +164,7 @@ namespace HexConverter
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "HexConvertorForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Hex Converter";
             this.ResumeLayout(false);
             this.PerformLayout();

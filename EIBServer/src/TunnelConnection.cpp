@@ -384,6 +384,13 @@ bool CTunnelingConnection::HandleTunnelRequest(unsigned char* buffer,CCemiFrame 
 		else
 		{
 			LOG_ERROR("[Received] [BUS] [Not supported message control field in cEMI frame (negative confirmation)]");
+			map<int,JTCMonitor*>::iterator it = _waiting_for_confirms.find(_state._recv_sequence);
+			if(it != _waiting_for_confirms.end()){
+				JTCMonitor* monitor = it->second;
+				JTCSynchronized s(*monitor);
+				_waiting_for_confirms.erase(_state._recv_sequence);
+				monitor->notify();
+			}	
 			return false;
 		}
 	}else{

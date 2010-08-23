@@ -8,8 +8,8 @@ namespace EIBVoice.KNX
     [XmlRoot("EIBTelegram")]
     public class EIBTelegram
     {
-        [XmlElement("MessageControl")]
-        public byte ControlField = 0x29;
+        //[XmlElement("MessageControl")]
+        //public byte ControlField = 0x29;
         [XmlIgnore()]
         public byte AddIL = 0x00;
         [XmlIgnore()]
@@ -29,18 +29,20 @@ namespace EIBVoice.KNX
 
         public byte[] Data = null;
 
+        /*
         [XmlElement("SourceAddress")]
         public EIBAddress SourceAddress
         {
             get { return SrcAddress; }
             set { SrcAddress = value;}
         }
+        */
 
         [XmlElement("DestinationAddress")]
-        public EIBAddress DestinationAddress
+        public String DestinationAddress
         {
-            get { return DestAddress; }
-            set { DestAddress = value;}
+            get { return DestAddress.ToString(); }
+            set { DestAddress = new EIBAddress(value);}
         }
 
         
@@ -52,7 +54,7 @@ namespace EIBVoice.KNX
         {
             byte[] arr = new byte[Data != null ? 11 + Data.Length : 11];
 
-            arr[0] = ControlField;
+            arr[0] = 0x29;
             arr[1] = AddIL;
             arr[2] = Control1;
             arr[3] = Control2;

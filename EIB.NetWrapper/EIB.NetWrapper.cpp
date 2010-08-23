@@ -50,10 +50,11 @@ namespace EIBNetWrapper
 	int CGenericServerWrapper::SendEIBNetwork(unsigned short function,unsigned char value, SendMode blocking_mode)
 	{
 		if (_ptr != NULL){
-			CEibAddress addr(function,true);
+			CEibAddress addr(function, true);
+			CString test = addr.ToString();
 			unsigned char val[1];
 			val[0] = value;
-			return _ptr->SendEIBNetwork(addr,val,1,(BlockingMode)blocking_mode);
+			return _ptr->SendEIBNetwork(addr, val, 1, (BlockingMode)blocking_mode);
 		}
 		return 0;
 	}
@@ -104,16 +105,30 @@ namespace EIBNetWrapper
 		marshal_context  ctx;
 		
 		bool result = false;
-
-		if(_ptr != NULL)
-		{			
-			result = _ptr->OpenConnection(ctx.marshal_as<const char*>(network_name),
-										  ctx.marshal_as<const char*>(eib_server_adress),
-										  eib_server_port,
-										  ctx.marshal_as<const char*>(initial_key),
-										  ctx.marshal_as<const char*>(local_ip),
-										  ctx.marshal_as<const char*>(username),
-										  ctx.marshal_as<const char*>(password));
+		try
+		{
+			if(_ptr != NULL)
+			{			
+				result = _ptr->OpenConnection(ctx.marshal_as<const char*>(network_name),
+											  ctx.marshal_as<const char*>(eib_server_adress),
+											  eib_server_port,
+											  ctx.marshal_as<const char*>(initial_key),
+											  ctx.marshal_as<const char*>(local_ip),
+											  ctx.marshal_as<const char*>(username),
+											  ctx.marshal_as<const char*>(password));
+			}
+		}
+		catch(SocketException& ex)
+		{
+			msclr::interop::marshal_context  ctx;
+			String^ msg = ctx.marshal_as<String^>(ex.what());
+			throw gcnew System::Exception(msg);
+		}
+		catch(CEIBException& ex1)
+		{
+			msclr::interop::marshal_context  ctx;
+			String^ msg = ctx.marshal_as<String^>(ex1.what());
+			throw gcnew System::Exception(msg);
 		}
 
 		return result;

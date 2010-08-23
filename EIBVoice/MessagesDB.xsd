@@ -13,8 +13,8 @@
                     <xs:element name="EIBTelegram">
                       <xs:complexType>
                         <xs:sequence>
-                          <xs:element name="MessageControl" type="xs:unsignedByte" />
-                          <xs:element name="SourceAddress" type="xs:string" />
+                          <!--<xs:element name="MessageControl" type="xs:unsignedByte" />
+                          <xs:element name="SourceAddress" type="xs:string" />-->
                           <xs:element name="DestinationAddress" type="xs:string" />
                           <xs:element name="TCPI" type="xs:unsignedByte" />
                           <xs:element name="APCI" type="xs:unsignedByte" />

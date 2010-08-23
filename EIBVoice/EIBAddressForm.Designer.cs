@@ -51,7 +51,7 @@
             this.tb1.Location = new System.Drawing.Point(14, 35);
             this.tb1.Name = "tb1";
             this.tb1.Size = new System.Drawing.Size(35, 20);
-            this.tb1.TabIndex = 3;
+            this.tb1.TabIndex = 1;
             this.tb1.TextChanged += new System.EventHandler(this.tbDecimal_TextChanged);
             this.tb1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbDecimal_KeyPress);
             // 
@@ -60,7 +60,7 @@
             this.tb2.Location = new System.Drawing.Point(63, 35);
             this.tb2.Name = "tb2";
             this.tb2.Size = new System.Drawing.Size(35, 20);
-            this.tb2.TabIndex = 3;
+            this.tb2.TabIndex = 2;
             this.tb2.TextChanged += new System.EventHandler(this.tbDecimal_TextChanged);
             this.tb2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbDecimal_KeyPress);
             // 
@@ -94,20 +94,20 @@
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(14, 68);
+            this.btnOK.Location = new System.Drawing.Point(89, 70);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(61, 23);
-            this.btnOK.TabIndex = 7;
+            this.btnOK.TabIndex = 4;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             // 
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(90, 68);
+            this.btnCancel.Location = new System.Drawing.Point(15, 70);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(61, 23);
-            this.btnCancel.TabIndex = 8;
+            this.btnCancel.TabIndex = 5;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -134,6 +134,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "EIBAddressForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Load += new System.EventHandler(this.EIBAddressForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

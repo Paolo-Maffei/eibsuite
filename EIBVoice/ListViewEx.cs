@@ -19,9 +19,16 @@ namespace EIBVoice
 		/// </summary>
 		private struct NMHDR 
 		{ 
-			public IntPtr hwndFrom ; 
+			public IntPtr hwndFrom; 
 			public Int32  idFrom; 
 			public Int32  code;
+
+            public NMHDR(IntPtr hwndFrom, Int32 idFrom, Int32 code)
+            {
+                this.hwndFrom = hwndFrom;
+                this.idFrom = idFrom;
+                this.code = code;
+            }
 		}
 
 

@@ -13,6 +13,7 @@ using EIBNetWrapper;
 using EIBVoice.Properties;
 using System.Xml;
 using System.Xml.Schema;
+using System.Net;
 
 namespace EIBVoice
 {
@@ -47,9 +48,9 @@ namespace EIBVoice
             string s_file = "MessagesDB.xml";
             try
             {
-                _logger.Log(String.Format("Loading Schema file: {0}...", s_file));
+                _logger.Log(String.Format("Loading XML Data file: {0}...", s_file));
                 ds.ReadXml(s_file);
-                _logger.Log("Schema file loaded successfuly");
+                _logger.Log("XML Data file file loaded successfuly");
             }
             catch (Exception e)
             {
@@ -190,7 +191,8 @@ namespace EIBVoice
             //read the message + confirmed
             //ReadAloud(text + " confirmed");
             //send the telegram here...
-            int res = _server.SendEIBNetwork(((KNX.EIBTelegram)_db[text]).DestAddress.RawAddress, ((KNX.EIBTelegram)_db[text]).APCI, CGenericServerWrapper.SendMode.NonBlocking);
+            KNX.EIBTelegram telegram = (KNX.EIBTelegram)_db[text];
+            int res = _server.SendEIBNetwork(telegram.DestAddress.RawAddress, telegram.APCI, CGenericServerWrapper.SendMode.WaitForConfirm);
             if (res == 0)
             {
                 _logger.Log(String.Format("Sending command to {0} Failed.", ((KNX.EIBTelegram)_db[text]).DestAddress.ToString()));

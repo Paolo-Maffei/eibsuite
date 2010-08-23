@@ -23,6 +23,7 @@ void eibserver_main(bool interactive_conf, bool interactive_usersdb)
 	}
 	else{
 		cerr << endl << "Server Failed to start: initialization of EIB Server failed." << endl;
+		JTCThread::currentThread()->sleep(2000);
 		exit(1);
 	}
 

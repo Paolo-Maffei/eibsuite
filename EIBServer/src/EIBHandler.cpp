@@ -109,6 +109,7 @@ void CEIBHandler::RunEIBWriter()
 	while (!_stop)
 	{
 		START_TRY
+			//if we have a packet waiting in the queue then forward it to the KNXNet/IP device
 			if(_buffer.Read(msg2write))
 			{
 				iface.Write(msg2write);

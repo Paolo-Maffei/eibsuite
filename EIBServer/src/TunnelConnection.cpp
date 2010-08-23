@@ -139,6 +139,8 @@ void CTunnelingConnection::InitConnectionParams()
 
 void CTunnelingConnection::DisConnect()
 {
+	//make sure that any waiting thread is released now...
+	
 	if(!IsConnected()){
 		return;
 	}
@@ -231,7 +233,6 @@ void CTunnelingConnection::HandleCoreServices(unsigned char* recvdData)
 
 bool CTunnelingConnection::HandleTunnelingServices(unsigned char* recvdData, CCemiFrame &frame)
 {
-	JTCSynchronized s(*this);
 	EIBNETIP_HEADER* header = ((EIBNETIP_HEADER*)recvdData);
 	bool res = false;
 	switch (header->servicetype)
@@ -286,6 +287,8 @@ void CTunnelingConnection::HandleDisconnectResponse(unsigned char* buffer)
 
 void CTunnelingConnection::HandleTunnelingAck(unsigned char* buffer)
 {
+	JTCSynchronized s(*this);
+
 	CTunnelingAck ack(buffer);
 	LOG_DEBUG("[Received] [BUS] [Tunnel Ack] Sequence: %d", ack.GetSequenceNumber());
 
@@ -295,7 +298,7 @@ void CTunnelingConnection::HandleTunnelingAck(unsigned char* buffer)
 	}
 
 	map<int,JTCMonitor*>::iterator it = _waiting_for_acks.find(_state._send_sequence);
-	if(it != _waiting_for_acks.end()){
+	if(it != _waiting_for_acks.end() && it->second != NULL){
 		JTCSynchronized(*it->second);
 		it->second->notify();
 		_waiting_for_acks.erase(_state._send_sequence);
@@ -316,6 +319,8 @@ void CTunnelingConnection::HandleConnectionStateResponse(unsigned char* buffer)
 
 bool CTunnelingConnection::HandleTunnelRequest(unsigned char* buffer,CCemiFrame &frame)
 {
+	JTCSynchronized s(*this);
+	
 	CTunnelingRequest req(buffer);
 
 	if(req.GetChannelId() != _state._channelid){
@@ -403,6 +408,9 @@ bool CTunnelingConnection::HandleTunnelRequest(unsigned char* buffer,CCemiFrame 
 
 bool CTunnelingConnection::SendDataFrame(const KnxElementQueue& elem)
 {
+	ASSERT_ERROR(!elem._frame.IsExtendedFrame(),"Only standard frames are supported");
+	ASSERT_ERROR(!elem._frame.GetSourceAddress().IsGroupAddress(),"Only physical source address allowed");
+	
 	unsigned char buffer[256];
 	if(!IsConnected()){
 		return false;
@@ -410,8 +418,7 @@ bool CTunnelingConnection::SendDataFrame(const KnxElementQueue& elem)
 
 	JTCSynchronized s(*this);
 	CTunnelingRequest req(_state._channelid,_state._send_sequence,elem._frame);
-	ASSERT_ERROR(!req.GetcEMI().IsExtendedFrame(),"Only standard frames are supported");
-	ASSERT_ERROR(!req.GetcEMI().GetSourceAddress().IsGroupAddress(),"Only physical source address allowed");
+	
 	req.FillBuffer(buffer,256);
 	if(elem._mode == WAIT_FOR_ACK && elem._optional_mon != NULL){
 		_waiting_for_acks.insert(pair<int,JTCMonitor*>(_state._send_sequence + 1,elem._optional_mon));

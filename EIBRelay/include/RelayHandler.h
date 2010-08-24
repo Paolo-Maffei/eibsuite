@@ -23,7 +23,7 @@ public:
 
 	const CString& GetLocalCtrlAddr() const { return _input_handler->_local_addr; }
 	int GetLocalCtrlPort() const { return _input_handler->_local_port; }
-
+	
 private:
 	void InitState();
 	void OnClientConnectionClose();
@@ -95,8 +95,11 @@ public:
 	typedef JTCHandleT<CRelayHandler::CRelayInputHandler> CRelayInputHandlerHandle;
 	typedef JTCHandleT<CRelayHandler::CRelayOutputHandler> CRelayOutputHandlerHandle;
 
-	friend class CRelayInputHandler;
-	friend class CRelayOutputHandler;
+	//friend class CRelayInputHandler;
+	//friend class CRelayOutputHandler;
+
+public:
+	ConnectionState* GetState() { return &_state; }
 
 private:
 	CRelayServerConfig* _server_conf;

@@ -63,9 +63,6 @@ void CRelayHandler::Close()
 
 bool CRelayHandler::Connect()
 {
-	//DEBUG
-	//return true;
-	
 	bool established = false;
 	if(_server_conf->GetAutoDiscoverEibServer())
 	{
@@ -343,7 +340,7 @@ void CRelayHandler::CRelayInputHandler::HandleConnectionStateRequest(unsigned ch
 
 		_relay->_state._timeout.SetNow();
 		//reset the timeout
-		_relay->_state._timeout += 60;
+		_relay->_state._timeout += HEARTBEAT_REQUEST_TIME_OUT;
 
 		CConnectionStateResponse resp(_relay->_state._channelid, E_NO_ERROR);
 		resp.FillBuffer(buffer, max_len);
@@ -396,6 +393,20 @@ void CRelayHandler::CRelayInputHandler::HandleConnectRequest(unsigned char* buff
 			return;
 		}
 
+		switch(req.GetConnectionType())
+		{
+		case CConnectRequest::TunnelConnection:
+			break;
+		case CConnectRequest::RemoteLogConnection:
+		case CConnectRequest::RemoteConfConnection:
+		case CConnectRequest::ObjSvrConnection:
+			CConnectResponse resp(0, E_CONNECTION_TYPE, _local_addr, _local_port, req.GetConnectionType());
+			resp.FillBuffer(buffer, max_len);
+			_sock.SendTo(buffer, resp.GetTotalSize(), req.GetControlAddress(), req.GetControlPort());
+			LOG_ERROR("Error: Connection type is not implemented");
+			return;
+		}
+
 		//validate host protocol type here
 
 		//assign new channel id
@@ -413,7 +424,7 @@ void CRelayHandler::CRelayInputHandler::HandleConnectRequest(unsigned char* buff
 		//mark connection is open
 		_relay->_state._is_connected = true;
 		_relay->_state._timeout.SetNow();
-		_relay->_state._timeout += 60; // the connection will expire in 60 secs from now (if no connection state request will be received)
+		_relay->_state._timeout += HEARTBEAT_REQUEST_TIME_OUT; // the connection will expire in 120 secs from now (if no connection state request will be received)
 
 		//send response back (we state the our Data endpoint is the same as our control endpoint)
 		CConnectResponse resp(_relay->_state._channelid, E_NO_ERROR, _local_addr, _local_port, req.GetConnectionType());

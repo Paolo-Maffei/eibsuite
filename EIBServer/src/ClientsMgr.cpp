@@ -34,7 +34,7 @@ void CClientsMgr::Init()
 		_auto_discovery_enabled = true;
 	END_TRY_START_CATCH_ANY
 		CEIBServer::GetInstance().GetLog().SetConsoleColor(YELLOW);
-		LOG_INFO("WARNINIG: Error in Auto-Discovery service. Auto-Discovery is disabled.");
+		LOG_INFO("Warning: Error in EIBServer Auto-Discovery service. Auto-Discovery service is now disabled.");
 		_auto_discovery_enabled = false;
 	END_CATCH
 }
@@ -70,10 +70,8 @@ void CClientsMgr::run()
 			
 			int len = _server_sock.RecvFrom(buffer,sizeof(buffer),source_address,source_port,500);
 			
-			if (len == 0 || _stop){
-				if(_auto_discovery_enabled){
-					HandleServiceDiscovery(buffer,1024);
-				}
+			if (len == 0 && _auto_discovery_enabled) {
+				HandleServiceDiscovery(buffer,1024);				
 				continue;
 			}
 
@@ -130,7 +128,7 @@ void CClientsMgr::HandleServiceDiscovery(char* buffer, int maxlen)
 		return;
 	}
 
-	LOG_DEBUG("[Received] Auto-Discovery search request");
+	LOG_DEBUG("[Received] Auto-Discovery search request.");
 
 	sport =  header.GetValue().ToInt();
 

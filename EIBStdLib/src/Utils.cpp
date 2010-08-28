@@ -119,7 +119,7 @@ bool CUtils::EnumNics(map<CString,CString>& nics)
   	do
   	{
 		pair<CString,CString> p;
-		p.first = i;
+		p.first = CString(pAdapterInfo->Index);
 		p.second += pAdapterInfo->Description; //pAdapterInfo->IpAddressList.IpAddress.String;
 		nics.insert(nics.end(), p);
 		pAdapterInfo = pAdapterInfo->Next;    // Progress through linked list

@@ -47,10 +47,23 @@ typedef struct EIB_STD_EXPORT{
     byte ctrl2;
     word saddr;
     word daddr;
-    byte apci_length;
-    byte tpci; //YGYG : ???? sould be removed ???
-	byte apci;
+    byte apci_length; //len
+    byte tpci; //type
+	byte apci; // value
 } CEMI_L_DATA_MESSAGE;
+
+typedef struct EIB_STD_EXPORT{
+	byte cch_structlength;
+    byte cch_channelid;
+    byte cch_sequencecounter;
+    byte cch_typespecific;
+	byte mc;
+	byte ailen;
+	byte status;
+	int timestamp;
+	word rawlen;
+	byte* raw;
+} CEMI_L_BUSMON_IND;
 
 typedef struct EIB_STD_EXPORT{
     byte mc;

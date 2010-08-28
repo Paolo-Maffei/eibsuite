@@ -18,7 +18,7 @@ public:
 	virtual void DisConnect();
 
 	virtual bool SendDataFrame(const KnxElementQueue& elem);
-	virtual bool ReceiveDataFrame(CCemiFrame& frame);
+	virtual bool ReceiveDataFrame(CCemi_L_Data_Frame& frame);
 
 	virtual const CString& GetDeviceDataAddress() { return _device_data_address; }
 	virtual int GetDeviceDataPort() { return _device_data_port; }

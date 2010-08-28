@@ -55,7 +55,7 @@ public:
 	virtual void DisConnect();
 
 	virtual bool SendDataFrame(const KnxElementQueue& elem);
-	virtual bool ReceiveDataFrame(CCemiFrame& frame); 
+	virtual bool ReceiveDataFrame(CCemi_L_Data_Frame& frame); 
 
 	virtual const CString& GetDeviceDataAddress() { return _device_data_address;}
 	virtual int GetDeviceDataPort() { return _device_data_port;}
@@ -81,10 +81,10 @@ private:
 
 private:
 	void HandleCoreServices(unsigned char* recvdData);
-	bool HandleTunnelingServices(unsigned char* recvdData, CCemiFrame &frame);
+	bool HandleTunnelingServices(unsigned char* recvdData, CCemi_L_Data_Frame &frame);
 	void HandleConnectionStateResponse(unsigned char* buffer);
 	void HandleTunnelingAck(unsigned char* buffer);
-	bool HandleTunnelRequest(unsigned char* buffer,CCemiFrame &frame);
+	bool HandleTunnelRequest(unsigned char* buffer,CCemi_L_Data_Frame &frame);
 	void HandleDisconnectResponse(unsigned char* buffer);
 	void HandleDisconnectRequest(unsigned char* buffer);
 	void Reconnect();

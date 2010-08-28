@@ -47,7 +47,7 @@ bool CRoutingConnection::SendDataFrame(const KnxElementQueue& elem)
 	return true;
 }
 
-bool CRoutingConnection::ReceiveDataFrame(CCemiFrame& frame)
+bool CRoutingConnection::ReceiveDataFrame(CCemi_L_Data_Frame& frame)
 {
 	unsigned char buffer[256];
 	CString tmp_ip;

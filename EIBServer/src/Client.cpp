@@ -30,7 +30,7 @@ void CClient::Close()
 	_keep_alive_thread->join();
 }
 
-void CClient::HandleIncomingPktsFromBus(const CUser& user, const CString* key, CCemiFrame& msg)
+void CClient::HandleIncomingPktsFromBus(const CUser& user, const CString* key, CCemi_L_Data_Frame& msg)
 {
 	if(!_buffer.Read(msg) || !user.GetFilter().IsPacketAllowed(msg) || !user.IsReadPolicyAllowed()){
 		return;
@@ -73,7 +73,7 @@ void CClient::HandleIncomingPktsFromBus(const CUser& user, const CString* key, C
 	_sock.SendTo(buffer,len,GetClientIP(),GetClientPort());
 }
 
-void CClient::HandleIncomingPktsFromClient(char* buffer, int max_len, const CUser& user, const CString* key, CString& s_address, CCemiFrame& msg)
+void CClient::HandleIncomingPktsFromClient(char* buffer, int max_len, const CUser& user, const CString* key, CString& s_address, CCemi_L_Data_Frame& msg)
 {
 	int len = 0, s_port = 0;
 	EibNetworkHeader* header = NULL;
@@ -157,7 +157,7 @@ void CClient::run()
 	CString s_address;
 	const CString* key = &_encryptor.GetSharedKey();
 	char buffer[256];
-	CCemiFrame msg;
+	CCemi_L_Data_Frame msg;
 	while (_logged_in)
 	{
 		START_TRY
@@ -176,7 +176,7 @@ void CClient::run()
 	LOG_DEBUG("Client Thread [%s] Exit.",GetName().GetBuffer());
 }
 
-bool CClient::InsertToBuffer(CCemiFrame& msg)
+bool CClient::InsertToBuffer(CCemi_L_Data_Frame& msg)
 {
 	return _buffer.Write(msg);
 }

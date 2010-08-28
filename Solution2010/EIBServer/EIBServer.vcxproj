@@ -126,7 +126,6 @@
     <ClInclude Include="..\..\EIBServer\include\packetfilter.h" />
     <ClInclude Include="..\..\EIBServer\include\RoutingConnection.h" />
     <ClInclude Include="..\..\EIBServer\include\ServerConfig.h" />
-    <ClInclude Include="..\..\EIBServer\include\ServerStatusConf.h" />
     <ClInclude Include="..\..\EIBServer\include\TunnelConnection.h" />
     <ClInclude Include="..\..\EIBServer\include\UsersDB.h" />
   </ItemGroup>

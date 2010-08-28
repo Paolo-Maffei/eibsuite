@@ -6,6 +6,7 @@
 #include "Socket.h"
 #include "TunnelConnection.h"
 #include "Globals.h"
+#include "CCemi_L_BusMon_Frame.h"
 
 using namespace EibStack;
 
@@ -16,6 +17,7 @@ public:
 	virtual ~CBusMonConnection();
 
 	virtual bool Connect();
+	virtual bool HandleTunnelRequest(unsigned char* buffer, int len, ICemiFrame* frame);
 };
 
 #endif

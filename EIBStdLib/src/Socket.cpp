@@ -158,14 +158,12 @@ CString Socket::LocalAddress(int interface_index) throw(SocketException)
 
   	PIP_ADAPTER_INFO pAdapterInfo = AdapterInfo; // Contains pointer to current adapter info
 	
-	int i = 0;
-  	do
+	do
   	{
-		if(i == interface_index){
+		if(pAdapterInfo->Index == interface_index){
 			return CString(pAdapterInfo->IpAddressList.IpAddress.String);
 		}
 		pAdapterInfo = pAdapterInfo->Next;    // Progress through linked list
-		++i;
   	}while(pAdapterInfo);
 
 	CString err_msg = "Interface num: ";

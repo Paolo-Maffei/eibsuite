@@ -2,7 +2,7 @@
 
 using namespace EibStack;
 
-CTunnelingRequest::CTunnelingRequest(unsigned char channelid, unsigned char sequencecounter, const CCemiFrame &cemi):
+CTunnelingRequest::CTunnelingRequest(unsigned char channelid, unsigned char sequencecounter, const CCemi_L_Data_Frame &cemi):
 CEIBNetPacket<EIBNETIP_TUNNELING_REUQEST>(TUNNELLING_REQUEST),
 _cemi_frame(cemi)
 {

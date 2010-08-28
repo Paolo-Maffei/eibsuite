@@ -36,7 +36,7 @@ bool CGenericServer::IsConnected()
 	return (_status == STATUS_CONNECTED);
 }
 
-int CGenericServer::SendEIBNetwork(const CCemiFrame& frame, BlockingMode mode)
+int CGenericServer::SendEIBNetwork(const CCemi_L_Data_Frame& frame, BlockingMode mode)
 {
 	if (!IsConnected()){
 		//write error to log file
@@ -98,7 +98,7 @@ int CGenericServer::SendEIBNetwork(const CEibAddress& address, unsigned char* va
 	return sizeof(InternalNetMsg);
 }
 
-int CGenericServer::ReceiveEIBNetwork(CCemiFrame& frame, int timeout)
+int CGenericServer::ReceiveEIBNetwork(CCemi_L_Data_Frame& frame, int timeout)
 {
 	if (!IsConnected()){
 		return 0;

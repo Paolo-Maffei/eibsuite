@@ -86,7 +86,7 @@ public:
 		\brief Reads data coming from the EIB Instabus
 		\param msg Data structure of eib message to fill with the data from interface
 	*/
-	bool Read(CCemiFrame& msg);//, const CString& local_address);
+	bool Read(CCemi_L_Data_Frame& msg);//, const CString& local_address);
 	/*!
 		\fn void Write(const KnxElementQueue& elem)
 		\brief Writes a message to the EIB interface
@@ -96,7 +96,7 @@ public:
 	
 	EIB_DEVICE_MODE GetMode() const { return _mode;}
 
-	void SetDefaultPacketFields(CCemiFrame& msg);
+	void SetDefaultPacketFields(CCemi_L_Data_Frame& msg);
 	IConnection* GetConnection();
 
 	const EIBInterfaceStats& GetInterfaceStats() { return _stats; }

@@ -225,7 +225,7 @@ void CClientsMgr::Disconnect(int session_id)
 	_clients.erase(it);
 }
 
-void CClientsMgr::Brodcast(CCemiFrame& msg)
+void CClientsMgr::Brodcast(CCemi_L_Data_Frame& msg)
 {
 	JTCSynchronized sync(*this);
 

@@ -60,7 +60,7 @@ public:
 		\param data Reference to the message to be written to the buffer.	
 	*/
 	
-	void Write(const CCemiFrame& data, BlockingMode mode, JTCMonitor* optional_mon);
+	void Write(const CCemi_L_Data_Frame& data, BlockingMode mode, JTCMonitor* optional_mon);
 	/*!
 		\fn virtual void Run(void* arg) 
 		\brief Starting point for thread, calls either RunEIBReader or RunEIBWriter

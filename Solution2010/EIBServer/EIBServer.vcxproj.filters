@@ -81,9 +81,6 @@
     <ClInclude Include="..\..\EIBServer\include\ServerConfig.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\EIBServer\include\ServerStatusConf.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\EIBServer\include\TunnelConnection.h">
       <Filter>include</Filter>
     </ClInclude>

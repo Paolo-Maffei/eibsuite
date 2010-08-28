@@ -4,7 +4,7 @@
 #include "Globals.h"
 #include <map>
 #include "EIBNetIP.h"
-#include "CemiFrame.h"
+#include "CCemi_L_Data_Frame.h"
 
 using namespace EibStack;
 
@@ -18,7 +18,7 @@ public:
 
 	void SetAllowedSourceAddressMask(unsigned short mask) { _allowed_sa_mask = mask;}
 	void SetAllowedDestAddressMask(unsigned short mask) { _allowed_da_mask = mask;}
-	bool IsPacketAllowed(const CCemiFrame& msg) const;
+	bool IsPacketAllowed(const CCemi_L_Data_Frame& msg) const;
 
 	//void AddAllowedSourceAddress(unsigned short source);
 	//void AddAllowedDestAddress(unsigned short dest);

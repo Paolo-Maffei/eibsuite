@@ -88,7 +88,7 @@ void CEIBInterface::Init()
 	}
 }
 
-bool CEIBInterface::Read(CCemiFrame& frame)
+bool CEIBInterface::Read(CCemi_L_Data_Frame& frame)
 {
 	if(_connection == NULL || !_connection->ReceiveDataFrame(frame)){
 		return false;

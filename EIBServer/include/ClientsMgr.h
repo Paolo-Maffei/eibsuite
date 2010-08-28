@@ -53,7 +53,7 @@ public:
 		\brief Broadcasts a message to all clients that have reading privileges
 		\param msg reference to the broacast message	
 	*/	
-	void Brodcast(CCemiFrame& msg);
+	void Brodcast(CCemi_L_Data_Frame& msg);
 	/*!
 		\fn void Disconnect(const CClient& terminate_client)
 		\brief Disconnects a client	 

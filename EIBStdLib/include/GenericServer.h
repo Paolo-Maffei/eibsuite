@@ -20,7 +20,7 @@
 #include "HttpParser.h"
 #include "EIBAddress.h"
 #include "JTC.h"
-#include "CemiFrame.h"
+#include "CCemi_L_Data_Frame.h"
 
 using namespace EibStack;
 using namespace std;
@@ -138,7 +138,7 @@ public:
 	\return int - the number of bytes sent to the EIB Server
 	*/
 	int SendEIBNetwork(const CEibAddress& address, unsigned char* value, int value_len, BlockingMode mode);
-	int SendEIBNetwork(const CCemiFrame& frame, BlockingMode mode);
+	int SendEIBNetwork(const CCemi_L_Data_Frame& frame, BlockingMode mode);
 	/*!
 	\brief Method used to send data to the EIB Server. the data must be in form of EibMsg, and the method will
 		   add the neccesarry header and encrypt the data before sending it over the network.
@@ -149,7 +149,7 @@ public:
 	\return int - the number of bytes Received from the EIB Server
 	*/
 	int ReceiveEIBNetwork(CEibAddress& function, unsigned char* value, unsigned char& value_len, int timeout = INFINITE);
-	int ReceiveEIBNetwork(CCemiFrame& frame, int timeout);
+	int ReceiveEIBNetwork(CCemi_L_Data_Frame& frame, int timeout);
 	/*!
 	\brief Get Method
 	\fn unsigned char GetNetworkID()

@@ -73,7 +73,7 @@ bool CEIBBusMonAddrListConf::SendCmdToAddr(const CHttpRequest& request)
 	//CEIBServer::GetInstance().G
 
 	//build the packet
-	CCemiFrame msg;
+	CCemi_L_Data_Frame msg;
 	msg.SetMessageControl(L_DATA_REQ);
 	msg.SetAddilLength(0); //must be 0
 	msg.SetCtrl1(0); // init with 0

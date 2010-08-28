@@ -164,7 +164,7 @@ void CTunnelingConnection::DisConnect()
 //receives frames from the EIB Router
 //Returns true if the frame is data (tunneling frame)
 //Handles the frame If the frame is control-oriented
-bool CTunnelingConnection::ReceiveDataFrame(CCemiFrame &frame)
+bool CTunnelingConnection::ReceiveDataFrame(CCemi_L_Data_Frame &frame)
 {
 	unsigned char buffer[256];
 	int len;
@@ -231,7 +231,7 @@ void CTunnelingConnection::HandleCoreServices(unsigned char* recvdData)
 	}
 }
 
-bool CTunnelingConnection::HandleTunnelingServices(unsigned char* recvdData, CCemiFrame &frame)
+bool CTunnelingConnection::HandleTunnelingServices(unsigned char* recvdData, CCemi_L_Data_Frame &frame)
 {
 	EIBNETIP_HEADER* header = ((EIBNETIP_HEADER*)recvdData);
 	bool res = false;
@@ -317,7 +317,7 @@ void CTunnelingConnection::HandleConnectionStateResponse(unsigned char* buffer)
 	_heartbeat->DecrementCounter();
 }
 
-bool CTunnelingConnection::HandleTunnelRequest(unsigned char* buffer,CCemiFrame &frame)
+bool CTunnelingConnection::HandleTunnelRequest(unsigned char* buffer, CCemi_L_Data_Frame &frame)
 {
 	JTCSynchronized s(*this);
 	
@@ -334,7 +334,7 @@ bool CTunnelingConnection::HandleTunnelRequest(unsigned char* buffer,CCemiFrame 
 	{
 		if(req.GetSequenceNumber() == _state._recv_sequence){
 			_num_out_of_sync_pkts = 0;
-			const CCemiFrame& tmpfrm = req.GetcEMI();
+			const CCemi_L_Data_Frame& tmpfrm = req.GetcEMI();
 			LOG_DEBUG("[Received] [BUS] [Tunnel request] Sequence: %d Dest Address: %s",req.GetSequenceNumber(),
 					tmpfrm.GetDestAddress().ToString().GetBuffer());
 		}else{

@@ -3,7 +3,7 @@
 using namespace EibStack;
 
 
-CRoutingIndication::CRoutingIndication(const CCemiFrame& cemi) :
+CRoutingIndication::CRoutingIndication(const CCemi_L_Data_Frame& cemi) :
 CEIBNetPacket<EIBNETIP_ROUTING_INDICATION>(ROUTING_INDICATION),
 _cemi_frame(cemi)
 {

@@ -58,6 +58,11 @@ bool CBusMonConnection::Connect()
 	_connection_status = CONNECTED;
 
 	return true;
+}
 
-	return true;
+bool CBusMonConnection::HandleTunnelRequest(unsigned char* buffer, int len, ICemiFrame* frame)
+{
+	CCemi_L_BusMon_Frame f(buffer, len);
+
+	return false;
 }

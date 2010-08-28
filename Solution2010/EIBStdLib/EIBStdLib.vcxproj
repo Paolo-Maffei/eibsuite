@@ -84,6 +84,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\EIBStdLib\src\CCemi_L_BusMon_Frame.cpp" />
     <ClCompile Include="..\..\EIBStdLib\src\CException.cpp" />
     <ClCompile Include="..\..\EIBStdLib\src\cli.cpp" />
     <ClCompile Include="..\..\EIBStdLib\src\CMutex.cpp" />
@@ -106,7 +107,7 @@
     <ClCompile Include="..\..\EIBStdLib\src\CString.cpp" />
     <ClCompile Include="..\..\EIBStdLib\src\DataBuffer.cpp" />
     <ClCompile Include="..\..\EIBStdLib\src\StringTokenizer.cpp" />
-    <ClCompile Include="..\..\EIBStdLib\src\CemiFrame.cpp" />
+    <ClCompile Include="..\..\EIBStdLib\src\CCemi_L_Data_Frame.cpp" />
     <ClCompile Include="..\..\EIBStdLib\src\ConnectionStateRequest.cpp" />
     <ClCompile Include="..\..\EIBStdLib\src\ConnectionStateResponse.cpp" />
     <ClCompile Include="..\..\EIBStdLib\src\ConnectRequest.cpp" />
@@ -176,6 +177,8 @@
     <ClCompile Include="..\..\EIBStdLib\src\xml\xpath_syntax.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\EIBStdLib\include\CCemi_L_BusMon_Frame.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\CemiFrame.h" />
     <ClInclude Include="..\..\EIBStdLib\include\CException.h" />
     <ClInclude Include="..\..\EIBStdLib\include\cli.h" />
     <ClInclude Include="..\..\EIBStdLib\include\CMutex.h" />
@@ -214,7 +217,7 @@
     <ClInclude Include="..\..\EIBStdLib\include\DataBuffer.h" />
     <ClInclude Include="..\..\EIBStdLib\include\StringTokenizer.h" />
     <ClInclude Include="..\..\EIBStdLib\include\cEMI.h" />
-    <ClInclude Include="..\..\EIBStdLib\include\CemiFrame.h" />
+    <ClInclude Include="..\..\EIBStdLib\include\CCemi_L_Data_Frame.h" />
     <ClInclude Include="..\..\EIBStdLib\include\ConnectionStateRequest.h" />
     <ClInclude Include="..\..\EIBStdLib\include\ConnectionStateResponse.h" />
     <ClInclude Include="..\..\EIBStdLib\include\ConnectRequest.h" />

@@ -1,22 +1,22 @@
-#include "CemiFrame.h"
+#include "CCemi_L_Data_Frame.h"
 #include "EibNetwork.h"
 
 using namespace EibStack;
 
-CCemiFrame::CCemiFrame(const CCemiFrame& rhs) :
+CCemi_L_Data_Frame::CCemi_L_Data_Frame(const CCemi_L_Data_Frame& rhs) :
 _addil_data(NULL)
 {
 	_data = rhs._data;
 	CopyAddilData(rhs._data.apci_length, rhs._addil_data);
 }
 
-CCemiFrame::CCemiFrame() : 
+CCemi_L_Data_Frame::CCemi_L_Data_Frame() : 
 _addil_data(NULL)
 {
 	memset(&_data,0,sizeof(_data));
 }
 
-CCemiFrame::CCemiFrame(unsigned char message_control,
+CCemi_L_Data_Frame::CCemi_L_Data_Frame(unsigned char message_control,
 					   CEibAddress& source_addr,
 					   CEibAddress& dst_addr,
 			           unsigned char* data,
@@ -59,12 +59,12 @@ _addil_data(NULL)
 	ASSERT_ERROR(data_len <= MAX_EIB_VALUE_LEN,"Maximum allowable TPDU length is 6 octets (including APCI) in this implementation");
 }
 
-CCemiFrame::CCemiFrame(unsigned char* data) : _addil_data(NULL)
+CCemi_L_Data_Frame::CCemi_L_Data_Frame(unsigned char* data) : _addil_data(NULL)
 {
 	Parse(data);
 }
 
-bool CCemiFrame::IsPositiveConfirmation() const
+bool CCemi_L_Data_Frame::IsPositiveConfirmation() const
 {
 	if((_data.ctrl1 & 0x01) == 0x01){
 		return false;
@@ -72,7 +72,7 @@ bool CCemiFrame::IsPositiveConfirmation() const
 	return true;
 }
 
-void CCemiFrame::SetDestAddress(const CEibAddress& add)
+void CCemi_L_Data_Frame::SetDestAddress(const CEibAddress& add)
 {
 	_data.daddr = add.ToByteArray(); 
 	if (add.IsGroupAddress()){
@@ -83,7 +83,7 @@ void CCemiFrame::SetDestAddress(const CEibAddress& add)
 	}
 }
 
-void CCemiFrame::Parse(unsigned char* data)
+void CCemi_L_Data_Frame::Parse(unsigned char* data)
 {
 	CEMI_L_DATA_MESSAGE *ptr = (CEMI_L_DATA_MESSAGE *)data;
 
@@ -106,7 +106,7 @@ void CCemiFrame::Parse(unsigned char* data)
 	//ASSERT_ERROR(!IsExtendedFrame(),"Only standard frames are supported");
 }
 
-CCemiFrame::~CCemiFrame()
+CCemi_L_Data_Frame::~CCemi_L_Data_Frame()
 {
 	if (_addil_data != NULL){
 		delete _addil_data;
@@ -114,7 +114,7 @@ CCemiFrame::~CCemiFrame()
 	}
 }
 
-void CCemiFrame::FillBuffer(unsigned char* buffer, int max_length) const
+void CCemi_L_Data_Frame::FillBuffer(unsigned char* buffer, int max_length) const
 {
 	ASSERT_ERROR(max_length >= GetTotalSize(),"Buffer is too small");
 
@@ -138,19 +138,19 @@ void CCemiFrame::FillBuffer(unsigned char* buffer, int max_length) const
 	memcpy(&buffer[11],_addil_data,_data.apci_length -1);
 }
 
-int CCemiFrame::GetTotalSize() const
+int CCemi_L_Data_Frame::GetTotalSize() const
 {
 	int res = (11 + _data.apci_length -1);
 	return res;
 }
 
-void CCemiFrame::SetFrameFormatStandard()
+void CCemi_L_Data_Frame::SetFrameFormatStandard()
 {
 	_data.ctrl1 |= 0x80;
     _data.ctrl2 &= 0xF0;
 }
 
-bool CCemiFrame::IsExtendedFrame() const
+bool CCemi_L_Data_Frame::IsExtendedFrame() const
 {
 	if ((_data.ctrl1 & 0x0080) == 0){
 		return true;
@@ -158,12 +158,12 @@ bool CCemiFrame::IsExtendedFrame() const
     return false;
 }
 
-CEibAddress CCemiFrame::GetSourceAddress() const
+CEibAddress CCemi_L_Data_Frame::GetSourceAddress() const
 {
 	return CEibAddress((unsigned int)_data.saddr,false);
 }
 
-void CCemiFrame::SetValue(unsigned char* val, unsigned char val_len)
+void CCemi_L_Data_Frame::SetValue(unsigned char* val, unsigned char val_len)
 {
 	if(val_len < 1 || val_len > MAX_EIB_VALUE_LEN){
 		throw CEIBException(GeneralError,"Value length must be at least 1 and maximum 6");
@@ -184,17 +184,17 @@ void CCemiFrame::SetValue(unsigned char* val, unsigned char val_len)
 	CopyAddilData(val_len, &val[1]);
 }
 
-CEibAddress CCemiFrame::GetDestAddress() const
+CEibAddress CCemi_L_Data_Frame::GetDestAddress() const
 {
 	return CEibAddress((unsigned int)_data.daddr,(_data.ctrl2 & 0x0080) == 0x0080);
 }
 
-bool CCemiFrame::IsRepeatedFrame() const
+bool CCemi_L_Data_Frame::IsRepeatedFrame() const
 {
 	return ((_data.ctrl1 & 0x20) == 0);
 }
 
-void CCemiFrame::SetRepeatFlag(bool val)
+void CCemi_L_Data_Frame::SetRepeatFlag(bool val)
 {
 	if (val){
 		_data.ctrl1 &= ~0x20;
@@ -203,18 +203,18 @@ void CCemiFrame::SetRepeatFlag(bool val)
 	}
 }
 
-CEMI_FRAME_PRIORITY CCemiFrame::GetPriority() const
+CEMI_FRAME_PRIORITY CCemi_L_Data_Frame::GetPriority() const
 {
 	return (CEMI_FRAME_PRIORITY)(_data.ctrl1 & 0x000C);
 }
 
-void CCemiFrame::SetPriority(CEMI_FRAME_PRIORITY priority) 
+void CCemi_L_Data_Frame::SetPriority(CEMI_FRAME_PRIORITY priority) 
 {
 	_data.ctrl1 &= 0xFFF3;
     _data.ctrl1 |= (unsigned char)priority;
 }
 
-bool CCemiFrame::GetAcknowledgeRequested() const
+bool CCemi_L_Data_Frame::GetAcknowledgeRequested() const
 {
 	if ((_data.ctrl1 & 0x02) == 0){
 		return false;
@@ -222,12 +222,12 @@ bool CCemiFrame::GetAcknowledgeRequested() const
     return true;
 }
 
-unsigned char CCemiFrame::GetHopCount() const
+unsigned char CCemi_L_Data_Frame::GetHopCount() const
 {
 	return (unsigned char)((_data.ctrl2 & 0x70) >> 4);
 }
 
-void CCemiFrame::SetAcknowledgeRequest(bool val)
+void CCemi_L_Data_Frame::SetAcknowledgeRequest(bool val)
 {
 	if (val){
 		_data.ctrl1 |= 0x0002;
@@ -236,14 +236,14 @@ void CCemiFrame::SetAcknowledgeRequest(bool val)
 	}
 }
 
-CCemiFrame& CCemiFrame::operator=(const CCemiFrame& rhs)
+CCemi_L_Data_Frame& CCemi_L_Data_Frame::operator=(const CCemi_L_Data_Frame& rhs)
 {
 	_data = rhs._data;
 	CopyAddilData(rhs._data.apci_length, rhs._addil_data);
 	return *this;
 }
 
-void CCemiFrame::FillBufferWithFrameData(unsigned char* buffer, int max_length)
+void CCemi_L_Data_Frame::FillBufferWithFrameData(unsigned char* buffer, int max_length)
 {
 	ASSERT_ERROR(max_length >= _data.apci_length, "Buffer is too small for packet data");
 
@@ -254,7 +254,7 @@ void CCemiFrame::FillBufferWithFrameData(unsigned char* buffer, int max_length)
 	}
 }
 
-void CCemiFrame::CopyAddilData(byte acpi_len, unsigned char* data)
+void CCemi_L_Data_Frame::CopyAddilData(byte acpi_len, unsigned char* data)
 {
 	if (acpi_len > 1)
 	{
@@ -270,7 +270,7 @@ void CCemiFrame::CopyAddilData(byte acpi_len, unsigned char* data)
 	}
 }
 
-void CCemiFrame::Dump() const
+void CCemi_L_Data_Frame::Dump() const
 {
 	//message code
 	switch(_data.mc)

@@ -30,7 +30,7 @@ using namespace std;
 #define STATUS_MASK_CLEAR(value,bit) (value &= ~(1 << bit))
 #define UNDEFINED_PORT -1
 
-typedef CBuffer<CCemiFrame, 250> CClientBuffer;
+typedef CBuffer<CCemi_L_Data_Frame, 250> CClientBuffer;
 
 #ifdef WIN32
 typedef __int64 int64;
@@ -222,7 +222,7 @@ public:
 		\brief Gets reference to the internal client buffer
 		\return _cli_bufferent_port
 	*/
-	bool InsertToBuffer(CCemiFrame& msg);
+	bool InsertToBuffer(CCemi_L_Data_Frame& msg);
 	/*!
 		\fn const ClientPolicy& GetPolicy()
 		\brief Gets reference to the policy instance of the client
@@ -261,8 +261,8 @@ private:
 	bool ExchangeKeys();
 	bool Authenticate(CUser& user);
 	void CreatePublicData(CHttpReply& reply);
-	void HandleIncomingPktsFromBus(const CUser& user, const CString* key, CCemiFrame& msg);
-	void HandleIncomingPktsFromClient(char* buffer, int max_len, const CUser& user, const CString* key, CString& s_address, CCemiFrame& msg);
+	void HandleIncomingPktsFromBus(const CUser& user, const CString* key, CCemi_L_Data_Frame& msg);
+	void HandleIncomingPktsFromClient(char* buffer, int max_len, const CUser& user, const CString* key, CString& s_address, CCemi_L_Data_Frame& msg);
 
 private:
 	bool _logged_in;

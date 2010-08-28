@@ -6,12 +6,13 @@
 #include "CemiFrame.h"
 #include "EibNetwork.h"
 #include "Monitor.h"
+#include "CCemi_L_Data_Frame.h"
 
 using namespace EibStack;
 
 typedef EIB_STD_EXPORT struct _KnxElementQueue
 {
-	CCemiFrame _frame;
+	CCemi_L_Data_Frame _frame;
 	BlockingMode _mode;
 	JTCMonitor* _optional_mon;
 }KnxElementQueue;
@@ -26,7 +27,7 @@ public:
 	virtual void DisConnect() = 0;
 
 	virtual bool SendDataFrame(const KnxElementQueue& frame) = 0;
-	virtual bool ReceiveDataFrame(CCemiFrame& frame) = 0;
+	virtual bool ReceiveDataFrame(CCemi_L_Data_Frame& frame) = 0;
 
 	virtual const CString& GetDeviceDataAddress() = 0;
 	virtual int GetDeviceDataPort() = 0;

@@ -6,6 +6,8 @@
 #include "GenericServer.h"
 #include "Socket.h"
 
+#define MAX_CONNS 10
+
 class CRelayInputHandler;
 class CRelayDataInputHandler;
 class CRelayOutputHandler;
@@ -21,29 +23,28 @@ public:
 	void Close();
 	bool Connect();
 
-	const CString& GetLocalCtrlAddr() const { return _input_handler->_local_addr; }
-	int GetLocalCtrlPort() const { return _input_handler->_local_port; }
+	const CString& GetLocalCtrlAddr() const { return _input_handler->GetLocalCtrlAddr(); }
+	int GetLocalCtrlPort() const { return _input_handler->GetLocalCtrlPort(); }
 	
-private:
-	void InitState();
-	void OnClientConnectionClose();
-
 private:
 	typedef struct
 	{
-		bool		  _is_connected;
-		unsigned char _channelid;
-		unsigned char _recv_sequence;
-		unsigned char _send_sequence;
-
+		bool		  is_connected;
+		unsigned char id;
+		unsigned char channelid;
+		unsigned char recv_sequence;
+		unsigned char send_sequence;
 		CString _remote_ctrl_addr;
 		int 	_remote_ctrl_port;
-		CString _remote_data_addr; //??? YGYG : should we still keep that?
-		int 	_remote_data_port; //??? YGYG : should we still keep that?
-
-		JTCMonitor _state_monitor;
+		CString _remote_data_addr;
+		int 	_remote_data_port;
+		JTCMonitor state_monitor;
 		CTime 	   _timeout;
 	}ConnectionState;
+
+private:
+	void InitState(ConnectionState* s);
+	void OnClientConnectionClose();
 
 public:
 	class CRelayInputHandler : public JTCThread
@@ -55,9 +56,11 @@ public:
 		void Close();
 		void Init();
 
+		int GetLocalCtrlPort() const { return _local_port; }
+		const CString& GetLocalCtrlAddr() const { return _local_addr; }
+		void SetParent(CRelayHandler* relay) { _relay = relay; }
 
-
-		friend class CRelayHandler;
+		void SendTunnelToClient(const CCemi_L_Data_Frame& frame, ConnectionState* s);
 
 	private:
 		void HandleDisconnectRequest(unsigned char* buffer, int max_len);
@@ -84,9 +87,11 @@ public:
 	public:
 		CRelayOutputHandler();
 		virtual ~CRelayOutputHandler();
+		
 		virtual void run();
 		void Close();
-		friend class CRelayHandler;
+		void SetParent(CRelayHandler* relay) { _relay = relay; }
+
 	private:
 		CRelayHandler* _relay;
 		bool _stop;
@@ -95,18 +100,21 @@ public:
 	typedef JTCHandleT<CRelayHandler::CRelayInputHandler> CRelayInputHandlerHandle;
 	typedef JTCHandleT<CRelayHandler::CRelayOutputHandler> CRelayOutputHandlerHandle;
 
-	//friend class CRelayInputHandler;
-	//friend class CRelayOutputHandler;
+private:
+	void SendTunnelToClient(const CCemi_L_Data_Frame& frame, ConnectionState* s) { _input_handler->SendTunnelToClient(frame, s); }
 
 public:
-	ConnectionState* GetState() { return &_state; }
+	void Broadcast(const CCemi_L_Data_Frame& frame);
+	ConnectionState* GetState(int channel);
+	ConnectionState* AllocateNewState(const CString& source_ip, int sourc_port);
+	void FreeConnection(ConnectionState* s);
 
 private:
 	CRelayServerConfig* _server_conf;
 	CLogFile* _log_file;
-	ConnectionState _state;
 	CRelayInputHandlerHandle _input_handler;
 	CRelayOutputHandlerHandle _data_output_handler;
+	ConnectionState* _states[MAX_CONNS];
 };
 
 #endif

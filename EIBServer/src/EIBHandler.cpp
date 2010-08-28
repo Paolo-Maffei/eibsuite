@@ -30,7 +30,7 @@ void CEIBHandler::run()
 
 void CEIBHandler::RunEIBReader()
 {
-	CCemiFrame msg;
+	CCemi_L_Data_Frame msg;
 	CStatsDB& stats_db = CEIBServer::GetInstance().GetStatsDB();
 	
 	CEIBInterface& eib_ifc = CEIBServer::GetInstance().GetEIBInterface();
@@ -76,7 +76,7 @@ void CEIBHandler::RunEIBReader()
 }
 
 //this method is called from client thread!!! (not from eibhandler thread)
-void CEIBHandler::Write(const CCemiFrame& data, BlockingMode mode, JTCMonitor* optional_mon)
+void CEIBHandler::Write(const CCemi_L_Data_Frame& data, BlockingMode mode, JTCMonitor* optional_mon)
 {
 	{
 		//put the frame (that about the be sent) in the Handler queue and wake him up

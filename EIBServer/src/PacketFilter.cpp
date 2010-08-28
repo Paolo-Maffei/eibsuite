@@ -29,7 +29,7 @@ void CPacketFilter::AddAddress(map<unsigned short,bool>& filters, unsigned short
 }
 */
 
-bool CPacketFilter::IsPacketAllowed(const CCemiFrame& msg) const
+bool CPacketFilter::IsPacketAllowed(const CCemi_L_Data_Frame& msg) const
 {
 	unsigned short saddr = msg.GetSourceAddress().ToByteArray();
 	unsigned short daddr = msg.GetDestAddress().ToByteArray();

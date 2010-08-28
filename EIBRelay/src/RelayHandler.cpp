@@ -304,6 +304,11 @@ void CRelayHandler::CRelayInputHandler::HandleTunnelRequest(unsigned char* buffe
 		CTunnelingRequest req(buffer);
 		CRelayHandler::ConnectionState* s = _relay->GetState(req.GetChannelId());
 		
+		if(s == NULL){
+			LOG_ERROR("[Received] [Client %d] [Tunnel Request] Error: cannot find connection with channel id: %d", req.GetChannelId());
+			return;
+		}
+
 		JTCSynchronized sync(s->state_monitor);
 		if(req.GetChannelId() != s->channelid){
 			//wrong channel -> send error ack

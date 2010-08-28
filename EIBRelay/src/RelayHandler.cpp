@@ -512,8 +512,8 @@ void CRelayHandler::CRelayInputHandler::HandleConnectRequest(unsigned char* buff
 		//send response back (we state the our Data endpoint is the same as our control endpoint)
 		CConnectResponse resp(state->channelid, E_NO_ERROR, _local_addr, _local_port, req.GetConnectionType());
 		resp.FillBuffer(buffer, max_len);
-		LOG_DEBUG("[Send] [Connect Response] [%s:%d]", state->_remote_ctrl_addr.GetBuffer(), state->_remote_ctrl_port);
 		_sock.SendTo(buffer, resp.GetTotalSize(), state->_remote_ctrl_addr, state->_remote_ctrl_port);
+		LOG_DEBUG("[Send] [Connect Response] [%s:%d]", state->_remote_ctrl_addr.GetBuffer(), state->_remote_ctrl_port);
 
 	END_TRY_START_CATCH(e)
 		LOG_ERROR("Error in connect request parsing: %s",e.what());

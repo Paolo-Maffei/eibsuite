@@ -146,9 +146,13 @@ CRelayHandler::ConnectionState* CRelayHandler::AllocateNewState(const CString& s
 
 void CRelayHandler::FreeConnection(CRelayHandler::ConnectionState* s)
 {
-	if(s != NULL && s->id <= MAX_CONNS && _states[s->id] != NULL && _states[s->id] == s){
-		int id = s->id;
-		delete s;
+	if(s == NULL){
+		return;
+	}
+	CRelayHandler::ConnectionState* ptr = GetState(s->channelid);
+	if(ptr != NULL){
+		int id = ptr->id;
+		delete ptr;
 		_states[id] = NULL;
 	}
 }

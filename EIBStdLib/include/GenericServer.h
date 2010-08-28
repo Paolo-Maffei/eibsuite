@@ -218,6 +218,7 @@ private:
 	CString _user_name;
 	CLogFile* _log;
 	JTCInitialize _jtc_init;
+	EIB_DEVICE_MODE _ifc_mode;
 };
 
 

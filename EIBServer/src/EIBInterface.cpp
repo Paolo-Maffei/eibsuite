@@ -101,7 +101,7 @@ bool CEIBInterface::Read(CCemi_L_Data_Frame& frame)
 
 void CEIBInterface::Write(const KnxElementQueue& elem)
 {
-	if(_connection == NULL){
+	if(_connection == NULL || _mode == MODE_BUSMONITOR){
 		return;
 	}
 

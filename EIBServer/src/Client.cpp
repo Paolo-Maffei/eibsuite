@@ -357,7 +357,7 @@ bool CClient::Authenticate(CUser& user)
 	CDataBuffer raw_data;
 	reply.SetStatusCode(STATUS_OK);
 	reply.SetVersion(HTTP_1_0);
-	reply.RemoveAllHeaders();
+	reply.AddHeader(EIB_INTERFACE_MODE, CEIBServer::GetInstance().GetEIBInterface().GetMode());
 	reply.Finalize(raw_data);
 	raw_data.Encrypt(&_encryptor.GetSharedKey());
 	_sock.SendTo(raw_data.GetBuffer(),raw_data.GetLength(),GetClientIP(),GetClientPort());

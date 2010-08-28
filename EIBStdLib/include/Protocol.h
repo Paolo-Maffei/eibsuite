@@ -121,6 +121,8 @@ enum EIB_STD_EXPORT HTTP_CONTENT_TYPE
 //Login Headers
 #define USER_NAME_HEADER					"User-Name"
 #define PASSWORD_HEADER						"Password"
+//EIB Server Information Headers
+#define EIB_INTERFACE_MODE					"EIB-Interface-Mode"
 //Console Headers
 #define EIB_SESSION_ID_COOKIE_NAME			"EIBSESSIONID"
 

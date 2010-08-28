@@ -7,7 +7,8 @@ CGenericServer::CGenericServer(char network_id) :
 _network_id(network_id),
 _status(STATUS_DISCONNECTED),
 _thread(NULL),
-_log(NULL)
+_log(NULL),
+_ifc_mode(UNDEFINED_MODE)
 {
 	_thread = new CHeartBeatThread();
 }
@@ -40,6 +41,11 @@ int CGenericServer::SendEIBNetwork(const CCemi_L_Data_Frame& frame, BlockingMode
 {
 	if (!IsConnected()){
 		//write error to log file
+		GetLog()->Log(LOG_LEVEL_ERROR, "Cannot Send Data while not connected to EIBServer.");
+		return 0;
+	}
+	if(_ifc_mode == MODE_BUSMONITOR){
+		GetLog()->Log(LOG_LEVEL_ERROR, "Cannot Send Data while EIBServer is in BusMonitor mode. this is Read-Only mode");
 		return 0;
 	}
 	
@@ -69,10 +75,15 @@ int CGenericServer::SendEIBNetwork(const CEibAddress& address, unsigned char* va
 {
 	if (!IsConnected()){
 		//write error to log file
+		GetLog()->Log(LOG_LEVEL_ERROR, "Cannot Send Data while not connected to EIBServer.");
+		return 0;
+	}
+	if(_ifc_mode == MODE_BUSMONITOR){
+		GetLog()->Log(LOG_LEVEL_ERROR, "Cannot Send Data while EIBServer is in BusMonitor mode. this is Read-Only mode");
 		return 0;
 	}
 
-	ASSERT_ERROR(value_len <= MAX_EIB_VALUE_LEN,"Max Length Cannot be sent.");
+	ASSERT_ERROR(value_len <= MAX_EIB_VALUE_LEN,"Max Length of value exceeded. Data Cannot be sent.");
 
 	EIBInternalNetMsg msg;
 	//local network header
@@ -208,7 +219,27 @@ bool CGenericServer::Authenticate(const CString& user_name,const CString& passwo
 	if(!parser.IsLegalRequest() || reply.GetStatusCode() != STATUS_OK){
 		return false;
 	}
+
+	CHttpHeader mode_h;
+	if(!reply.GetHeader(EIB_INTERFACE_MODE, mode_h)){
+		GetLog()->Log(LOG_LEVEL_ERROR, "Missing header from reply: %s", EIB_INTERFACE_MODE);
+		return false;
+	}
+	_ifc_mode = (EIB_DEVICE_MODE)mode_h.GetValue().ToInt();
+	CString mode;
+	switch(_ifc_mode)
+	{
+	case MODE_TUNNELING: mode = "Tunneling";
+		break;
+	case MODE_BUSMONITOR: mode = "Bus Monitor";
+		break;
+	case MODE_ROUTING: mode = "Routing";
+		break;
+	case UNDEFINED_MODE: mode = "Undefined";
+		break;
+	}
 	GetLog()->SetConsoleColor(YELLOW);
+	GetLog()->Log(LOG_LEVEL_DEBUG, "Remote EIB Device Mode: %s", mode.GetBuffer());
 	GetLog()->Log(LOG_LEVEL_INFO,"[EIB] [Received] Client Authentication OK");
 	return true;
 }
@@ -315,8 +346,10 @@ bool CGenericServer::OpenConnection(const char* network_name, const char* initia
 									const char* local_ip, const char* user_name,
 									const char* password)
 {
-	if(this->IsConnected())
+	if(this->IsConnected()){
+		GetLog()->Log(LOG_LEVEL_ERROR, "Error: Cannot open connection - Already connected.");
 		return false;
+	}
 
 	_status = STATUS_DURING_CONNECT;
 	CString ini_key(initial_key);
@@ -355,11 +388,13 @@ bool CGenericServer::OpenConnection(const char* network_name, const char* initia
 
 	CHttpHeader header;
 	if(!reply.GetHeader(ADDRESS_HEADER,header)){
+		GetLog()->Log(LOG_LEVEL_ERROR, "Missing header from reply: %s", ADDRESS_HEADER);
 		return false;
 	}
 	CString eibserveraddr = header.GetValue();
 
 	if(!reply.GetHeader(DATA_PORT_HEADER,header)){
+		GetLog()->Log(LOG_LEVEL_ERROR, "Missing header from reply: %s", DATA_PORT_HEADER);
 		return false;
 	}
 	int eibserverport =  header.GetValue().ToInt();
@@ -408,34 +443,40 @@ bool CGenericServer::OpenConnection(const char* network_name, const char* eib_se
 	}
 	CHttpHeader header;
 	int64 s_interim,g,n,r_interim,key;
-	if(!reply.GetHeader(NETWORK_SESSION_ID_HEADER,header)){
+	if(!reply.GetHeader(NETWORK_SESSION_ID_HEADER, header)){
 		_status = STATUS_DISCONNECTED;
+		GetLog()->Log(LOG_LEVEL_ERROR, "Missing header from reply: %s", NETWORK_SESSION_ID_HEADER);
 		return false;
 	}
 	_session_id = header.GetValue().ToInt();
 	if(!reply.GetHeader(DIFFIE_HELLAM_MODULUS,header)){
 		_status = STATUS_DISCONNECTED;
+		GetLog()->Log(LOG_LEVEL_ERROR, "Missing header from reply: %s", DIFFIE_HELLAM_MODULUS);
 		return false;
 	}
 	n = header.GetValue().ToInt64();
-	if(!reply.GetHeader(DIFFIE_HELLAM_INTERIM,header)){
+	if(!reply.GetHeader(DIFFIE_HELLAM_INTERIM, header)){
 		_status = STATUS_DISCONNECTED;
+		GetLog()->Log(LOG_LEVEL_ERROR, "Missing header from reply: %s", DIFFIE_HELLAM_INTERIM);
 		return false;
 	}
 	s_interim = header.GetValue().ToInt64();
-	if(!reply.GetHeader(DIFFIE_HELLAM_GENERATOR,header)){
+	if(!reply.GetHeader(DIFFIE_HELLAM_GENERATOR, header)){
 		_status = STATUS_DISCONNECTED;
+		GetLog()->Log(LOG_LEVEL_ERROR, "Missing header from reply: %s", DIFFIE_HELLAM_GENERATOR);
 		return false;
 	}
 	g = header.GetValue().ToInt64();
 
-	if(!reply.GetHeader(DATA_PORT_HEADER,header)){
+	if(!reply.GetHeader(DATA_PORT_HEADER, header)){
 		_status = STATUS_DISCONNECTED;
+		GetLog()->Log(LOG_LEVEL_ERROR, "Missing header from reply: %s", DATA_PORT_HEADER);
 		return false;
 	}
 	_eib_port = header.GetValue().ToInt();
-	if(!reply.GetHeader(KEEPALIVE_PORT_HEADER,header)){
+	if(!reply.GetHeader(KEEPALIVE_PORT_HEADER, header)){
 		_status = STATUS_DISCONNECTED;
+		GetLog()->Log(LOG_LEVEL_ERROR, "Missing header from reply: %s", KEEPALIVE_PORT_HEADER);
 		return false;
 	}
 	

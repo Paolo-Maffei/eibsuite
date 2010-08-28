@@ -25,6 +25,14 @@
 
 typedef struct tm tm;
 
+enum EIB_STD_EXPORT EIB_DEVICE_MODE
+{
+	MODE_ROUTING,
+	MODE_TUNNELING,
+	MODE_BUSMONITOR,
+	UNDEFINED_MODE
+};
+
 enum EIB_STD_EXPORT BlockingMode
 {
 	NON_BLOCKING = 1,

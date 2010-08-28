@@ -132,9 +132,14 @@ CRelayHandler::ConnectionState* CRelayHandler::AllocateNewState(const CString& s
 			_states[i] = s;
 			//set the connection id
 			s->id = i;
-			//assign new channel id
-			srand((unsigned)time(0)); 
-			s->channelid = rand() % 0xFF;
+			srand((unsigned)time(0));
+			unsigned char channelid = 0;
+			do
+			{
+				//assign new channel id (make sure its unique)
+				channelid = rand() % 0xFF;
+			}while(GetState(channelid) != NULL);
+			s->channelid = channelid;
 			break;
 		}
 	}
@@ -152,8 +157,8 @@ void CRelayHandler::FreeConnection(CRelayHandler::ConnectionState* s)
 	CRelayHandler::ConnectionState* ptr = GetState(s->channelid);
 	if(ptr != NULL){
 		int id = ptr->id;
-		delete ptr;
 		_states[id] = NULL;
+		free(ptr);
 	}
 }
 
@@ -268,11 +273,11 @@ void CRelayHandler::CRelayInputHandler::HandleTunnelAck(unsigned char* buffer, i
 		}
 
 	END_TRY_START_CATCH(e)
-		LOG_ERROR("Error in disconnect response parsing: %s",e.what());
+		LOG_ERROR("Error in tunnel ack parsing: %s",e.what());
 	END_TRY_START_CATCH_SOCKET(ex)
-		LOG_ERROR("Socket Error in disconnect response parsing: %s",ex.what());
+		LOG_ERROR("Socket Error in tunnel ack parsing: %s",ex.what());
 	END_TRY_START_CATCH_ANY
-		LOG_ERROR("Unknown Error in disconnect response parsing");
+		LOG_ERROR("Unknown Error in tunnel ack parsing");
 	END_CATCH
 }
 
@@ -395,8 +400,9 @@ void CRelayHandler::CRelayInputHandler::HandleDisconnectRequest(unsigned char* b
 
 		CDisconnectResponse resp(s->channelid, E_NO_ERROR);
 		resp.FillBuffer(buffer, max_len);
-		_sock.SendTo(buffer, resp.GetTotalSize(), s->_remote_ctrl_addr,s->_remote_ctrl_port);
-		//delete the connection state
+		CString remote_ip = s->_remote_ctrl_addr;
+		int remote_port = s->_remote_ctrl_port;
+		_sock.SendTo(buffer, resp.GetTotalSize(), remote_ip, remote_port);
 		_relay->FreeConnection(s);
 
 	END_TRY_START_CATCH(e)

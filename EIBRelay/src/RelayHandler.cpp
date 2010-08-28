@@ -128,6 +128,8 @@ CRelayHandler::ConnectionState* CRelayHandler::AllocateNewState(const CString& s
 		if(_states[i] == NULL){
 			//allocate memory
 			s = new CRelayHandler::ConnectionState();
+			InitState(s);
+			_states[i] = s;
 			//set the connection id
 			s->id = i;
 			//assign new channel id
@@ -298,10 +300,10 @@ void CRelayHandler::CRelayInputHandler::HandleDisconnectResponse(unsigned char* 
 void CRelayHandler::CRelayInputHandler::HandleTunnelRequest(unsigned char* buffer, int max_len)
 {
 	START_TRY
+		
 		CTunnelingRequest req(buffer);
-
 		CRelayHandler::ConnectionState* s = _relay->GetState(req.GetChannelId());
-
+		
 		JTCSynchronized sync(s->state_monitor);
 		if(req.GetChannelId() != s->channelid){
 			//wrong channel -> send error ack
@@ -336,17 +338,18 @@ void CRelayHandler::CRelayInputHandler::HandleTunnelRequest(unsigned char* buffe
 			break;
 		}
 
-		//req.GetcEMI().Dump();
-		LOG_DEBUG("[Send] [EIB] [Raw frame from client]");
-		//everything is ok. we send forward the request to EIB Sever and waiting for confirmation
-		_relay->SendEIBNetwork(req.GetcEMI(), WAIT_FOR_CONFRM);
 		//sending an ack back
-		CTunnelingAck ack(s->channelid, s->recv_sequence, E_NO_ERROR);
+		CTunnelingAck ack(s->channelid, s->recv_sequence , E_NO_ERROR);
+		//increment the recv sequence
+		s->recv_sequence++;
 		ack.FillBuffer(buffer, max_len);
+		
+		//everything is ok. we send forward the request to EIB Sever and waiting for confirmation
+		if(_relay->SendEIBNetwork(req.GetcEMI(), WAIT_FOR_CONFRM)){
+			LOG_DEBUG("[Send] [EIB] [Raw frame from client]");
+		}
 		//We send the ACK back over the Data channel (the channel that the request was received from)
 		_sock.SendTo(buffer, ack.GetTotalSize(), s->_remote_data_addr,s->_remote_data_port);
-		//last thing - we increment the recv sequence
-		s->recv_sequence++;
 
 	END_TRY_START_CATCH(e)
 		LOG_ERROR("Error in tunnel request parsing: %s",e.what());
@@ -513,7 +516,7 @@ void CRelayHandler::CRelayInputHandler::HandleConnectRequest(unsigned char* buff
 		CConnectResponse resp(state->channelid, E_NO_ERROR, _local_addr, _local_port, req.GetConnectionType());
 		resp.FillBuffer(buffer, max_len);
 		_sock.SendTo(buffer, resp.GetTotalSize(), state->_remote_ctrl_addr, state->_remote_ctrl_port);
-		LOG_DEBUG("[Send] [Connect Response] [%s:%d]", state->_remote_ctrl_addr.GetBuffer(), state->_remote_ctrl_port);
+		LOG_DEBUG("[Send] [Connect Response] [%s:%d] Channel ID: %d", state->_remote_ctrl_addr.GetBuffer(), state->_remote_ctrl_port, state->channelid);
 
 	END_TRY_START_CATCH(e)
 		LOG_ERROR("Error in connect request parsing: %s",e.what());

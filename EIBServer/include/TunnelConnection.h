@@ -81,10 +81,10 @@ private:
 
 private:
 	void HandleCoreServices(unsigned char* recvdData);
-	bool HandleTunnelingServices(unsigned char* recvdData, CCemi_L_Data_Frame &frame);
+	bool HandleTunnelingServices(unsigned char* recvdData, int len, CCemi_L_Data_Frame &frame);
 	void HandleConnectionStateResponse(unsigned char* buffer);
 	void HandleTunnelingAck(unsigned char* buffer);
-	bool HandleTunnelRequest(unsigned char* buffer,CCemi_L_Data_Frame &frame);
+	virtual bool HandleTunnelRequest(unsigned char* buffer, int len, CCemi_L_Data_Frame &frame);
 	void HandleDisconnectResponse(unsigned char* buffer);
 	void HandleDisconnectRequest(unsigned char* buffer);
 	void Reconnect();

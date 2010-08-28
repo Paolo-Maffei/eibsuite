@@ -37,7 +37,7 @@ void CEIBHandler::RunEIBReader()
 	CClientsMgrHandle& c_mgr = CEIBServer::GetInstance().GetClientsManager();
 	
 	JTCSynchronized sync(_wait_mon);
-	JTCSynchronized _sync(*this);
+	
 
 	while (!_stop)
 	{
@@ -61,8 +61,6 @@ void CEIBHandler::RunEIBReader()
 				LOG_DEBUG("EIB Reader resumed.");
 			}
 
-			this->wait(1);
-
 		END_TRY_START_CATCH(e)
 			LOG_ERROR("Exception at EIB Reader handler: %s",e.what());
 		END_TRY_START_CATCH_SOCKET(ex)
@@ -78,6 +76,7 @@ void CEIBHandler::RunEIBReader()
 //this method is called from client thread!!! (not from eibhandler thread)
 void CEIBHandler::Write(const CCemi_L_Data_Frame& data, BlockingMode mode, JTCMonitor* optional_mon)
 {
+	do
 	{
 		//put the frame (that about the be sent) in the Handler queue and wake him up
 		//note: writing to the queue is synced
@@ -88,7 +87,7 @@ void CEIBHandler::Write(const CCemi_L_Data_Frame& data, BlockingMode mode, JTCMo
 		elem._optional_mon = optional_mon;
 		_buffer.Write(elem);
 		this->notify();
-	}
+	}while(0);
 
 	if((mode == WAIT_FOR_CONFRM || mode == WAIT_FOR_ACK) && optional_mon != NULL){
 		//block the client thread till we got proper response from the KnxNet/IP device
@@ -123,7 +122,7 @@ void CEIBHandler::RunEIBWriter()
 			}
 
 			//release the lock untill the buffer will be filled up or 1 sec passed (to give change to the pause feature)
-			this->wait(1000);
+			this->wait(1500);
 		END_TRY_START_CATCH_JTC(e)
 			LOG_ERROR("JTC Error: %s",e.getMessage());
 		END_TRY_START_CATCH(ex)
@@ -136,9 +135,7 @@ void CEIBHandler::RunEIBWriter()
 
 void CEIBHandler::Close()
 {
-	JTCSynchronized _sync(*this);
 	_stop = true;
-	this->notify();
 }
 
 void CEIBHandler::Suspend()

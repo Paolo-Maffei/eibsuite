@@ -60,9 +60,9 @@ bool CBusMonConnection::Connect()
 	return true;
 }
 
-bool CBusMonConnection::HandleTunnelRequest(unsigned char* buffer, int len, ICemiFrame* frame)
+bool CBusMonConnection::HandleTunnelRequest(unsigned char* buffer, int len, CCemi_L_Data_Frame& frame)
 {
 	CCemi_L_BusMon_Frame f(buffer, len);
-
+	LOG_DEBUG("[Received] [Bus] Status: %d Time: %s",f.GetFrameError(), f.GetTimeStamp().Format().GetBuffer());
 	return false;
 }

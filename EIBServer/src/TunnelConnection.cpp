@@ -191,7 +191,7 @@ bool CTunnelingConnection::ReceiveDataFrame(CCemi_L_Data_Frame &frame)
 		HandleCoreServices(buffer);
 		break;
 	case EIBNETIP_TUNNELING:
-		res = HandleTunnelingServices(buffer,frame);
+		res = HandleTunnelingServices(buffer, len, frame);
 		break;
 	case EIBNETIP_ROUTING:
 	case EIBNETIP_REMLOG:
@@ -231,14 +231,14 @@ void CTunnelingConnection::HandleCoreServices(unsigned char* recvdData)
 	}
 }
 
-bool CTunnelingConnection::HandleTunnelingServices(unsigned char* recvdData, CCemi_L_Data_Frame &frame)
+bool CTunnelingConnection::HandleTunnelingServices(unsigned char* recvdData, int len, CCemi_L_Data_Frame &frame)
 {
 	EIBNETIP_HEADER* header = ((EIBNETIP_HEADER*)recvdData);
 	bool res = false;
 	switch (header->servicetype)
 	{
 	case TUNNELLING_REQUEST:
-		res = HandleTunnelRequest(recvdData,frame);
+		res = HandleTunnelRequest(recvdData, len, frame);
 		break;
 	case TUNNELLING_ACK:
 		HandleTunnelingAck(recvdData);
@@ -317,7 +317,7 @@ void CTunnelingConnection::HandleConnectionStateResponse(unsigned char* buffer)
 	_heartbeat->DecrementCounter();
 }
 
-bool CTunnelingConnection::HandleTunnelRequest(unsigned char* buffer, CCemi_L_Data_Frame &frame)
+bool CTunnelingConnection::HandleTunnelRequest(unsigned char* buffer, int len, CCemi_L_Data_Frame &frame)
 {
 	JTCSynchronized s(*this);
 	

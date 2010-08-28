@@ -17,7 +17,7 @@ public:
 	virtual ~CBusMonConnection();
 
 	virtual bool Connect();
-	virtual bool HandleTunnelRequest(unsigned char* buffer, int len, ICemiFrame* frame);
+	virtual bool HandleTunnelRequest(unsigned char* buffer, int len, CCemi_L_Data_Frame& frame);
 };
 
 #endif

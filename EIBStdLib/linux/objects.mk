@@ -9,7 +9,8 @@ CMutex.o \
 CRI_CRD.o \
 CString.o \
 CTime.o \
-CemiFrame.o \
+CCemi_L_Data_Frame.o\
+CCemi_L_BusMon_Frame.o\
 ConfigFile.o \
 ConnectRequest.o \
 ConnectResponse.o \

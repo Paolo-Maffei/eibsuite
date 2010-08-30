@@ -238,16 +238,20 @@ void CClientsMgr::Brodcast(CCemi_L_Data_Frame& msg)
 	for(it = _clients.begin(); it != _clients.end(); ++it)
 	{
 		CClientHandle client = it->second;
-		if (client->CanRead()){
-			if(msg.GetMessageCode() == L_DATA_IND || msg.GetMessageCode() == L_BUSMON_IND){
-				client->InsertToBuffer(msg);
-				continue;
-			}
+		if (!client->CanRead()){
+			continue;
+		}
+		
+		int mc = msg.GetMessageCode();
+		//Data/bus monitor Indication -> forward to client
+		if(mc == L_DATA_IND || mc == L_BUSMON_IND)
+		{
+			client->InsertToBuffer(msg);
+		}
+		else if (mc == L_DATA_CON && client->GetClientType() == EIB_TYPE_RELAY_SERVER)
+		{
 			//positive confirmations will be forwarded only to "Relay" clients
-			if(client->GetClientType() == EIB_TYPE_RELAY_SERVER){
-				client->InsertToBuffer(msg);
-				continue;
-			}
+			client->InsertToBuffer(msg);
 		}
 	}
 }

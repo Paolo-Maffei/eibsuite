@@ -13,7 +13,7 @@ class CRelayDataInputHandler;
 class CRelayOutputHandler;
 
 // This class is responsible to maintain a single KNX/IP connection with remote client
-class CRelayHandler : public CGenericServer
+class CRelayHandler : public CGenericServer, public JTCMonitor
 {
 public:
 	CRelayHandler();
@@ -108,6 +108,7 @@ public:
 	ConnectionState* GetState(int channel);
 	ConnectionState* AllocateNewState(const CString& source_ip, int sourc_port);
 	void FreeConnection(ConnectionState* s);
+	void CheckConnectionsCleanup();
 
 private:
 	CRelayServerConfig* _server_conf;

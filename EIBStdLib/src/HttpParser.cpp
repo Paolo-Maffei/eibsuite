@@ -67,7 +67,6 @@ void CHttpParser::SetData(CHttpRequest& request, const char* data,int length)
 	_legal = ParseRequest(request,data,length);
 }
 
-
 void CHttpParser::SetData(CHttpReply& reply, const CDataBuffer& data)
 {
 	CString rep(data.GetBuffer(),data.GetLength());
@@ -271,7 +270,6 @@ INTERNAL_PARSER_STATUS CHttpParser::ParseRequestHeaders(CHttpRequest& request,co
 	return PARSE_OK;
 }
 
-
 bool CHttpParser::ParseRequestCookie(const CHttpHeader& cookie,CHttpCookie& c)
 {
 	int index = cookie.GetValue().FindFirstOf('=');
@@ -342,7 +340,6 @@ INTERNAL_PARSER_STATUS CHttpParser::ParseRequestContent(CHttpRequest& request,co
 	
 	return PARSE_OK;
 }
-
 
 bool CHttpParser::ParseReplyStatus(CHttpReply& reply,const CString& data, int& position)
 {

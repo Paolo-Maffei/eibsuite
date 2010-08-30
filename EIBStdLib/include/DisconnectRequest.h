@@ -59,6 +59,13 @@ public:
     unsigned short GetReserved();
 
 	virtual void FillBuffer(unsigned char* buffer, int max_length);
+
+	const CString& GetControlAddr() const { return _ctrl_addr; }
+	int GetControlPort() const { return _ctrl_port; }
+
+private:
+	CString _ctrl_addr;
+	int _ctrl_port;
 };
 
 }

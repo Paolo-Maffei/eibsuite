@@ -90,7 +90,7 @@ void CWebHandler::HandleRequest(TCPSocket* sock, char* buffer,CHttpReply& reply)
 	}
 	
 	CHttpRequest request;
-	CHttpParser parser(request,buffer,len);
+	CHttpParser parser(request,buffer,len, *sock);
 	if (!parser.IsLegalRequest()){
 		//return error to client
 		throw CEIBException(GeneralError,"Error in request parsing");
@@ -434,18 +434,15 @@ bool CWebHandler::SendEIBCommand(const CString& addr, unsigned char *apci, unsig
 
 void CWebHandler::GetHisotryFromEIB(CStatsDB& db, CString& err)
 {
-	try
-	{
+	START_TRY
 		if(!CWEBServer::GetInstance().IsConnected()){
 			err += "EIB Server is not Connected";
 			return;
 		}
 		db = CWEBServer::GetInstance().GetCollector()->GetStatsDB();
-	}
-	catch (CEIBException& e)
-	{
+	END_TRY_START_CATCH(e)
 		err += e.what();
-	}
+	END_CATCH
 }
 
 void CWebHandler::RemoveFromJobQueue()

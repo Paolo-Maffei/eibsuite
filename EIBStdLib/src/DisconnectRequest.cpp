@@ -10,6 +10,9 @@ CEIBNetPacket<EIBNETIP_DISCONNECT_REQUEST>(data)
 
 	CHPAI control(&data[2]);
 	memcpy(&_data.controlendpoint,control.ToByteArray(),control.GetDataSize());
+
+	_ctrl_addr = control.GetAddress();
+	_ctrl_port = control.GetPort();
 }
 
 CDisconnectRequest::CDisconnectRequest(unsigned char channelid, int port, const CString& ipaddress):
@@ -20,6 +23,9 @@ CEIBNetPacket<EIBNETIP_DISCONNECT_REQUEST>(DISCONNECT_REQUEST)
 
 	CHPAI hpai(port,ipaddress);
 	memcpy(&_data.controlendpoint,hpai.ToByteArray(),hpai.GetDataSize());
+
+	_ctrl_addr = ipaddress;
+	_ctrl_port = port;
 }
 
 CDisconnectRequest::~CDisconnectRequest()

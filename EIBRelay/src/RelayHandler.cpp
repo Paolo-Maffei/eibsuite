@@ -45,6 +45,8 @@ void CRelayHandler::InitState(CRelayHandler::ConnectionState* s)
 	s->channelid = 0;
 	s->recv_sequence = 0;
 	s->send_sequence = 0;
+	s->_timeout.SetNow();
+	s->_timeout += HEARTBEAT_REQUEST_TIME_OUT;
 }
 
 void CRelayHandler::Init(CRelayServerConfig* server_conf, CLogFile* log_file)
@@ -101,10 +103,29 @@ void CRelayHandler::Start()
 
 void CRelayHandler::Broadcast(const CCemi_L_Data_Frame& frame)
 {
+	//lock this object so if cleanup occured it will wait
+	JTCSynchronized s(*this);
+
 	for(int i = 0; i < MAX_CONNS; i++)
 	{
 		if(_states[i] != NULL){
 			SendTunnelToClient(frame, _states[i]);
+		}
+	}
+}
+
+void CRelayHandler::CheckConnectionsCleanup()
+{
+	//lock this object so if broadcast occured it will wait
+	JTCSynchronized s(*this);
+	
+	//check if any connection has expired
+	for(int i = 0; i < MAX_CONNS; i++)
+	{
+		if(_states[i] != NULL && _states[i]->_timeout.secTo() == 0){
+			// Connection timeout. force close connection
+			LOG_ERROR("[Connection timeout] Closing connection with client %d.", _states[i]->channelid);
+			FreeConnection(_states[i]);
 		}
 	}
 }
@@ -159,6 +180,7 @@ void CRelayHandler::FreeConnection(CRelayHandler::ConnectionState* s)
 		int id = ptr->id;
 		_states[id] = NULL;
 		free(ptr);
+		LOG_DEBUG("Resources for Connection %d Cleaned successfuly.",id);
 	}
 }
 
@@ -195,15 +217,8 @@ void CRelayHandler::CRelayInputHandler::run()
 
 	while (!_stop)
 	{
-		/*
-		if(_relay->_state._is_connected && _relay->_state._timeout.secTo() == 0){
-			JTCSynchronized sync(_relay->_state._state_monitor);
-			// Connection timeout. force close connection
-			LOG_ERROR("[Connection timeout] Closing connection with client %d.", _relay->_state._channelid);
-			_relay->InitState();
-		}
-		*/
-
+		_relay->CheckConnectionsCleanup();
+		
 		len = _sock.RecvFrom(buffer, sizeof(buffer), src_ip, src_port, timeout_interval);
 
 		if(len == 0){
@@ -293,7 +308,6 @@ void CRelayHandler::CRelayInputHandler::HandleDisconnectResponse(unsigned char* 
 			LOG_DEBUG("[Received] [Client %d] [Disconnect Response]", s->channelid);
 		}
 
-		JTCSynchronized sync(s->state_monitor);
 		//reset the connection state
 		_relay->FreeConnection(s);
 
@@ -382,27 +396,31 @@ void CRelayHandler::CRelayInputHandler::HandleDisconnectRequest(unsigned char* b
 		if(s == NULL){
 			CDisconnectResponse resp(req.GetChannelID(), E_CONNECTION_ID);
 			resp.FillBuffer(buffer, max_len);
-			_sock.SendTo(buffer, resp.GetTotalSize(), s->_remote_ctrl_addr, s->_remote_ctrl_port);
+			_sock.SendTo(buffer, resp.GetTotalSize(), req.GetControlAddr(), req.GetControlPort());
 			LOG_ERROR("Error: Wrong channel id in disconnect request (sending error disconnect response)");
 			return;
 		}else{
 			LOG_DEBUG("[Received] [Client %d] [Disconnect Request]", s->channelid);
 		}
 
-		JTCSynchronized sync(s->state_monitor);
+		do
+		{
+			JTCSynchronized sync(s->state_monitor);
+		
+			if(!s->is_connected){
+				LOG_ERROR("Error: Recevied disconnect request when no connection is open. (ignoring)");
+				return;
+			}
 
-		if(!s->is_connected){
-			LOG_ERROR("Error: Recevied disconnect request when no connection is open. (ignoring)");
-			return;
-		}
+			LOG_DEBUG("[Send] [Client %d] [Disconnect Response]", s->channelid);
 
-		LOG_DEBUG("[Send] [Client %d] [Disconnect Response]", s->channelid);
+			CDisconnectResponse resp(s->channelid, E_NO_ERROR);
+			resp.FillBuffer(buffer, max_len);
+			CString remote_ip = s->_remote_ctrl_addr;
+			int remote_port = s->_remote_ctrl_port;
+			_sock.SendTo(buffer, resp.GetTotalSize(), remote_ip, remote_port);
+		}while(0);
 
-		CDisconnectResponse resp(s->channelid, E_NO_ERROR);
-		resp.FillBuffer(buffer, max_len);
-		CString remote_ip = s->_remote_ctrl_addr;
-		int remote_port = s->_remote_ctrl_port;
-		_sock.SendTo(buffer, resp.GetTotalSize(), remote_ip, remote_port);
 		_relay->FreeConnection(s);
 
 	END_TRY_START_CATCH(e)
@@ -440,8 +458,8 @@ void CRelayHandler::CRelayInputHandler::HandleConnectionStateRequest(unsigned ch
 			return;
 		}
 
-		s->_timeout.SetNow();
 		//reset the timeout
+		s->_timeout.SetNow();
 		s->_timeout += HEARTBEAT_REQUEST_TIME_OUT;
 
 		CConnectionStateResponse resp(s->channelid, E_NO_ERROR);
@@ -524,9 +542,7 @@ void CRelayHandler::CRelayInputHandler::HandleConnectRequest(unsigned char* buff
 		
 		//mark connection is open
 		state->is_connected = true;
-		state->_timeout.SetNow();
-		state->_timeout += HEARTBEAT_REQUEST_TIME_OUT; // the connection will expire in 120 secs from now (if no connection state request will be received)
-
+		
 		//send response back (we state the our Data endpoint is the same as our control endpoint)
 		CConnectResponse resp(state->channelid, E_NO_ERROR, _local_addr, _local_port, req.GetConnectionType());
 		resp.FillBuffer(buffer, max_len);

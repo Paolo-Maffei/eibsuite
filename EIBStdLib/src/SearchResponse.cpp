@@ -8,7 +8,7 @@ CSearchResponse::CSearchResponse(const CString& ctrl_addr,
 								 const CEibAddress& devAddr,
 								 short projInstallId,
 								 const char serial[],
-								 const char multicatAddr[],
+								 unsigned long multicatAddr,
 								 const char macAddr[],
 								 const char name[],
 								 int suppServices) :
@@ -20,8 +20,6 @@ _desc(knxMedium, devAddr, projInstallId, serial, multicatAddr, macAddr, name, su
 	//set the data of control endpoint
 	CHPAI ctrl_ep(ctrl_port,ctrl_addr);
 	memcpy(&_data.endpoint,ctrl_ep.ToByteArray(),ctrl_ep.GetDataSize());
-	//add the other field here...
-	//DIB, Supported families, manufacture details
 }
 
 CSearchResponse::CSearchResponse(unsigned char* data, int len):

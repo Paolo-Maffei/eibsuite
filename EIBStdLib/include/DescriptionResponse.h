@@ -46,7 +46,7 @@ public:
 						 const CEibAddress& devAddr,
 						 short projInstallId,
 						 const char serial[],
-						 const char multicatAddr[],
+						 unsigned long multicatAddr,
 						 const char macAddr[],
 						 const char name[],
 						 int suppServices

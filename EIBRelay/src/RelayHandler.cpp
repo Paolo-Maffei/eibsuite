@@ -382,7 +382,7 @@ void CRelayHandler::CRelayInputHandler::HandleDisconnectRequest(unsigned char* b
 		if(s == NULL){
 			CDisconnectResponse resp(req.GetChannelID(), E_CONNECTION_ID);
 			resp.FillBuffer(buffer, max_len);
-			//_sock.SendTo(buffer, resp.GetTotalSize(), req. ._remote_ctrl_addr, s->_remote_ctrl_port);
+			_sock.SendTo(buffer, resp.GetTotalSize(), s->_remote_ctrl_addr, s->_remote_ctrl_port);
 			LOG_ERROR("Error: Wrong channel id in disconnect request (sending error disconnect response)");
 			return;
 		}else{
@@ -549,7 +549,7 @@ void CRelayHandler::CRelayInputHandler::HandleSearchRequest(unsigned char* buffe
 		LOG_DEBUG("[Received] [Search Request]");	
 		//send search response back to the sender
 		char serial[6] = { 0 };
-		char mcast[4] = { 224, 0, 23, 12 };
+		unsigned long mcast = inet_addr(EIB_MULTICAST_ADDRESS);
 		const char* name = "EIB Relay Device";
 		CSearchResponse resp(_local_addr,_local_port, MEDIUM_TP1, CEibAddress((unsigned int)0, false),
 				0, serial, mcast, serial, name, (SERVICE_CORE | SERVICE_DEV_MNGMT | SERVICE_TUNNELING));

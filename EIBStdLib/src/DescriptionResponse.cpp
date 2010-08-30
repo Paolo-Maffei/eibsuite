@@ -22,7 +22,7 @@ CDescriptionResponse::CDescriptionResponse(
 		 const CEibAddress& devAddr,
 		 short projInstallId,
 		 const char serial[],
-		 const char multicatAddr[],
+		 unsigned long multicatAddr,
 		 const char macAddr[],
 		 const char name[],
 		 int suppServices
@@ -50,7 +50,7 @@ CEIBNetPacket<EIBNETIP_DESCRIPTION_RESPONSE>(DESCRIPTION_RESPONSE)
 	devinfodib->serialnumber[4]                    = serial[4];
 	devinfodib->serialnumber[5]                    = serial[5];
 
-	memcpy( devinfodib->multicastaddress, multicatAddr, 4);
+	memcpy( devinfodib->multicastaddress, &multicatAddr, 4);
 
 	memcpy( devinfodib->macaddress, macAddr, 6 );
 

@@ -14,15 +14,18 @@
     <ClInclude Include="..\..\EIBGenericTemplate\include\GenericTemplate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\EIBGenericTemplate\include\Private.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\EIBGenericTemplate\src\CustomImpl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\EIBGenericTemplate\src\GenericTemplate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\EIBGenericTemplate\src\Main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBGenericTemplate\src\Private.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EIBGenericTemplate\src\GenericTemplate.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

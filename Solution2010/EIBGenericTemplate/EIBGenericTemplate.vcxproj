@@ -77,10 +77,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\EIBGenericTemplate\include\GenericTemplate.h" />
+    <ClInclude Include="..\..\EIBGenericTemplate\include\Private.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\EIBGenericTemplate\src\CustomImpl.c" />
-    <ClCompile Include="..\..\EIBGenericTemplate\src\GenericTemplate.cpp" />
+    <ClCompile Include="..\..\EIBGenericTemplate\src\GenericTemplate.c" />
+    <ClCompile Include="..\..\EIBGenericTemplate\src\Private.cpp" />
     <ClCompile Include="..\..\EIBGenericTemplate\src\Main.c" />
   </ItemGroup>
   <ItemGroup>

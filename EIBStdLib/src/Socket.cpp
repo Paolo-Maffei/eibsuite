@@ -166,9 +166,9 @@ CString Socket::LocalAddress(int interface_index) throw(SocketException)
 		pAdapterInfo = pAdapterInfo->Next;    // Progress through linked list
   	}while(pAdapterInfo);
 
-	CString err_msg = "Interface num: ";
+	CString err_msg = "Interface Index ";
 	err_msg += interface_index;
-	err_msg += " error - no such interface.";
+	err_msg += " does not exist";
 	throw SocketException(err_msg);
 	return EMPTY_STRING;
 }

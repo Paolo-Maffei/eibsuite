@@ -10,6 +10,7 @@ extern "C" {
 	#define ERR_INVALID_CREDENTIALS -1
 	#define ERR_NO_EIB_SERVER_PRESENT -2
 	#define ERR_ALREADY_CONNECTED -3
+	#define ERR_NETWORK_ERROR -4
 
 	/*3 function below already implemented and user can use them*/
 	/* return 0 on success. otherwise connection failed. */

@@ -16,14 +16,14 @@ all: $(OUT_LIB)
 %.o: ../src/%.cc
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
-	$(CC) $(INCLUDE_DIRS:%=-I"%") -DHAVE_CONFIG_H -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<"
+	$(CPP_COMPILER) $(INCLUDE_DIRS:%=-I"%") -DHAVE_CONFIG_H -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<"
 	@echo 'Finished building: $@'
 	@echo 
 
 $(OUT_LIB): $(OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	$(CC) $(INCLUDE_LIBS:%=-L"%") -shared -o"$(OUT_LIB)" $(OBJS) $(LIBS)
+	$(CPP_LINKER) $(INCLUDE_LIBS:%=-L"%") -shared -o"$(OUT_LIB)" $(OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

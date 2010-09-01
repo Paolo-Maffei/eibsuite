@@ -18,12 +18,12 @@ extern "C" {
 	int SendKnxMessage(unsigned short to, char* data, int data_len);
 
 	/* All of the function below must be implemented/modified*/
-	const char* GetUserName();
+	const char* GetEIBUserName();
 	const char* GetPassword();
 	const char* GetEncryptKey();
 	const char* GetEIBServerAddress();
 	#ifdef WIN32
-	int GetNetworkIf();
+	int GetLocalNetworkIf();
 	#else
 	const char* GetLocalNetworkIf();
 	#endif

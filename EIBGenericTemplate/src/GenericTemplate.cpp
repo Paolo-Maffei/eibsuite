@@ -43,7 +43,7 @@ int OpenConnection()
 
 	_server->Init(_server->_log);
 
-	const char* userName = GetUserName();
+	const char* userName = GetEIBUserName();
 	const char* userPassword = GetPassword();
 	const char* encryptKey = GetEncryptKey();
 

@@ -1,7 +1,6 @@
 #include "GenericTemplate.h"
-#include <stdio.h>
 
-const char* GetUserName()
+const char* GetEIBUserName()
 {
 	return "username";
 }
@@ -35,10 +34,10 @@ const char* GetLocalNetworkIf()
 
 void OnReceiveKNXMessage(unsigned short dstAddr, char* data, int data_len)
 {
-	printf("Destination: %d, data:", dstAddr);
+	//printf("Destination: %d, data:", dstAddr);
 	int i;
 	for(i=0; i<data_len;i++){
-		printf("%X",data[i]);
+		//printf("%X",data[i]);
 	}
-	printf("\n");
+	//printf("\n");
 }

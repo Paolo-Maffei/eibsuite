@@ -25,6 +25,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EIB.NetWrapper", "EIB.NetWr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EIBRelay", "EIBRelay\EIBRelay.vcxproj", "{0E66B3DD-4AA4-4D4E-9E57-4A693A5E20DD}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EIBGenericTemplate", "EIBGenericTemplate\EIBGenericTemplate.vcxproj", "{B1644D43-B074-4D7F-9735-BA5E8115E162}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -181,6 +183,18 @@ Global
 		{0E66B3DD-4AA4-4D4E-9E57-4A693A5E20DD}.Release|Win32.ActiveCfg = Release|Win32
 		{0E66B3DD-4AA4-4D4E-9E57-4A693A5E20DD}.Release|Win32.Build.0 = Release|Win32
 		{0E66B3DD-4AA4-4D4E-9E57-4A693A5E20DD}.Release|x86.ActiveCfg = Release|Win32
+		{B1644D43-B074-4D7F-9735-BA5E8115E162}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{B1644D43-B074-4D7F-9735-BA5E8115E162}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{B1644D43-B074-4D7F-9735-BA5E8115E162}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{B1644D43-B074-4D7F-9735-BA5E8115E162}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B1644D43-B074-4D7F-9735-BA5E8115E162}.Debug|Win32.Build.0 = Debug|Win32
+		{B1644D43-B074-4D7F-9735-BA5E8115E162}.Debug|x86.ActiveCfg = Debug|Win32
+		{B1644D43-B074-4D7F-9735-BA5E8115E162}.Release|Any CPU.ActiveCfg = Release|Win32
+		{B1644D43-B074-4D7F-9735-BA5E8115E162}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{B1644D43-B074-4D7F-9735-BA5E8115E162}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{B1644D43-B074-4D7F-9735-BA5E8115E162}.Release|Win32.ActiveCfg = Release|Win32
+		{B1644D43-B074-4D7F-9735-BA5E8115E162}.Release|Win32.Build.0 = Release|Win32
+		{B1644D43-B074-4D7F-9735-BA5E8115E162}.Release|x86.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

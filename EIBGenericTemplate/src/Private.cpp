@@ -1,18 +1,21 @@
 #include "Private.h"
 #include "GenericTemplate.h"
 
-Server Server::_instance;
+JTCInitialize init;
+ServerHandle Server::_instance = new Server;
 
 Server::Server() :
 CGenericServer(EIB_TYPE_GENERIC),
 _stop(false)
 {
+	this->setName("Server");
 	_log = new CLogFile(); 
 }
 
 Server::~Server()
 {
 	delete _log; 
+	join();
 }
 
 void Server::run()
@@ -60,7 +63,7 @@ int Server::_OpenConnection()
 	_log->Log(LOG_LEVEL_DEBUG, "Trying to connect to EIBServer...");
 
 	bool res  = OpenConnection("Generic", encryptKey, local_ip.GetBuffer(), userName, userPassword);
-	if(!res) {
+	if(res) {
 		start();
 		return CONN_SUCCESS;
 	}
@@ -88,15 +91,15 @@ ServerHandle _server;
 
 int OpenConnection()
 {
-	return Server::GetInstance()._OpenConnection();
+	return Server::GetInstance()->_OpenConnection();
 }
 
 void CloseConnection()
 {
-	Server::GetInstance()._Close();
+	Server::GetInstance()->_Close();
 }
 
 int SendKnxMessage(unsigned short to, char* data, int data_len)
 {
-	return Server::GetInstance()._SendKnxMessage(to, data, data_len);
+	return Server::GetInstance()->_SendKnxMessage(to, data, data_len);
 }

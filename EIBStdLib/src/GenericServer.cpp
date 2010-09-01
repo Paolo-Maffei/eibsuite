@@ -15,6 +15,7 @@ _ifc_mode(UNDEFINED_MODE)
 
 CGenericServer::~CGenericServer()
 {
+	_thread->join();
 }
 
 void CGenericServer::Init(CLogFile* log)

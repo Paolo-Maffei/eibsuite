@@ -3,6 +3,10 @@
 
 #include "GenericServer.h"
 
+class Server;
+
+typedef JTCHandleT<Server> ServerHandle;
+
 class Server : public CGenericServer, public JTCThread
 {
 public:
@@ -14,14 +18,12 @@ public:
 	void _Close();
 	int _SendKnxMessage(unsigned short to, char* data, int data_len);
 
-	static Server& GetInstance() { return _instance; }
+	static ServerHandle GetInstance() { return _instance; }
 
 private:
-	static Server _instance;
+	static ServerHandle _instance;
 	bool _stop;
 	CLogFile* _log;
 };
-
-typedef JTCHandleT<Server> ServerHandle;
 
 #endif

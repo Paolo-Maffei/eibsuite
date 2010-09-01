@@ -47,7 +47,7 @@ int OpenConnection()
 	const char* userPassword = GetPassword();
 	const char* encryptKey = GetEncryptKey();
 
-	CString local_ip = Socket::LocalAddress(GetNetworkIf());
+	CString local_ip = Socket::LocalAddress(GetLocalNetworkIf());
 
 	_server->GetLog()->Log(LOG_LEVEL_DEBUG, "Trying to connect to EIBServer...");
 

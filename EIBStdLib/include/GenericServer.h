@@ -106,21 +106,21 @@ public:
 	/*!
 	\brief Method used to initialize connection between the current client and the eib server. firstly, the method
 		   will run the Diffie hellman protocol, and after the keys exchange was successful, the method will try to
-		   authenciate the using calss according the supplied credentials. if the client autheticated, the method
+		   authenciate with eibserver according the supplied credentials. if the client autheticated, the method
 		   will execute the keep alive thread and return true. in any other case the method will return false
 	\fn bool OpenConnection(const CString& network_name, const CString& eib_server_adress,int eib_server_port,
 		const CString& initial_key,const CString& username, const CString& password, int heartbeat_interval)
 	\param network_name the Network using the EIB Server name (i.e. SMS)
 	\param eib_server_adress EIB Server address
 	\param eib_server_port EIB Server port
-	\param initial_key the initial encryption key (used untill diffie hellman protocol ends)
+	\param initial_key the initial encryption key (used until diffie-hellman protocol ends)
+	\param local_ip The local IP address of the network interface which will be used to initiate the connection
 	\param username User Name
 	\param password Password
-	\param heartbeat_interval the time interval to send Heartbeat messages.
 	\return true if connection to the eib server established. false else.
 	*/
 	bool OpenConnection(const CString& network_name, const CString& eib_server_adress,int eib_server_port,
-		const CString& initial_key, const CString& local_ip,const CString& username, const CString& password);
+		const CString& initial_key, const CString& local_ip, const CString& username, const CString& password);
 
 	bool OpenConnection(const char* network_name, const char* eib_server_adress,int eib_server_port,
 		const char* initial_key,const char* local_ip,const char* username, const char* password);

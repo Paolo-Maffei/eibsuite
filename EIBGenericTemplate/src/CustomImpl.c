@@ -22,12 +22,12 @@ const char* GetEncryptKey()
 }
 
 #ifdef WIN32
-int GetNetworkIf()
+int GetLocalNetworkIf()
 {
 	return 0;
 }
 #else
-const char* GetNetworkIf()
+const char* GetLocalNetworkIf()
 {
 	return "eth0";
 }

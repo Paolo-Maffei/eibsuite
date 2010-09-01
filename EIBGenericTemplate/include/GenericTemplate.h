@@ -25,7 +25,7 @@ extern "C" {
 	#ifdef WIN32
 	int GetNetworkIf();
 	#else
-	const char* GetNetworkIf();
+	const char* GetLocalNetworkIf();
 	#endif
 	void OnReceiveKNXMessage(unsigned short dstAddr, char* data, int data_len);
 

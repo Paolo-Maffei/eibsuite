@@ -285,62 +285,6 @@ bool CGenericServer::OpenConnection(const CString& network_name, const CString& 
 	return result;
 }
 
-bool CGenericServer::FirstPhaseConnection(const CString& key,const char* local_ip,
-										  char* buff, int buf_len,int& reply_length)
-{
-	CString s_address;
-	int s_port;
-	CDataBuffer request;
-
-	//request line
-	CHttpRequest http_request(GET_M,DIFFIE_HELLMAN_CLIENT_HELLO,HTTP_1_0,EMPTY_STRING);
-	//headers
-	http_request.AddHeader(NETWORK_NAME_HEADER,_network_name);
-	http_request.AddHeader(DATA_PORT_HEADER,_data_sock.GetLocalPort());
-	http_request.AddHeader(KEEPALIVE_PORT_HEADER,_thread->GetHeartBeatPort());
-	http_request.AddHeader(ADDRESS_HEADER,local_ip);
-	//end
-	http_request.Finalize(request);
-
-	CDataBuffer::Encrypt(request.GetBuffer(),request.GetLength(),&key);
-	
-
-	START_TRY
-		
-		GetLog()->SetConsoleColor(YELLOW);
-		GetLog()->Log(LOG_LEVEL_INFO,"[%s] [Send] Client Hello [%s:%d --> %s:%d]",GetUserName().GetBuffer(),
-						local_ip,_data_sock.GetLocalPort(),_eib_address.GetBuffer(),_eib_port);
-		_data_sock.SendTo(request.GetBuffer(),request.GetLength(),_eib_address,_eib_port);
-		reply_length = _data_sock.RecvFrom(buff,buf_len,s_address,s_port,5000);
-
-	END_TRY_START_CATCH(ex)
-		GetLog()->SetConsoleColor(RED);
-		GetLog()->Log(LOG_LEVEL_ERROR,"[%s] Cannot connect to eib server: %s",GetUserName().GetBuffer(),ex.what());
- 		return false;
-	END_TRY_START_CATCH_SOCKET(e)
-		GetLog()->SetConsoleColor(RED);
-		GetLog()->Log(LOG_LEVEL_ERROR,"[%s] Socket Error: Reason: %s",GetUserName().GetBuffer(),e.what());
- 		return false;
-	END_TRY_START_CATCH_ANY
-		GetLog()->SetConsoleColor(RED);
-		GetLog()->Log(LOG_LEVEL_ERROR,"[%s] Cannot connect to eib server... Unknown Exception.",GetUserName().GetBuffer());
-		return false;
-	END_CATCH
-
-	if (reply_length > 0){
-		return true;
-	}
-	//no reply from EIB...
-	GetLog()->SetConsoleColor(RED);
-	GetLog()->Log(LOG_LEVEL_ERROR,"No reply from EIB Server. maybe EIBServer is down?");
-	return false;
-}
-
-const CString& CGenericServer::GetSharedKey()
-{
-	return _encryptor.GetSharedKey();
-}
-
 //function to open connection using the auto discovery service
 bool CGenericServer::OpenConnection(const char* network_name, const char* initial_key,
 									const char* local_ip, const char* user_name,
@@ -528,6 +472,62 @@ bool CGenericServer::OpenConnection(const char* network_name, const char* eib_se
 	_thread->Init(eib_ka_port,_eib_address, this);
 	_thread->start();
 	return true;
+}
+
+bool CGenericServer::FirstPhaseConnection(const CString& key,const char* local_ip,
+										  char* buff, int buf_len,int& reply_length)
+{
+	CString s_address;
+	int s_port;
+	CDataBuffer request;
+
+	//request line
+	CHttpRequest http_request(GET_M,DIFFIE_HELLMAN_CLIENT_HELLO,HTTP_1_0,EMPTY_STRING);
+	//headers
+	http_request.AddHeader(NETWORK_NAME_HEADER,_network_name);
+	http_request.AddHeader(DATA_PORT_HEADER,_data_sock.GetLocalPort());
+	http_request.AddHeader(KEEPALIVE_PORT_HEADER,_thread->GetHeartBeatPort());
+	http_request.AddHeader(ADDRESS_HEADER,local_ip);
+	//end
+	http_request.Finalize(request);
+
+	CDataBuffer::Encrypt(request.GetBuffer(),request.GetLength(),&key);
+
+
+	START_TRY
+
+		GetLog()->SetConsoleColor(YELLOW);
+		GetLog()->Log(LOG_LEVEL_INFO,"[%s] [Send] Client Hello [%s:%d --> %s:%d]",GetUserName().GetBuffer(),
+						local_ip,_data_sock.GetLocalPort(),_eib_address.GetBuffer(),_eib_port);
+		_data_sock.SendTo(request.GetBuffer(),request.GetLength(),_eib_address,_eib_port);
+		reply_length = _data_sock.RecvFrom(buff,buf_len,s_address,s_port,5000);
+
+	END_TRY_START_CATCH(ex)
+		GetLog()->SetConsoleColor(RED);
+		GetLog()->Log(LOG_LEVEL_ERROR,"[%s] Cannot connect to eib server: %s",GetUserName().GetBuffer(),ex.what());
+ 		return false;
+	END_TRY_START_CATCH_SOCKET(e)
+		GetLog()->SetConsoleColor(RED);
+		GetLog()->Log(LOG_LEVEL_ERROR,"[%s] Socket Error: Reason: %s",GetUserName().GetBuffer(),e.what());
+ 		return false;
+	END_TRY_START_CATCH_ANY
+		GetLog()->SetConsoleColor(RED);
+		GetLog()->Log(LOG_LEVEL_ERROR,"[%s] Cannot connect to eib server... Unknown Exception.",GetUserName().GetBuffer());
+		return false;
+	END_CATCH
+
+	if (reply_length > 0){
+		return true;
+	}
+	//no reply from EIB...
+	GetLog()->SetConsoleColor(RED);
+	GetLog()->Log(LOG_LEVEL_ERROR,"No reply from EIB Server. maybe EIBServer is down?");
+	return false;
+}
+
+const CString& CGenericServer::GetSharedKey()
+{
+	return _encryptor.GetSharedKey();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

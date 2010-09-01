@@ -48,6 +48,7 @@ void CClient::HandleIncomingPktsFromBus(const CUser& user, const CString* key, C
 	case EIB_TYPE_AMX_SERVER:
 	case EIB_TYPE_EIB_SERVER:
 	case EIB_TYPE_WEB_SERVER:
+	case EIB_TYPE_GENERIC:
 		tmp_int_msg->_header._client_type = _client_type;
 		//set the message type
 		tmp_int_msg->_header._msg_type = EIB_MSG_TYPE_EIB_STATUS;

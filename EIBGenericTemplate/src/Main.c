@@ -2,5 +2,7 @@
 
 int main()
 {
+	OpenConnection();
+
 	return 0;
 }

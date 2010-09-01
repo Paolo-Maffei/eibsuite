@@ -1,19 +1,24 @@
 #include "GenericTemplate.h"
 #include <stdio.h>
 
-char* GetUserName()
+const char* GetUserName()
 {
 	return "username";
 }
 
-char* GetPassword()
+const char* GetPassword()
 {
 	return "password";
 }
 
-char* GetEIBServerAddress()
+const char* GetEIBServerAddress()
 {
 	return "192.168.0.1";
+}
+
+const char* GetEncryptKey()
+{
+	return "EIB";
 }
 
 #ifdef WIN32
@@ -22,15 +27,15 @@ int GetNetworkIf()
 	return 0;
 }
 #else
-char* GetNetworkIf()
+const char* GetNetworkIf()
 {
 	return "eth0";
 }
 #endif
 
-void OnReceiveKNXMessage(unsigned short from, unsigned short to, char* data, int data_len)
+void OnReceiveKNXMessage(unsigned short dstAddr, char* data, int data_len)
 {
-	printf("from: %d, to: %d, data:",from, to);
+	printf("Destination: %d, data:", dstAddr);
 	int i;
 	for(i=0; i<data_len;i++){
 		printf("%X",data[i]);

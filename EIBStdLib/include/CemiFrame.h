@@ -9,6 +9,8 @@ namespace EibStack
 class EIB_STD_EXPORT ICemiFrame
 {
 public:
+	virtual ~ICemiFrame() {};
+	
 	virtual unsigned char GetMessageCode() const = 0;
 	virtual unsigned char* GetPayload() = 0;
 	virtual unsigned short GetPayloadLength() = 0;

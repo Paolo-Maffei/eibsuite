@@ -67,7 +67,6 @@ void CWEBServer::Close()
 	_log.Log(LOG_LEVEL_INFO,"Closing WEB Collector module...");
 	_collector->Close();
 	_collector->join();
-	CGenericServer::Close();
 	
 	//close the dispatcher
 	_log.Log(LOG_LEVEL_INFO,"Closing Dispatcher...");

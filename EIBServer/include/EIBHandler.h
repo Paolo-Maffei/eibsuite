@@ -54,12 +54,15 @@ public:
 		 destructor
 	*/
 	virtual ~CEIBHandler();
-	/*!
-		\fn void Write(const EibMsg& data)
-		\brief Writes a message to _buffer
-		\param data Reference to the message to be written to the buffer.	
-	*/
 	
+	/*!
+		\fn void Write(const CCemi_L_Data_Frame& data, BlockingMode mode, JTCMonitor* optional_mon)
+		\brief Writes a message to the EIB Device
+		\param data Reference to the message to be written to the buffer.
+		\param mode The sending mode Blocking/NonBlockging
+		\param optional_mon an optional monitor used in case of Mode blocking. 
+			   this monitor will be first aquired and released when ack/confirmation is received.
+	*/
 	void Write(const CCemi_L_Data_Frame& data, BlockingMode mode, JTCMonitor* optional_mon);
 	/*!
 		\fn virtual void Run(void* arg) 

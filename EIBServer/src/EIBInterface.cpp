@@ -134,3 +134,23 @@ void CEIBInterface::Write(const KnxElementQueue& elem)
 	++_stats._total_sent;
 	_stats._last_time_sent.SetNow();
 }
+
+CString CEIBInterface::GetModeString()
+{
+	if(_mode == MODE_ROUTING)
+	{
+		return EIB_DEVICE_MODE_ROUTING_STR;
+	}
+	else if(_mode == MODE_TUNNELING)
+	{
+		return EIB_DEVICE_MODE_TUNNELING_STR;
+	}
+	else if(_mode == MODE_BUSMONITOR)
+	{
+		return EIB_DEVICE_MODE_BUSMONITOR_STR;
+	}
+	else
+	{
+		return EIB_DEVICE_MODE_UNKNOWN_STR;
+	}
+}

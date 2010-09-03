@@ -22,6 +22,7 @@
 #define EIB_DEVICE_MODE_TUNNELING_STR "MODE_TUNNELING"
 #define EIB_DEVICE_MODE_ROUTING_STR "MODE_ROUTING"
 #define EIB_DEVICE_MODE_BUSMONITOR_STR "MODE_BUSMONITOR"
+#define EIB_DEVICE_MODE_UNKNOWN_STR "MODE_UNKNOWN"
 
 typedef struct EIBInterfaceStats
 {
@@ -71,13 +72,19 @@ public:
 		\brief Initializes the interface
 	*/
 	void Init();
+	
 	/*!
 		\fn void Close()
 		\brief Closes the interface
 	*/
 	void Close();
 
+	/*!
+		\fn void Start()
+		\brief Starts the interface. this method will run both EIBHandler thread for Tx/Rx.
+	*/
 	void Start();
+
 	/*!
 		\fn Read(EibMsg& msg)
 		\brief Reads data coming from the EIB Instabus
@@ -87,7 +94,7 @@ public:
 	/*!
 		\fn void Write(const KnxElementQueue& elem)
 		\brief Writes a message to the EIB interface
-		\param elem Reference to the Element in queue that will be written to the EIB Instabus
+		\param elem Reference to the Element in queue that will be written to the physical EIB bust
 	*/	
 	void Write(const KnxElementQueue& elem);
 	
@@ -102,14 +109,23 @@ public:
 	*/
 	inline CEIBHandlerHandle& GetOutputHandler() { return _output_handler;}
 
+	/*!
+		\fn inline EIB_DEVICE_MODE GetMode() const
+		Returns the EIB Interface working mode (i.e. Tunneling, Busmonitor etc.)
+	*/
 	EIB_DEVICE_MODE GetMode() const { return _mode;}
 
 	void SetDefaultPacketFields(CCemi_L_Data_Frame& msg);
 	IConnection* GetConnection();
 
 	const EIBInterfaceStats& GetInterfaceStats() { return _stats; }
+	
 	const EIBInterfaceInfo& GetInterfaceInfo() { return _info; }
+	
 	void SetInterfaceInfo(EIBInterfaceInfo& info) { _info = info; }
+
+	CString GetModeString();
+
 
 private:
 	//device mode

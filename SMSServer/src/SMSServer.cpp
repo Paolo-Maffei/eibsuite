@@ -36,7 +36,8 @@ bool CSMSServer::Init()
 		LOG_INFO("Reading Configuration file...Successful.");
 	END_TRY_START_CATCH(e)
 		LOG_ERROR("Reading Configuration file...Failed: %s",e.what());
-		res = false;
+		//if configuration file not loaded, we return immediatly.
+		return false;
 	END_CATCH
 
 	START_TRY

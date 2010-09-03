@@ -6,7 +6,6 @@ CEIBServer* CEIBServer::_instance = NULL;
 
 CEIBServer::CEIBServer():
 CSingletonProcess(EIB_SERVER_PROCESS_NAME),
-_enabled(true),
 _clients_mgr(NULL),
 _console_mgr(NULL),
 _interface(NULL)
@@ -25,8 +24,6 @@ CEIBServer::~CEIBServer()
 
 void CEIBServer::Close()
 {
-	_enabled = false;
-	
 	if(_conf.GetLoadOK()) {
 		LOG_INFO("Saving Configuration file...");
 		//save configuration to file
@@ -53,11 +50,6 @@ void CEIBServer::Close()
 	CTime t;
 	//indicate user
 	LOG_INFO("EIB Server closed on %s",t.Format().GetBuffer());
-}
-
-bool CEIBServer::IsEnabled()
-{
-	return _enabled;
 }
 
 CEIBServer& CEIBServer::GetInstance()
@@ -124,7 +116,7 @@ bool CEIBServer::Init()
 	START_TRY
 		//initialize eib interface
 		_interface->Init();
-		LOG_INFO("Initializing EIB Interface...Successful.");
+		LOG_INFO("Initializing EIB Interface...Successful. (Mode: %s)", _interface->GetModeString().GetBuffer());
 	END_TRY_START_CATCH(e)
 		LOG_ERROR("Initializing EIB Interface...Failed: %s",e.what());
 		return false;

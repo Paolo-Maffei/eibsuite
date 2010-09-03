@@ -89,11 +89,7 @@ public:
 
 	static void Destroy();
 	static void Create();
-	/*!
-		\fn bool IsEnabled()
-		Returns Server status: enabled or not
-	*/
-	bool IsEnabled();
+	
 	/*!
 		\fn inline CServerConfig& GetConfig()
 		Returns reference to the server's configuration file
@@ -145,7 +141,6 @@ public:
 
 private:
 	static CEIBServer* _instance;
-	bool _enabled;
 	CClientsMgrHandle _clients_mgr;
 	CConsoleManagerHandle _console_mgr;
 	CEIBInterface* _interface;

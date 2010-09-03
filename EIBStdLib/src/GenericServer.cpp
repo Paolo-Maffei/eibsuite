@@ -23,6 +23,7 @@ void CGenericServer::Init(CLogFile* log)
 	_log = log;
 }
 
+/*
 void CGenericServer::SetConnectionParams(const CString& network_name,
 										 const CString& eib_server_adress,
 										 int eib_server_port,
@@ -32,6 +33,7 @@ void CGenericServer::SetConnectionParams(const CString& network_name,
 										 const CString& password)
 {
 }
+*/
 
 bool CGenericServer::IsConnected()
 {

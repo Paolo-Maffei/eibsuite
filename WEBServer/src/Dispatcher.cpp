@@ -23,10 +23,9 @@ CDispatcher::~CDispatcher()
 
 void CDispatcher::Close()
 {
-	JTCSynchronized sync(*this);
 	_stop = true;
-	this->notify();
-
+	JTCSynchronized sync(*this);
+	
 	for (int i=0; i < _num_handlers; ++i)
 	{
 		_handlers[i]->Close();
@@ -70,9 +69,6 @@ void CDispatcher::run()
 			int id = counter++ % _num_handlers;
 			_handlers[id]->AddToJobQueue(sock);
 			_handlers[id]->Signal();
-		}
-		else{
-			this->wait(50);
 		}
 	}
 }

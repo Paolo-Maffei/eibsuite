@@ -17,7 +17,6 @@ void webserver_main(bool interactive_conf, bool interactive_usersdb)
 	}
 	else{
 		cerr << "Error during initialization of WEB Server." << endl;
-		exit(1);
 	}
 	//wait for connection establishment with EIB Server
 	CUtils::WaitForCharInput('q', "Press q to stop WEB Server: ", true);
@@ -26,7 +25,6 @@ void webserver_main(bool interactive_conf, bool interactive_usersdb)
 
 int main(int argc, char **argv)
 {
-	JTCInitialize init;
 	bool interactive_conf = false, interactive_usersdb = false;
 
 	int c;

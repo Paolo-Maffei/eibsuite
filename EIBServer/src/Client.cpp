@@ -91,6 +91,9 @@ void CClient::HandleIncomingPktsFromClient(char* buffer, int max_len, const CUse
 	if(s_address != GetClientIP() || s_port != GetClientPort()){
 		return;
 	}
+
+	CEIBInterface& iface = CEIBServer::GetInstance().GetEIBInterface();
+
 	//decrypt message
 	CDataBuffer::Decrypt(buffer,len,key);
 	header = (EibNetworkHeader*)buffer;
@@ -112,7 +115,7 @@ void CClient::HandleIncomingPktsFromClient(char* buffer, int max_len, const CUse
 			msg.SetValue(data->_value,data->_value_len);
 				
 			//write the message through EIB handler
-			CEIBServer::GetInstance().GetOutputHandler()->Write(msg, (BlockingMode)header->_mode, &_pkt_mon);
+			iface.GetOutputHandler()->Write(msg, (BlockingMode)header->_mode, &_pkt_mon);
 			//log message
 			LOG_DEBUG("Received %d Bytes from client \"%s\"",len,_client_name.GetBuffer());
 		}
@@ -134,7 +137,7 @@ void CClient::HandleIncomingPktsFromClient(char* buffer, int max_len, const CUse
 			//log message
 			LOG_DEBUG("[Received] [%s] [Action: Relaying raw CEMI to KNX bus]", this->_client_name.GetBuffer());
 			//write the message through EIB handler
-			CEIBServer::GetInstance().GetOutputHandler()->Write(msg,(BlockingMode)header->_mode, &_pkt_mon);
+			iface.GetOutputHandler()->Write(msg,(BlockingMode)header->_mode, &_pkt_mon);
 		}
 
 		break;

@@ -11,7 +11,6 @@
 #include <iostream>
 #include "CException.h"
 #include "EIBInterface.h"
-#include "EIBHandler.h"
 #include "ServerConfig.h"
 #include "LogFile.h"
 #include "UsersDB.h"
@@ -37,7 +36,6 @@
 
 #define EIB_SERVER_PROCESS_NAME "EIBserver"
 
-typedef JTCHandleT<CEIBHandler> CEIBHandlerHandle;
 typedef JTCHandleT<CConsoleManager> CConsoleManagerHandle;
 typedef JTCHandleT<CClientsMgr> CClientsMgrHandle;
 
@@ -97,16 +95,6 @@ public:
 	*/
 	bool IsEnabled();
 	/*!
-		\fn inline CEIBHandler& GetInputHandler()
-		Returns reference to Input Handler
-	*/
-	inline CEIBHandlerHandle& GetInputHandler() { return _input_handler;}
-	/*!
-		\fn inline CEIBHandler& GetOutputHandler()
-		Returns reference to Output Handler
-	*/
-	inline CEIBHandlerHandle& GetOutputHandler() { return _output_handler;}
-	/*!
 		\fn inline CServerConfig& GetConfig()
 		Returns reference to the server's configuration file
 	*/
@@ -158,8 +146,6 @@ public:
 private:
 	static CEIBServer* _instance;
 	bool _enabled;
-	CEIBHandlerHandle _input_handler;
-	CEIBHandlerHandle _output_handler;
 	CClientsMgrHandle _clients_mgr;
 	CConsoleManagerHandle _console_mgr;
 	CEIBInterface* _interface;

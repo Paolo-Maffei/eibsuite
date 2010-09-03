@@ -65,8 +65,10 @@ void CEIBInterfaceConf::FromXml(const CDataBuffer& xml_str)
 
 bool CEIBInterfaceConf::StopInterface(CDataBuffer& xml_str)
 {
-	CEIBServer::GetInstance().GetInputHandler()->Suspend();
-	CEIBServer::GetInstance().GetOutputHandler()->Suspend();
+	CEIBInterface& iface = CEIBServer::GetInstance().GetEIBInterface();
+
+	iface.GetInputHandler()->Suspend();
+	iface.GetOutputHandler()->Suspend();
 	
 	START_TRY
 		CEIBServer::GetInstance().GetEIBInterface().Close();
@@ -76,17 +78,17 @@ bool CEIBInterfaceConf::StopInterface(CDataBuffer& xml_str)
 		CEIBServer::GetInstance().GetLog().Log(LOG_LEVEL_ERROR,"Console Manager Error [Stop EIB Interface] : %s",ex.what());
 	END_CATCH
 
-	CEIBServer::GetInstance().GetInputHandler()->Resume();
-	CEIBServer::GetInstance().GetOutputHandler()->Resume();
+	iface.GetInputHandler()->Resume();
+	iface.GetOutputHandler()->Resume();
 	ToXml(xml_str);
 	return true;
 }
 
 bool CEIBInterfaceConf::StartInterface(CDataBuffer& xml_str)
 {
-	
-	CEIBServer::GetInstance().GetInputHandler()->Suspend();
-	CEIBServer::GetInstance().GetOutputHandler()->Suspend();
+	CEIBInterface& iface = CEIBServer::GetInstance().GetEIBInterface();
+	iface.GetInputHandler()->Suspend();
+	iface.GetOutputHandler()->Suspend();
 	
 	START_TRY	
 		CEIBServer::GetInstance().GetEIBInterface().Init();
@@ -96,8 +98,8 @@ bool CEIBInterfaceConf::StartInterface(CDataBuffer& xml_str)
 		CEIBServer::GetInstance().GetLog().Log(LOG_LEVEL_ERROR,"Console Manager Error [Stop EIB Interface] : %s",ex.what());
 	END_CATCH
 
-	CEIBServer::GetInstance().GetInputHandler()->Resume();
-	CEIBServer::GetInstance().GetOutputHandler()->Resume();
+	iface.GetInputHandler()->Resume();
+	iface.GetOutputHandler()->Resume();
 	ToXml(xml_str);
 	return true;
 }

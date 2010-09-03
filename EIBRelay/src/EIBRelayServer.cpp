@@ -1,6 +1,7 @@
 #include "EIBRelayServer.h"
 #include "cli.h"
 
+JTCInitialize init;
 CEIBRelayServer CEIBRelayServer::_instance;
 
 CEIBRelayServer::CEIBRelayServer() : 

@@ -23,7 +23,6 @@ void releyserver_main(bool interactive_conf)
 
 int main(int argc, char **argv)
 {
-	JTCInitialize init;
 	bool interactive_conf = false;
 
 	int c;

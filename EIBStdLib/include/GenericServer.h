@@ -190,6 +190,7 @@ public:
 
 	const CString& GetUserName() const { return _user_name; }
 
+	/*
 	void SetConnectionParams(const CString& network_name,
 							 const CString& eib_server_adress,
 							 int eib_server_port,
@@ -197,6 +198,7 @@ public:
 							 const CString& local_ip,
 							 const CString& user_name,
 							 const CString& password);
+	*/
 
 private:
 	bool FirstPhaseConnection(const CString& key,const char* local_ip, char* buff, int buf_len,int& reply_length);

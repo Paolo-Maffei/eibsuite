@@ -3,8 +3,13 @@
 
 CEIBInterface::CEIBInterface() : 
 _mode(UNDEFINED_MODE),
-_connection(NULL)
+_connection(NULL),
+_input_handler(NULL),
+_output_handler(NULL)
 {
+	_input_handler = new CEIBHandler(INPUT_HANDLER);
+	_output_handler = new CEIBHandler(OUTPUT_HANDLER);
+	
 	_stats._last_time_recevied.SetTime(0);
 	_stats._last_time_sent.SetTime(0);
 	_stats._total_sent = 0;
@@ -22,6 +27,13 @@ CEIBInterface::~CEIBInterface()
 	}
 }
 
+void CEIBInterface::Start()
+{
+	//start EIB handlres
+	_input_handler->start();
+	_output_handler->start();
+}
+
 IConnection* CEIBInterface::GetConnection()
 {
 	return _connection;
@@ -33,6 +45,16 @@ void CEIBInterface::Close()
 		return;
 	}
 	_connection->DisConnect();
+
+	LOG_INFO("Closing EIB Input Handler...");
+	//close the open connection
+	_input_handler->Close();
+	_input_handler->join();
+
+	LOG_INFO("Closing EIB Output Handler...");
+	//close EIB handlers
+	_output_handler->Close();	
+	_output_handler->join();
 }
 
 void CEIBInterface::Init()

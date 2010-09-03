@@ -2,6 +2,7 @@
 #include "StatsDB.h"
 #include "cli.h"
 
+JTCInitialize init;
 CWEBServer CWEBServer::_instance;
 
 CWEBServer::CWEBServer() : 
@@ -45,7 +46,6 @@ void CWEBServer::Run(void *arg)
 	if (!established)
 	{
 		_log.Log(LOG_LEVEL_INFO,"\nCannot establish connection with EIB Server!\n");
-		exit(1);
 	}
 	else{
 		_log.Log(LOG_LEVEL_INFO,"\nEIB Server Connection established.\n");
@@ -66,11 +66,13 @@ void CWEBServer::Close()
 
 	_log.Log(LOG_LEVEL_INFO,"Closing WEB Collector module...");
 	_collector->Close();
+	_collector->join();
 	CGenericServer::Close();
 	
 	//close the dispatcher
 	_log.Log(LOG_LEVEL_INFO,"Closing Dispatcher...");
 	_dispatcher->Close();
+	_dispatcher->join();
 
 	CTime t;
 	//indicate user

@@ -27,7 +27,6 @@ public:
 
 private:
 	void HandleRequest(TCPSocket* sock, char* buffer,CHttpReply& reply);
-	void RemoveFromJobQueue();
 	void GenerateFirstContent(CString& content);
 	void InitReply(CHttpReply& reply);
 	void GetHisotryFromEIB(CStatsDB& db,CString& err);

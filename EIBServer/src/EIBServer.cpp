@@ -7,14 +7,10 @@ CEIBServer* CEIBServer::_instance = NULL;
 CEIBServer::CEIBServer():
 CSingletonProcess(EIB_SERVER_PROCESS_NAME),
 _enabled(true),
-_input_handler(NULL),
-_output_handler(NULL),
 _clients_mgr(NULL),
 _console_mgr(NULL),
 _interface(NULL)
 {
-	_input_handler = new CEIBHandler(INPUT_HANDLER);
-	_output_handler = new CEIBHandler(OUTPUT_HANDLER);
 	_interface = new CEIBInterface();
 	_console_mgr = new CConsoleManager();
 	_clients_mgr = new CClientsMgr();
@@ -54,16 +50,6 @@ void CEIBServer::Close()
 	LOG_INFO("Closing EIB Interface...");
 	_interface->Close();
 	
-	LOG_INFO("Closing EIB Input Handler...");
-	//close the open connection
-	_input_handler->Close();
-	_input_handler->join();
-
-	LOG_INFO("Closing EIB Output Handler...");
-	//close EIB handlers
-	_output_handler->Close();	
-	_output_handler->join();
-
 	CTime t;
 	//indicate user
 	LOG_INFO("EIB Server closed on %s",t.Format().GetBuffer());
@@ -98,9 +84,7 @@ void CEIBServer::Create()
 
 void CEIBServer::Start()
 {
-	//start EIB handlres
-	_input_handler->start();
-	_output_handler->start();
+	_interface->Start();
 
 	//start the clients manager
 	_clients_mgr->start();

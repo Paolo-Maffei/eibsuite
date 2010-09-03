@@ -16,9 +16,16 @@ CWebHandler::~CWebHandler()
 
 void CWebHandler::Close()
 {
+	do
+	{
+		JTCSynchronized sync(*this);
+		//at this point we sure the handler called "wait".
+		_stop = true;
+		this->notify();
+	}while(0);
+
+	//now, when monitor acuqired we can be sure the the hanlder is dead...
 	JTCSynchronized sync(*this);
-	_stop = true;
-	this->notify();
 }
 
 void CWebHandler::run()
@@ -53,7 +60,9 @@ void CWebHandler::run()
 		sock->Send(reply_buf.GetBuffer(),reply_buf.GetLength());
 		reply.Reset();
 		memset(buffer,0,MAX_HTTP_REQUEST_SIZE);
-		RemoveFromJobQueue();
+		//remove this job from queue
+		_job_queue.pop();
+		
 		if (sock != NULL){
 			delete sock;
 		}
@@ -399,7 +408,6 @@ unsigned char CWebHandler::HexToChar(const CString& hexNumber)
 	return res;	
 }
 
-
 int CWebHandler::GetDigitValue (char digit)
 {
 	if (digit >= '0' && digit <= '9'){
@@ -443,11 +451,6 @@ void CWebHandler::GetHisotryFromEIB(CStatsDB& db, CString& err)
 	END_TRY_START_CATCH(e)
 		err += e.what();
 	END_CATCH
-}
-
-void CWebHandler::RemoveFromJobQueue()
-{
-	_job_queue.pop();
 }
 
 void CWebHandler::AddToJobQueue(TCPSocket* job)

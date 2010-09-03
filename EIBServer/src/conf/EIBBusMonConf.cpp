@@ -86,8 +86,9 @@ bool CEIBBusMonAddrListConf::SendCmdToAddr(const CHttpRequest& request)
 	unsigned char data[1] = { 0x81 };
 	msg.SetValue(data,1);
 
+	CEIBInterface& iface = CEIBServer::GetInstance().GetEIBInterface();
 	//write the message through eib handler
-	CEIBServer::GetInstance().GetOutputHandler()->Write(msg, mode, &_mon);
+	iface.GetOutputHandler()->Write(msg, mode, &_mon);
 
 	return true;
 }

@@ -17,6 +17,7 @@
 #include "TunnelConnection.h"
 #include "RoutingConnection.h"
 #include "BusMonConnection.h"
+#include "EIBHandler.h"
 
 #define EIB_DEVICE_MODE_TUNNELING_STR "MODE_TUNNELING"
 #define EIB_DEVICE_MODE_ROUTING_STR "MODE_ROUTING"
@@ -41,6 +42,8 @@ typedef struct EIBInterfaceInfo
 	CEibAddress KNXAddress;
 
 }EIBInterfaceInfo;
+
+typedef JTCHandleT<CEIBHandler> CEIBHandlerHandle;
 
 /*! \class CEIBInterface
 	\brief Provides an interface between the EIB Server and the EIB System.
@@ -73,6 +76,8 @@ public:
 		\brief Closes the interface
 	*/
 	void Close();
+
+	void Start();
 	/*!
 		\fn Read(EibMsg& msg)
 		\brief Reads data coming from the EIB Instabus
@@ -86,6 +91,17 @@ public:
 	*/	
 	void Write(const KnxElementQueue& elem);
 	
+	/*!
+		\fn inline CEIBHandler& GetInputHandler()
+		Returns reference to Input Handler
+	*/
+	inline CEIBHandlerHandle& GetInputHandler() { return _input_handler;}
+	/*!
+		\fn inline CEIBHandler& GetOutputHandler()
+		Returns reference to Output Handler
+	*/
+	inline CEIBHandlerHandle& GetOutputHandler() { return _output_handler;}
+
 	EIB_DEVICE_MODE GetMode() const { return _mode;}
 
 	void SetDefaultPacketFields(CCemi_L_Data_Frame& msg);
@@ -100,6 +116,8 @@ private:
 	EIB_DEVICE_MODE _mode;
 	//the connection
 	IConnection* _connection;
+	CEIBHandlerHandle _input_handler;
+	CEIBHandlerHandle _output_handler;
 	//statistics object
 	EIBInterfaceStats _stats;
 	EIBInterfaceInfo _info;

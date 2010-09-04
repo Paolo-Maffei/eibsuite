@@ -609,8 +609,11 @@ void CHeartBeatThread::run()
 
 			CDataBuffer::Decrypt(&msg,sizeof(ClientHeartBeatMsg),key);
 			if(msg._header._msg_type == EIB_MSG_TYPE_KEEP_ALIVE_ACK && msg._header._client_type == EIB_TYPE_EIB_SERVER){
-				server.GetLog()->SetConsoleColor(YELLOW);
-				server.GetLog()->Log(LOG_LEVEL_DEBUG,"[EIB] Heart beat --> [OK].");
+				static int pcount = 0;
+				if(++pcount % 5 == 0){
+					server.GetLog()->SetConsoleColor(YELLOW);
+					server.GetLog()->Log(LOG_LEVEL_DEBUG,"[EIB] Heart beat --> [OK].");
+				}
 				this->wait((int)(_heartbeat_interval - difftime(end,start)));
 			}
 			else if(msg._header._msg_type == EIB_MSG_TYPE_SERVER_DISCONNECT && msg._header._client_type == EIB_TYPE_EIB_SERVER){

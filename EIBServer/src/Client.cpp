@@ -480,8 +480,11 @@ void CListenerThread::run()
 		}
 		else
 		{
-			log.SetConsoleColor(YELLOW);
-			LOG_DEBUG("[%s] [Received] Heart Beat",client_name.GetBuffer());
+			static int pcount = 0;
+			if(++pcount % 5 == 0){
+				log.SetConsoleColor(YELLOW);
+				LOG_DEBUG("[%s] [Received] Heart Beat",client_name.GetBuffer());
+			}
 			hearbeat_msg._header._client_type = EIB_TYPE_EIB_SERVER;
 			hearbeat_msg._header._msg_type = EIB_MSG_TYPE_KEEP_ALIVE_ACK;
 			hearbeat_msg._session_id = session_id;

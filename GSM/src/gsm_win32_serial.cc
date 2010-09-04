@@ -163,7 +163,7 @@ Win32SerialPort::Win32SerialPort(string device, int lineSpeed,
     throwModemException(stringPrintf(_("opening device '%s'"),
                                      device.c_str()));
 
-  int initTries = 3;
+  int initTries = 1;
   while (initTries-- > 0)
   {
     // flush all pending output

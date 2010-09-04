@@ -271,27 +271,7 @@ void CGenericServer::Close()
 	}
 }
 
-bool CGenericServer::OpenConnection(const CString& network_name, const CString& eib_server_adress,
-							   int eib_server_port,const CString& initial_key,const CString& local_ip,
-							   const CString& user_name, const CString& password)
-{
-	int num_tries = 3;
-	bool result = false;
-
-	if (!result && num_tries > 0){
-		result = OpenConnection(network_name.GetBuffer(),eib_server_adress.GetBuffer(),eib_server_port,
-			initial_key.GetBuffer(),local_ip.GetBuffer(), user_name.GetBuffer(),password.GetBuffer());
-		JTCThread::sleep(500);
-		num_tries--;
-	}
-
-	return result;
-}
-
-//function to open connection using the auto discovery service
-bool CGenericServer::OpenConnection(const char* network_name, const char* initial_key,
-									const char* local_ip, const char* user_name,
-									const char* password)
+bool CGenericServer::DiscoverEIBServer(const char* localIpAddr, const char* initialKey, CString& ipAddr, int& port)
 {
 	if(this->IsConnected()){
 		GetLog()->Log(LOG_LEVEL_ERROR, "Error: Cannot open connection - Already connected.");
@@ -299,16 +279,16 @@ bool CGenericServer::OpenConnection(const char* network_name, const char* initia
 	}
 
 	_status = STATUS_DURING_CONNECT;
-	CString ini_key(initial_key);
+	CString ini_key(initialKey);
 
 	//Send discovery reuqest
 	UDPSocket discovery_sock;
 	//Bind to some random port
-	discovery_sock.SetLocalAddressAndPort(local_ip,0);
+	discovery_sock.SetLocalAddressAndPort(localIpAddr, 0);
 	//Generate the actual request
 	CHttpRequest discovery_req(GET_M, EIB_SERVER_AUTO_DISCOVERY_REQ, HTTP_1_0, EMPTY_STRING);
-	discovery_req.AddHeader(ADDRESS_HEADER,local_ip);
-	discovery_req.AddHeader(DATA_PORT_HEADER,discovery_sock.GetLocalPort());
+	discovery_req.AddHeader(ADDRESS_HEADER, localIpAddr);
+	discovery_req.AddHeader(DATA_PORT_HEADER, discovery_sock.GetLocalPort());
 	CDataBuffer raw_req;
 	discovery_req.Finalize(raw_req);
 	//encrypt request using the key
@@ -319,7 +299,7 @@ bool CGenericServer::OpenConnection(const char* network_name, const char* initia
 	char buffer[MAX_URL_LENGTH];
 	CString tmp_addr;
 	int tmp_port;
-	int len = discovery_sock.RecvFrom(buffer, sizeof(buffer),tmp_addr,tmp_port,5000);
+	int len = discovery_sock.RecvFrom(buffer, sizeof(buffer), tmp_addr, tmp_port,5000);
 	if(len == 0){
 		GetLog()->Log(LOG_LEVEL_ERROR,"No data received. timeout.");
 		return false;
@@ -328,31 +308,59 @@ bool CGenericServer::OpenConnection(const char* network_name, const char* initia
 	CDataBuffer dbf(buffer,len);
 	dbf.Decrypt(&ini_key);
 	CHttpReply reply;
-	CHttpParser parser(reply,dbf);
-	if(!parser.IsLegalRequest() || reply.GetStatusCode() != STATUS_OK){
+	CHttpParser parser(reply, dbf);
+	if(!parser.IsLegalRequest()) {
+		return false;
+	}
+
+	if(reply.GetStatusCode() != STATUS_OK){
 		return false;
 	}
 
 	CHttpHeader header;
-	if(!reply.GetHeader(ADDRESS_HEADER,header)){
+	if(!reply.GetHeader(ADDRESS_HEADER, header)){
 		GetLog()->Log(LOG_LEVEL_ERROR, "Missing header from reply: %s", ADDRESS_HEADER);
 		return false;
 	}
 	CString eibserveraddr = header.GetValue();
 
-	if(!reply.GetHeader(DATA_PORT_HEADER,header)){
+	if(!reply.GetHeader(DATA_PORT_HEADER, header)){
 		GetLog()->Log(LOG_LEVEL_ERROR, "Missing header from reply: %s", DATA_PORT_HEADER);
 		return false;
 	}
 	int eibserverport =  header.GetValue().ToInt();
 
-	return OpenConnection(network_name, eibserveraddr.GetBuffer(), eibserverport, initial_key, local_ip, user_name, password);
+	//set values and return
+	ipAddr = eibserveraddr;
+	port = eibserverport;
+	return true;
 }
 
-bool CGenericServer::OpenConnection(const char* network_name, const char* eib_server_adress,
+ConnectionResult CGenericServer::OpenConnection(const CString& network_name, const CString& eib_server_adress,
+							   int eib_server_port,const CString& initial_key,const CString& local_ip,
+							   const CString& user_name, const CString& password)
+{
+	int num_tries = 3;
+	ConnectionResult result = STATUS_NO_REPLY;
+
+	if (result != STATUS_CONN_OK && num_tries > 0){
+		result = OpenConnection(network_name.GetBuffer(),eib_server_adress.GetBuffer(),eib_server_port,
+			initial_key.GetBuffer(),local_ip.GetBuffer(), user_name.GetBuffer(),password.GetBuffer());
+		JTCThread::sleep(500);
+		num_tries--;
+	}
+
+	return result;
+}
+
+ConnectionResult CGenericServer::OpenConnection(const char* network_name, const char* eib_server_adress,
 							   int eib_server_port,const char* initial_key,const char* local_ip,
 							   const char* user_name, const char* password)
 {
+	if(IsConnected()) {
+		return STATUS_ALREADY_CONNECTED;
+	}
+	
 	_status = STATUS_DURING_CONNECT;
 	
 	CString ini_key(initial_key);
@@ -369,13 +377,15 @@ bool CGenericServer::OpenConnection(const char* network_name, const char* eib_se
 	_data_sock.SetLocalAddressAndPort(local_ip,0);
 
 	int num_tries = 1;
-
-	while (!FirstPhaseConnection(ini_key,local_ip, buff,MAX_URL_LENGTH,len) && num_tries > 0){
+	
+	ConnectionResult res;
+	
+	while ((res = FirstPhaseConnection(ini_key, local_ip, buff, MAX_URL_LENGTH, len)) != STATUS_CONN_OK && num_tries > 0){
 		--num_tries;
 	}
 
 	if(num_tries == 0){
-		return false;
+		return res;
 	}
 
 	CDataBuffer raw_reply(buff,len);
@@ -386,45 +396,45 @@ bool CGenericServer::OpenConnection(const char* network_name, const char* eib_se
 
 	if(!parser.IsLegalRequest() || reply.GetStatusCode() != STATUS_OK){
 		_status = STATUS_DISCONNECTED;
-		return false;
+		return STATUS_INRERNAL_ERR;
 	}
 	CHttpHeader header;
 	int64 s_interim,g,n,r_interim,key;
 	if(!reply.GetHeader(NETWORK_SESSION_ID_HEADER, header)){
 		_status = STATUS_DISCONNECTED;
 		GetLog()->Log(LOG_LEVEL_ERROR, "Missing header from reply: %s", NETWORK_SESSION_ID_HEADER);
-		return false;
+		return STATUS_INRERNAL_ERR;
 	}
 	_session_id = header.GetValue().ToInt();
 	if(!reply.GetHeader(DIFFIE_HELLAM_MODULUS,header)){
 		_status = STATUS_DISCONNECTED;
 		GetLog()->Log(LOG_LEVEL_ERROR, "Missing header from reply: %s", DIFFIE_HELLAM_MODULUS);
-		return false;
+		return STATUS_INRERNAL_ERR;
 	}
 	n = header.GetValue().ToInt64();
 	if(!reply.GetHeader(DIFFIE_HELLAM_INTERIM, header)){
 		_status = STATUS_DISCONNECTED;
 		GetLog()->Log(LOG_LEVEL_ERROR, "Missing header from reply: %s", DIFFIE_HELLAM_INTERIM);
-		return false;
+		return STATUS_INRERNAL_ERR;
 	}
 	s_interim = header.GetValue().ToInt64();
 	if(!reply.GetHeader(DIFFIE_HELLAM_GENERATOR, header)){
 		_status = STATUS_DISCONNECTED;
 		GetLog()->Log(LOG_LEVEL_ERROR, "Missing header from reply: %s", DIFFIE_HELLAM_GENERATOR);
-		return false;
+		return STATUS_INRERNAL_ERR;
 	}
 	g = header.GetValue().ToInt64();
 
 	if(!reply.GetHeader(DATA_PORT_HEADER, header)){
 		_status = STATUS_DISCONNECTED;
 		GetLog()->Log(LOG_LEVEL_ERROR, "Missing header from reply: %s", DATA_PORT_HEADER);
-		return false;
+		return STATUS_INRERNAL_ERR;
 	}
 	_eib_port = header.GetValue().ToInt();
 	if(!reply.GetHeader(KEEPALIVE_PORT_HEADER, header)){
 		_status = STATUS_DISCONNECTED;
 		GetLog()->Log(LOG_LEVEL_ERROR, "Missing header from reply: %s", KEEPALIVE_PORT_HEADER);
-		return false;
+		return STATUS_INRERNAL_ERR;
 	}
 	
 	GetLog()->SetConsoleColor(YELLOW);
@@ -457,15 +467,15 @@ bool CGenericServer::OpenConnection(const char* network_name, const char* eib_se
 	parser.SetData(reply,raw_data);
 	if(!parser.IsLegalRequest() || reply.GetStatusCode() != STATUS_OK){
 		_status = STATUS_DISCONNECTED;
-		return false;
+		return STATUS_INRERNAL_ERR;
 	}
 	
 	GetLog()->SetConsoleColor(YELLOW);
 	GetLog()->Log(LOG_LEVEL_INFO,"[EIB] [Received] Keys exchanged succesfuly.");
 
-	if(!Authenticate(user_name,password,&_encryptor.GetSharedKey())){
+	if(!Authenticate(user_name, password, &_encryptor.GetSharedKey())){
 		_status = STATUS_DISCONNECTED;
-		return false;
+		return STATUS_INCORRECT_CREDENTIALS;
 	}
 
 	//set marker
@@ -474,10 +484,11 @@ bool CGenericServer::OpenConnection(const char* network_name, const char* eib_se
 	//start keep alive thread here
 	_thread->Init(eib_ka_port,_eib_address, this);
 	_thread->start();
-	return true;
+	
+	return STATUS_CONN_OK;
 }
 
-bool CGenericServer::FirstPhaseConnection(const CString& key,const char* local_ip,
+ConnectionResult CGenericServer::FirstPhaseConnection(const CString& key,const char* local_ip,
 										  char* buff, int buf_len,int& reply_length)
 {
 	CString s_address;
@@ -508,24 +519,24 @@ bool CGenericServer::FirstPhaseConnection(const CString& key,const char* local_i
 	END_TRY_START_CATCH(ex)
 		GetLog()->SetConsoleColor(RED);
 		GetLog()->Log(LOG_LEVEL_ERROR,"[%s] Cannot connect to eib server: %s",GetUserName().GetBuffer(),ex.what());
- 		return false;
+ 		return STATUS_INRERNAL_ERR;
 	END_TRY_START_CATCH_SOCKET(e)
 		GetLog()->SetConsoleColor(RED);
 		GetLog()->Log(LOG_LEVEL_ERROR,"[%s] Socket Error: Reason: %s",GetUserName().GetBuffer(),e.what());
- 		return false;
+ 		return STATUS_INRERNAL_ERR;
 	END_TRY_START_CATCH_ANY
 		GetLog()->SetConsoleColor(RED);
 		GetLog()->Log(LOG_LEVEL_ERROR,"[%s] Cannot connect to eib server... Unknown Exception.",GetUserName().GetBuffer());
-		return false;
+		return STATUS_INRERNAL_ERR;
 	END_CATCH
 
 	if (reply_length > 0){
-		return true;
+		return STATUS_CONN_OK;
 	}
 	//no reply from EIB...
 	GetLog()->SetConsoleColor(RED);
 	GetLog()->Log(LOG_LEVEL_ERROR,"No reply from EIB Server. maybe EIBServer is down?");
-	return false;
+	return STATUS_NO_REPLY;
 }
 
 const CString& CGenericServer::GetSharedKey()

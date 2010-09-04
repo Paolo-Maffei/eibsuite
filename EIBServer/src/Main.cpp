@@ -29,7 +29,6 @@ void eibserver_main(bool interactive_conf, bool interactive_usersdb)
 
 	CUtils::WaitForCharInput('q', "Press q to stop EIB Server: ", true);
 	CEIBServer::GetInstance().Close();
-	CEIBServer::Destroy();
 }
 
 int main(int argc, char **argv)

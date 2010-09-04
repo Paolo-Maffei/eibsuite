@@ -62,13 +62,30 @@ int Server::_OpenConnection()
 
 	_log->Log(LOG_LEVEL_DEBUG, "Trying to connect to EIBServer...");
 
-	bool res  = OpenConnection("Generic", encryptKey, local_ip.GetBuffer(), userName, userPassword);
-	if(res) {
+	
+	CString serverIP = GetEIBServerAddress();
+	int serverPort = GetEIBServerPort();
+
+	DiscoverEIBServer(local_ip,
+					  encryptKey,
+					  serverIP,
+					  serverPort);
+
+	ConnectionResult res;
+	res = OpenConnection("Generic",
+						userName,
+						serverPort,
+						encryptKey,
+						local_ip.GetBuffer(),
+						userName,
+						userPassword);
+
+	
+	if(res == STATUS_CONN_OK) {
 		start();
-		return CONN_SUCCESS;
 	}
 
-	return ERR_NO_EIB_SERVER_PRESENT;
+	return (int)res;
 }
 
 void Server::_Close()

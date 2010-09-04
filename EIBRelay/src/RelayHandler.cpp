@@ -71,28 +71,29 @@ void CRelayHandler::Close()
 
 bool CRelayHandler::Connect()
 {
-	bool established = false;
+	ConnectionResult res;
+	CString localIP = Socket::LocalAddress(_server_conf->GetListenInterface());
+	CString serverIP = _server_conf->GetEibIPAddress();
+	int serverPort = _server_conf->GetEibPort();
+	
 	if(_server_conf->GetAutoDiscoverEibServer())
 	{
-		_log_file->Log(LOG_LEVEL_INFO,"Searching EIB Server on local network...");
-		established = this->OpenConnection(_server_conf->GetNetworkName().GetBuffer(),
-											_server_conf->GetInitialKey().GetBuffer(),
-											Socket::LocalAddress(_server_conf->GetListenInterface()).GetBuffer(),
-											_server_conf->GetName().GetBuffer(),
-											_server_conf->GetPassword().GetBuffer());
+		LOG_INFO("Searching EIB Server on local network...");
+		DiscoverEIBServer(localIP,
+							_server_conf->GetInitialKey().GetBuffer(),
+							serverIP,
+							serverPort);
 	}
-	else
-	{
-		established = this->OpenConnection(_server_conf->GetNetworkName().GetBuffer(),
-											_server_conf->GetEibIPAddress(),
-											_server_conf->GetEibPort(),
-											_server_conf->GetInitialKey().GetBuffer(),
-											Socket::LocalAddress(_server_conf->GetListenInterface()).GetBuffer(),
-											_server_conf->GetName().GetBuffer(),
-											_server_conf->GetPassword().GetBuffer());
-	}
-
-	return established;
+	
+	res = this->OpenConnection(_server_conf->GetNetworkName().GetBuffer(),
+										serverIP.GetBuffer(),
+										serverPort,
+										_server_conf->GetInitialKey().GetBuffer(),
+										Socket::LocalAddress(_server_conf->GetListenInterface()).GetBuffer(),
+										_server_conf->GetName().GetBuffer(),
+										_server_conf->GetPassword().GetBuffer());
+	
+	return (res == STATUS_CONN_OK);
 }
 
 void CRelayHandler::Start()
@@ -202,11 +203,15 @@ CRelayHandler::CRelayInputHandler::~CRelayInputHandler()
 
 void CRelayHandler::CRelayInputHandler::Init()
 {
-	//set the source port to default EIB Port (3671)
-	_local_addr = Socket::LocalAddress(_relay->_server_conf->GetListenInterface());
-	_sock.SetLocalAddressAndPort(_local_addr,EIB_PORT);
-	_local_port = _sock.GetLocalPort();
-	_sock.JoinGroup(_local_addr,EIB_MULTICAST_ADDRESS);
+	START_TRY
+		//set the source port to default EIB Port (3671)
+		_local_addr = Socket::LocalAddress(_relay->_server_conf->GetListenInterface());
+		_sock.SetLocalAddressAndPort(_local_addr,EIB_PORT);
+		_local_port = _sock.GetLocalPort();
+		_sock.JoinGroup(_local_addr,EIB_MULTICAST_ADDRESS);
+	END_TRY_START_CATCH_SOCKET(e)
+		throw CEIBException(GeneralError, e.what());
+	END_CATCH
 }
 
 void CRelayHandler::CRelayInputHandler::run()

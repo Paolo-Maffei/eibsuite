@@ -13,7 +13,6 @@ void releyserver_main(bool interactive_conf)
 	}
 	else{
 		cerr << "Error initializating EIB Relay Server. EIBRelay Failed to start." << endl;
-		exit(1);
 	}
 
 	CUtils::WaitForCharInput('q', "Press q to stop EIBRelay Server: ");

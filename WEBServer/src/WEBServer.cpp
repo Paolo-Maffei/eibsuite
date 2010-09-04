@@ -22,37 +22,37 @@ CWEBServer::~CWEBServer()
 void CWEBServer::Run(void *arg)
 {
 	CGenericServer::Init(&_log);
-	bool established = false;
+	
+	ConnectionResult res;
+	CString localIP = Socket::LocalAddress(_conf.GetListenInterface());
+	CString serverIP = _conf.GetEibIPAddress();
+	int serverPort = _conf.GetEibPort();
+
 	if(_conf.GetAutoDiscoverEibServer())
 	{
-		_log.Log(LOG_LEVEL_INFO,"Searching EIB Server on local network...");
-		established = this->OpenConnection(_conf.GetNetworkName().GetBuffer(),
-											_conf.GetInitialKey().GetBuffer(),
-											Socket::LocalAddress(_conf.GetListenInterface()).GetBuffer(),
-											_conf.GetName().GetBuffer(),
-											_conf.GetPassword().GetBuffer());
+		LOG_INFO("Searching EIB Server on local network...");
+		DiscoverEIBServer(localIP,
+							_conf.GetInitialKey().GetBuffer(),
+							serverIP,
+							serverPort);
 	}
-	else
-	{
-		established = this->OpenConnection(_conf.GetNetworkName().GetBuffer(),
-											_conf.GetEibIPAddress(),
-											_conf.GetEibPort(),
-											_conf.GetInitialKey().GetBuffer(),
-											Socket::LocalAddress(_conf.GetListenInterface()).GetBuffer(),
-											_conf.GetName().GetBuffer(),
-											_conf.GetPassword().GetBuffer());
-	}
-
-	if (!established)
-	{
-		_log.Log(LOG_LEVEL_INFO,"\nCannot establish connection with EIB Server!\n");
+	
+	res = this->OpenConnection(_conf.GetNetworkName().GetBuffer(),
+								serverIP.GetBuffer(),
+								serverPort,
+								_conf.GetInitialKey().GetBuffer(),
+								Socket::LocalAddress(_conf.GetListenInterface()).GetBuffer(),
+								_conf.GetName().GetBuffer(),
+								_conf.GetPassword().GetBuffer());
+	
+	if (res != STATUS_CONN_OK){
+		LOG_INFO("\nCannot establish connection with EIB Server!\n");
 	}
 	else{
-		_log.Log(LOG_LEVEL_INFO,"\nEIB Server Connection established.\n");
+		LOG_INFO("\nEIB Server Connection established.\n");
+		_collector->start();
+		_dispatcher->start();
 	}
-
-	_collector->start();
-	_dispatcher->start();
 }
 
 void CWEBServer::Close()

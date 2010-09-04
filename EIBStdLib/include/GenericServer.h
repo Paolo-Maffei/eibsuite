@@ -35,6 +35,16 @@ enum EIB_STD_EXPORT ServerStatus
 	STATUS_DURING_DISCONNECT
 };
 
+enum EIB_STD_EXPORT ConnectionResult
+{
+	STATUS_CONN_OK,
+	STATUS_NO_REPLY,
+	STATUS_INRERNAL_ERR,
+	STATUS_ALREADY_CONNECTED,
+	STATUS_INCORRECT_CREDENTIALS
+};
+
+
 class CGenericServer;
 class CDiffieHellman;
 
@@ -103,6 +113,9 @@ public:
 	virtual ~CGenericServer();
 
 public:
+	
+	bool DiscoverEIBServer(const char* localIpAddr, const char* initialKey, CString& ipAddr, int& port);
+	
 	/*!
 	\brief Method used to initialize connection between the current client and the eib server. firstly, the method
 		   will run the Diffie hellman protocol, and after the keys exchange was successful, the method will try to
@@ -119,14 +132,11 @@ public:
 	\param password Password
 	\return true if connection to the eib server established. false else.
 	*/
-	bool OpenConnection(const CString& network_name, const CString& eib_server_adress,int eib_server_port,
+	ConnectionResult OpenConnection(const CString& network_name, const CString& eib_server_adress,int eib_server_port,
 		const CString& initial_key, const CString& local_ip, const CString& username, const CString& password);
 
-	bool OpenConnection(const char* network_name, const char* eib_server_adress,int eib_server_port,
+	ConnectionResult OpenConnection(const char* network_name, const char* eib_server_adress,int eib_server_port,
 		const char* initial_key,const char* local_ip,const char* username, const char* password);
-
-	bool OpenConnection(const char* network_name, const char* initial_key,
-						const char* local_ip, const char* user_name, const char* password);
 
 	/*!
 	\brief Method used to send data to the EIB Server. the data must be in form of EibMsg, and the method will
@@ -201,7 +211,7 @@ public:
 	*/
 
 private:
-	bool FirstPhaseConnection(const CString& key,const char* local_ip, char* buff, int buf_len,int& reply_length);
+	ConnectionResult FirstPhaseConnection(const CString& key,const char* local_ip, char* buff, int buf_len,int& reply_length);
 	bool Authenticate(const CString& user_name,const CString& password,const CString* key);
 
 protected:

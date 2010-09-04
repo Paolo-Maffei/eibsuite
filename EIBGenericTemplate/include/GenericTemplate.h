@@ -23,6 +23,8 @@ extern "C" {
 	const char* GetPassword();
 	const char* GetEncryptKey();
 	const char* GetEIBServerAddress();
+	int GetEIBServerPort();
+	
 	#ifdef WIN32
 	int GetLocalNetworkIf();
 	#else

@@ -25,27 +25,30 @@ bool CEIBAgent::ConnectToEIB()
 
 	CSMSServerConfig& conf = CSMSServer::GetInstance().GetConf();
 
+	ConnectionResult res;
+	CString localIP = Socket::LocalAddress(conf.GetListenInterface());
+	CString serverIP = conf.GetEibIPAddress();
+	int serverPort = conf.GetEibPort();
+
 	bool established = false;
 	if(conf.GetAutoDiscoverEibServer())
 	{
 		LOG_INFO("Searching EIB Server on local network...");
-		established = this->OpenConnection(conf.GetNetworkName().GetBuffer(),
-											conf.GetInitialKey().GetBuffer(),
-											Socket::LocalAddress(conf.GetListenInterface()).GetBuffer(),
-											conf.GetName().GetBuffer(),
-											conf.GetPassword().GetBuffer());
+		DiscoverEIBServer(localIP,
+							conf.GetInitialKey().GetBuffer(),
+							serverIP,
+							serverPort);
 	}
-	else
-	{
-		established = this->OpenConnection(conf.GetNetworkName().GetBuffer(),
-											conf.GetEibIPAddress(),
-											conf.GetEibPort(),
-											conf.GetInitialKey().GetBuffer(),
-											Socket::LocalAddress(conf.GetListenInterface()).GetBuffer(),
-											conf.GetName().GetBuffer(),
-											conf.GetPassword().GetBuffer());
-	}
-	return established;
+	
+	res = OpenConnection(conf.GetNetworkName().GetBuffer(),
+							serverIP.GetBuffer(),
+							serverPort,
+							conf.GetInitialKey().GetBuffer(),
+							Socket::LocalAddress(conf.GetListenInterface()).GetBuffer(),
+							conf.GetName().GetBuffer(),
+							conf.GetPassword().GetBuffer());
+	
+	return (res == STATUS_CONN_OK);
 }
 
 void CEIBAgent::run()

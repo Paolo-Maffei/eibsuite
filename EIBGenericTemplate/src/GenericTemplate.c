@@ -15,6 +15,11 @@ const char* GetEIBServerAddress()
 	return "192.168.0.1";
 }
 
+int GetEIBServerPort()
+{
+	return 5000;
+}
+
 const char* GetEncryptKey()
 {
 	return "EIB";

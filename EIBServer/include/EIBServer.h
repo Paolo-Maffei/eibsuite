@@ -87,7 +87,6 @@ public:
 	*/
 	static CEIBServer& GetInstance();
 
-	static void Destroy();
 	static void Create();
 	
 	/*!

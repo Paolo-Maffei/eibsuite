@@ -57,14 +57,6 @@ CEIBServer& CEIBServer::GetInstance()
 	return *CEIBServer::_instance;
 }
 
-void CEIBServer::Destroy()
-{
-	if(_instance != NULL){
-		delete _instance;
-		_instance = NULL;
-	}
-}
-
 void CEIBServer::Create()
 {
 	static bool created = false;

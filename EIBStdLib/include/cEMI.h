@@ -29,6 +29,8 @@
 typedef unsigned char byte;
 typedef unsigned short word;
 
+#pragma pack(push)  /* push current alignment to stack */
+#pragma pack(1)     /* set alignment to 1 byte boundary */
 
 typedef struct EIB_STD_EXPORT{
     byte mc;
@@ -92,6 +94,8 @@ typedef struct EIB_STD_EXPORT{
     byte length;
     word address;
 } PC_GET_MESSAGE;
+
+#pragma pack(pop)   /* restore original alignment from stack */
 
 typedef CEMI_L_DATA_MESSAGE CemiFrame;
 typedef EMI_L_DATA_MESSAGE EmiFrame;

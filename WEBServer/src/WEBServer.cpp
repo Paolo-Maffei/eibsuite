@@ -211,5 +211,7 @@ void CWEBServer::InteractiveConf()
 	}
 	LOG_SCREEN(" [OK]\n");
 	_log.SetConsoleColor(GREEN);
-	LOG_INFO("\nNow you can run WEB Server. the new file will be loaded automatically.\n\n");
+	LOG_INFO("\nNow you can run WEB Server. the new file will be loaded automatically.");
+	_log.SetConsoleColor(WHITE);
+	LOG_SCREEN("\n\n");
 }

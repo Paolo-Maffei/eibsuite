@@ -7,12 +7,14 @@ ifeq ($(CONFIG_CPU_ARM),y)
 	C_COMPILER := /home/yosi/Desktop/gcc/bin/arm-none-linux-gnueabi-gcc
 	CPP_LINKER := $(CPP_COMPILER)
 	C_LINKER := $(C_COMPILER)
+	ARCH := PPC
 else ifeq ($(CONFIG_CPU_X86),y)
 	INSTALL_DIR := $(EIB_ROOT)/bin
 	CPP_COMPILER := g++
 	C_COMPILER := gcc
 	CPP_LINKER := $(CPP_COMPILER)
 	C_LINKER := $(C_COMPILER)
+	ARCH := X86
 endif
 
 ecolor := @$(EIB_ROOT)/scripts/ecolor
@@ -44,11 +46,11 @@ all: $(EIB_ROOT)/.config $(EIB_LIB_DIRS-y) $(EIB_EXE_DIRS-y)
 
 $(EIB_LIB_DIRS-y): force_look	
 	$(ecolor) "33;1" 'Building $@'
-	make all -C "$(EIB_ROOT)/$@/linux" CPP_COMPILER=$(CPP_COMPILER) C_COMPILER=$(C_COMPILER) CPP_LINKER=$(CPP_LINKER) C_LINKER=$(C_LINKER)
+	make all -C "$(EIB_ROOT)/$@/linux" CPP_COMPILER=$(CPP_COMPILER) C_COMPILER=$(C_COMPILER) CPP_LINKER=$(CPP_LINKER) C_LINKER=$(C_LINKER) ARCH=$(ARCH)
 
 $(EIB_EXE_DIRS-y): force_look
 	$(ecolor) "33;1" 'Building $@'
-	make all -C "$(EIB_ROOT)/$@/linux" CPP_COMPILER=$(CPP_COMPILER) C_COMPILER=$(C_COMPILER) CPP_LINKER=$(CPP_LINKER) C_LINKER=$(C_LINKER)
+	make all -C "$(EIB_ROOT)/$@/linux" CPP_COMPILER=$(CPP_COMPILER) C_COMPILER=$(C_COMPILER) CPP_LINKER=$(CPP_LINKER) C_LINKER=$(C_LINKER) ARCH=$(ARCH)
 
 %_clean:
 	$(ecolor) "33;1" 'Cleaning $(subst _clean,,$@)'
@@ -65,6 +67,7 @@ install: $(EIB_ROOT)/.config all $(EIB_LIB_DIRS-y:%=%_install) $(EIB_EXE_DIRS-y:
 	@mkdir -p $(INSTALL_DIR)/templates
 	@cp -u ./scripts/run.sh $(INSTALL_DIR)
 	@cp -u templates/* $(INSTALL_DIR)/templates
+	-if [ $(CONFIG_CPU_ARM) = "y" ]; then $(EIB_ROOT)/scripts/remote_cp.sh $(INSTALL_DIR); fi;
 	$(ecolor) "32;1" '**********************************************************************************'
 	$(ecolor) "32;1" 'EIB Suite Compiled & installed successfully into "$(INSTALL_DIR)"'
 	$(ecolor) "32;1" '**********************************************************************************'

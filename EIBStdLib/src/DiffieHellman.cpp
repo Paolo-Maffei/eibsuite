@@ -61,13 +61,23 @@ int64 CDiffieHellman::GetRTSC( void )
 
 	return ((int64)tmp1 * (int64)tmp2);
 #else
-//#ifndef ARM
-//	int64 ll;
-//	__asm__ __volatile__ ("rdtsc" : "=A" (ll));
-//	return ll;
-//#else
-	return (rand()*rand());
-//#endif
+#ifdef PPC
+	/*
+	unsigned int tbl, tbu0, tbu1;
+	do
+	{
+		__asm__ __volatile__ ("mftbu %0" : "=r"(tbu0));
+	    __asm__ __volatile__ ("mftb %0"  : "=r"(tbl) );
+	     __asm__ __volatile__ ("mftbu %0" : "=r"(tbu1));
+	} while (tbu0 != tbu1);
+	return (((int64)tbu0) << 32) | tbl;
+	*/
+	return rand()*rand();
+#else
+	int64 ll;
+	__asm__ __volatile__ ("rdtsc" : "=A" (ll));
+	return ll;
+#endif
 #endif
 }
 

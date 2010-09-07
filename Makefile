@@ -67,7 +67,7 @@ install: $(EIB_ROOT)/.config all $(EIB_LIB_DIRS-y:%=%_install) $(EIB_EXE_DIRS-y:
 	@mkdir -p $(INSTALL_DIR)/templates
 	@cp -u ./scripts/run.sh $(INSTALL_DIR)
 	@cp -u templates/* $(INSTALL_DIR)/templates
-	-if [ $(CONFIG_CPU_ARM) = "y" ]; then $(EIB_ROOT)/scripts/remote_cp.sh $(INSTALL_DIR); fi;
+	-if [ "$(CONFIG_CPU_ARM)" = "y" ]; then $(EIB_ROOT)/scripts/remote_cp.sh $(INSTALL_DIR); fi;
 	$(ecolor) "32;1" '**********************************************************************************'
 	$(ecolor) "32;1" 'EIB Suite Compiled & installed successfully into "$(INSTALL_DIR)"'
 	$(ecolor) "32;1" '**********************************************************************************'

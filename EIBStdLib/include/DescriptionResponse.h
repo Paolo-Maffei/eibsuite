@@ -56,7 +56,7 @@ public:
 	virtual ~CDescriptionResponse();
 
 	void Parse(unsigned char* data, int len);
-	void FillBuffer(unsigned char* buffer, int max_length);
+	void FillBuffer(unsigned char* buffer, int max_length, bool include_header = true);
 
 	static void KNXMediumToString(KNXMedium medium, CString& str);
 	static void SupportedServicesToString(int mask, CString& str);

@@ -133,9 +133,12 @@ CDescriptionResponse::~CDescriptionResponse()
 	}
 }
 
-void CDescriptionResponse::FillBuffer(unsigned char* buffer, int max_length)
+void CDescriptionResponse::FillBuffer(unsigned char* buffer, int max_length, bool include_header)
 {
-	CEIBNetPacket<EIBNETIP_DESCRIPTION_RESPONSE>::FillBuffer(buffer,max_length);
+	if(include_header){
+		CEIBNetPacket<EIBNETIP_DESCRIPTION_RESPONSE>::FillBuffer(buffer,max_length);
+	}
+	memcpy(buffer, &_data, GetDataSize());
 }
 
 void CDescriptionResponse::Parse(unsigned char* data, int len)

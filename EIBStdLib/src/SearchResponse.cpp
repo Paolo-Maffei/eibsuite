@@ -43,10 +43,16 @@ CSearchResponse::~CSearchResponse()
 void CSearchResponse::FillBuffer(unsigned char* buffer, int max_length)
 {
 	CEIBNetPacket<EIBNETIP_SEARCH_RESPONSE>::FillBuffer(buffer,max_length);
-	unsigned char* tmp_ptr = buffer + GetHeaderSize();
-	memcpy(tmp_ptr,&_data,GetDataSize());
-	EIBNETIP_SEARCH_REQUEST* ptr = ((EIBNETIP_SEARCH_REQUEST*)tmp_ptr);
-	ptr->discoveryendpoint.port = htons(_data.endpoint.port);
+	buffer += GetHeaderSize();
+	max_length -= GetHeaderSize();
+	//copy the HPAI into the buffer
+	memcpy(buffer, &_data.endpoint, _data.endpoint.structlength);
+	EIBNETIP_SEARCH_RESPONSE* ptr = ((EIBNETIP_SEARCH_RESPONSE*)buffer);
+	ptr->endpoint.port = htons(_data.endpoint.port);
+	//now copy the description element
+	buffer += _data.endpoint.structlength;
+	max_length -= _data.endpoint.structlength;
+	_desc.FillBuffer(buffer, max_length, false);
 }
 
 void CSearchResponse::Dump()

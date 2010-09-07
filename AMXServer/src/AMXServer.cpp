@@ -1,5 +1,6 @@
 #include "AMXServer.h"
 
+JTCInitialize init;
 CAMXServer CAMXServer::_instance;
 
 CAMXServer::CAMXServer() : 

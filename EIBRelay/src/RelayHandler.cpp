@@ -576,6 +576,7 @@ void CRelayHandler::CRelayInputHandler::HandleSearchRequest(unsigned char* buffe
 				0, serial, mcast, serial, name, (SERVICE_CORE | SERVICE_DEV_MNGMT | SERVICE_TUNNELING));
 		resp.FillBuffer(buffer, max_len);
 		_sock.SendTo(buffer,resp.GetTotalSize(),req.GetRemoteIPAddress(),req.GetRemotePort());
+		LOG_DEBUG("[Send] [Search Response]");
 	END_TRY_START_CATCH(e)
 		LOG_ERROR("Error in search request parsing: %s",e.what());
 	END_TRY_START_CATCH_SOCKET(ex)

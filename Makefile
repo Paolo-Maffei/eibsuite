@@ -3,17 +3,9 @@ include Makefile.rules
 
 ifeq ($(CONFIG_CPU_ARM),y)
 	INSTALL_DIR := $(EIB_ROOT)/bin/arm
-	CPP_COMPILER := /home/yosi/Desktop/gcc/bin/arm-none-linux-gnueabi-g++
-	C_COMPILER := /home/yosi/Desktop/gcc/bin/arm-none-linux-gnueabi-gcc
-	CPP_LINKER := $(CPP_COMPILER)
-	C_LINKER := $(C_COMPILER)
 	ARCH := PPC
 else ifeq ($(CONFIG_CPU_X86),y)
 	INSTALL_DIR := $(EIB_ROOT)/bin
-	CPP_COMPILER := g++
-	C_COMPILER := gcc
-	CPP_LINKER := $(CPP_COMPILER)
-	C_LINKER := $(C_COMPILER)
 	ARCH := X86
 endif
 
@@ -46,11 +38,11 @@ all: $(EIB_ROOT)/.config $(EIB_LIB_DIRS-y) $(EIB_EXE_DIRS-y)
 
 $(EIB_LIB_DIRS-y): force_look	
 	$(ecolor) "33;1" 'Building $@'
-	make all -C "$(EIB_ROOT)/$@/linux" CPP_COMPILER=$(CPP_COMPILER) C_COMPILER=$(C_COMPILER) CPP_LINKER=$(CPP_LINKER) C_LINKER=$(C_LINKER) ARCH=$(ARCH)
+	make all -C "$(EIB_ROOT)/$@/linux" CPP_COMPILER=$(CONFIG_CPP_COMPILER) C_COMPILER=$(CONFIG_C_COMPILER) CPP_LINKER=$(CONFIG_CPP_LINKER) C_LINKER=$(CONFIG_C_LINKER) ARCH=$(ARCH)
 
 $(EIB_EXE_DIRS-y): force_look
 	$(ecolor) "33;1" 'Building $@'
-	make all -C "$(EIB_ROOT)/$@/linux" CPP_COMPILER=$(CPP_COMPILER) C_COMPILER=$(C_COMPILER) CPP_LINKER=$(CPP_LINKER) C_LINKER=$(C_LINKER) ARCH=$(ARCH)
+	make all -C "$(EIB_ROOT)/$@/linux" CPP_COMPILER=$(CONFIG_CPP_COMPILER) C_COMPILER=$(CONFIG_C_COMPILER) CPP_LINKER=$(CONFIG_CPP_LINKER) C_LINKER=$(CONFIG_C_LINKER) ARCH=$(ARCH)
 
 %_clean:
 	$(ecolor) "33;1" 'Cleaning $(subst _clean,,$@)'
@@ -59,7 +51,7 @@ $(EIB_EXE_DIRS-y): force_look
 %_install:
 	$(ecolor) "33;1" 'Installing $(subst _install,,$@)'
 	@mkdir -p $(INSTALL_DIR)
-	make install -C "$(EIB_ROOT)/$(subst _install,,$@)/linux" INSTALL_DIR=$(INSTALL_DIR) CPP_COMPILER=$(CPP_COMPILER) C_COMPILER=$(C_COMPILER) CPP_LINKER=$(CPP_LINKER) C_LINKER=$(C_LINKER)
+	make install -C "$(EIB_ROOT)/$(subst _install,,$@)/linux" INSTALL_DIR=$(INSTALL_DIR) CPP_COMPILER=$(CONFIG_CPP_COMPILER) C_COMPILER=$(CONFIG_CPP_COMPILER) CPP_LINKER=$(CONFIG_CPP_LINKER) C_LINKER=$(CONFIG_C_LINKER)
 
 install: $(EIB_ROOT)/.config all $(EIB_LIB_DIRS-y:%=%_install) $(EIB_EXE_DIRS-y:%=%_install)
 	$(ecolor) "33;1" 'Installing tools & scripts...'	

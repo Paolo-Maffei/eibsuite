@@ -1,7 +1,7 @@
 mainmenu "EIBSuite Configuration"
 
 choice
-        prompt "CPU"
+        prompt "Target CPU"
 
 config CONFIG_CPU_X86
         bool "x86 (Standard PC)"
@@ -10,6 +10,28 @@ config CONFIG_CPU_ARM
         bool "Arm (Sheeva Plug)"
 
 endchoice
+
+menu "Compilers Configuration"
+
+config CONFIG_C_COMPILER
+	string "C Compiler command"
+	default "gcc"
+
+config CONFIG_CPP_COMPILER
+	string "C++ Compiler command"
+	default "g++"
+
+config CONFIG_C_LINKER
+	string "C Linker command"
+	default "gcc"
+
+config CONFIG_CPP_LINKER
+	string "C++ Linker command"
+	default "g++"
+
+endmenu
+
+menu "Packages Configuration"
 
 config CONFIG_JTC_LIB
 	bool "JTC"
@@ -56,3 +78,4 @@ config CONFIG_SMS_SERVER
         depends on CONFIG_EIB_STD_LIB && CONFIG_GSM_LIB
         default y
 
+endmenu

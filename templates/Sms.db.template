@@ -18,8 +18,8 @@ EIB_TO_SMS = 1/2/3:0x80:The light is off
 #This is an entry that mapps between INCOMING SMS message and a OUTGOING EIB message that should be sent to the eib home network.
 #if the SMS server receives a message matching the rule defined here, an EIB Frame will be sent the Eib Device
 #this entry composed of 3 different fields:
-# 1 - The eib message destination address
+# 1 - The SMS text that is received by the user
 # 2 - The eib message value field
-# 3 - The SMS text that is received by the user
-SMS_TO_EIB = 1/2/3:0x81:light on
-SMS_TO_EIB = 1/2/3:0x81:light off
+# 3 - The eib message destination address
+SMS_TO_EIB = light on:0x81:1/2/3
+SMS_TO_EIB = light off:0x80:1/2/3

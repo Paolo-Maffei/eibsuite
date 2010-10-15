@@ -3,6 +3,7 @@
 
 #include <map>
 #include <fstream>
+#include "CException.h"
 
 template<class K,class T>
 class CGenericDB
@@ -70,12 +71,15 @@ public:
 		
 		ifstream myfile;
 		myfile.open(_file_name.GetBuffer(),ios::in);
-		if (myfile.fail())
-		{
+		if (myfile.fail()){
 			ofstream out_file;
 			out_file.open(_file_name.GetBuffer(),ios::out|ios::trunc);
 			out_file.close();
 		}
+		else{
+			myfile.close();
+		}
+
 	}
 
 	void Clear()
@@ -91,18 +95,25 @@ public:
 			ofstream out_file;
 			out_file.open(_file_name.GetBuffer(),ios::out|ios::trunc);
 			out_file.close();
+			throw CEIBException(ConfigFileError, "Config file not found!");
 			return false;
 		}
 
 		CString line;
+		int line_num = -1;
 		CString record_name;
 		T record;
 		bool first = true;
 		while (!myfile.eof())
 		{
 			int index = string::npos;
+			line_num++;
 			getline(myfile,line.GetSTDString());
+
 			line.Trim();
+			line.Trim('\r');
+			line.Trim('\n');
+
 			if(line.IsEmpty() || line[0] == '#')
 			{
 				continue;
@@ -120,12 +131,14 @@ public:
 				first = false;
 			}
 			else if (line[0] == '[' || line[line.GetLength() - 1] == ']'){
-				return false;
+				myfile.close();
+				throw CEIBException(ConfigFileError, "Error in line %d. line is not valid Block line.", line_num);
 			}
 			else if((index = line.FindFirstOf('=')) != static_cast<int>(string::npos))
 			{
 				if(index == line.GetLength() -1){
-					return false;	
+					myfile.close();
+					throw CEIBException(ConfigFileError, "Error in line %d", line_num);
 				}
 				CString param_name = line.SubString(0,index);
 				CString param_value = line.SubString(index + 1,line.GetLength() - index - 1);
@@ -137,11 +150,14 @@ public:
 				}
 				else
 				{
-					return false;
+					myfile.close();
+					throw CEIBException(ConfigFileError, "Error in line %d : Empty brackets", line_num);
 				}
 			}
 			else
 			{
+				myfile.close();
+				throw CEIBException(ConfigFileError, "Error in line %d: missing \"=\" character", line_num);
 				return false;
 			}
 		}

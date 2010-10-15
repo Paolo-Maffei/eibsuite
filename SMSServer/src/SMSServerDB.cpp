@@ -30,7 +30,6 @@ void CSMSServerDB::OnReadRecordNameComplete(CUserEntry& current_record, const CS
 {
 	CString prefix(PHONE_NUMBER_BLOCK_PREFIX_STR);
 	if(record_name.Find(prefix) == -1) return;
-	
 	current_record.ClearAll();
 	current_record.SetName(record_name);
 	current_record.SetPhoneNumber(record_name.SubString(prefix.GetLength(), record_name.GetLength() - prefix.GetLength()));

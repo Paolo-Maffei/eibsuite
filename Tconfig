@@ -78,4 +78,9 @@ config CONFIG_SMS_SERVER
         depends on CONFIG_EIB_STD_LIB && CONFIG_GSM_LIB
         default y
 
+config CONFIG_EIB_EMULATOR
+        bool "Emulator application"
+        depends on CONFIG_EIB_STD_LIB
+        default y
+
 endmenu

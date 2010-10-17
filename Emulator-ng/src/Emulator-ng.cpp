@@ -60,6 +60,20 @@ bool CEIBEmulator::Init()
 	END_CATCH
 
 	START_TRY
+		_db.Init(CURRENT_CONF_FOLDER + EMULATOR_DB_FILE);
+		_db.Load();
+		if(_db.IsEmpty()){
+			_log.SetConsoleColor(YELLOW);
+			LOG_INFO("Warning: Emulator Database is empty");
+		} else {
+			LOG_INFO("Initializing EIB Emulator Database...Successful.");
+		}
+	END_TRY_START_CATCH(e)
+		LOG_ERROR("Initializing EIB Emulator Database...Failed. Reason: %s",e.what());
+		res = false;
+	END_CATCH
+
+	START_TRY
 		_handler.Init(&_conf,&_log);
 		LOG_INFO("Initializing EIB Emulator handler...Successful.");
 		const CString& laddr = _handler.GetLocalCtrlAddr();

@@ -36,6 +36,8 @@ public:
 	static bool EnumNics(map<CString,CString>& nics);
 	static void WaitForCharInput(char expected, const CString& msg, bool sleep = false);
 
+	static void WaitForInput(CString& input, const CString& msg, bool sleep = false);
+
 private:
 	CUtils(){};
 	virtual ~CUtils() {};

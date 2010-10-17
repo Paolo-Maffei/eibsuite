@@ -18,7 +18,7 @@ void CUsersDB::Init(const CString& file_name)
 
 bool CUsersDB::Validate()
 {
-	if(_data.size() == 0)
+	if(IsEmpty())
 	{
 		throw CEIBException(ConfigFileError,"No users found in \"%s\" file.",DEFAULT_USERS_DB_FILE);
 	}

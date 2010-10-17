@@ -7,6 +7,7 @@ EmulatorConfig.o\
 EmulatorHandler.o\
 Emulator-ng.o\
 EmulatorDB.o\
+EmulatorCmd.o\
 Main.o 
 
 LIBS := -lpthread -ljtc -lEIBStdLib

@@ -186,3 +186,14 @@ void CUtils::WaitForCharInput(char expected, const CString& msg, bool sleep)
 		}
 	}
 }
+
+void CUtils::WaitForInput(CString& input, const CString& msg, bool sleep)
+{
+	if(sleep){
+		//delay execution a bit, so we could flush any waiting buffers to screen before printing these msgs
+		JTCThread::sleep(500);
+	}
+
+	cout << endl << msg.GetBuffer();
+	getline(cin, input.GetSTDString());
+}

@@ -1,5 +1,5 @@
-#ifndef __RELAY_SERVER_HEADER__
-#define __RELAY_SERVER_HEADER__
+#ifndef __EMULATOR_NG_HEADER__
+#define __EMULATOR_NG_HEADER__
 
 #include "Globals.h"
 #include "EibNetwork.h"
@@ -8,6 +8,8 @@
 #include "LogFile.h"
 #include "SingletonValidation.h"
 #include "EmulatorHandler.h"
+#include "EmulatorDB.h"
+#include "EmulatorCmd.h"
 
 using namespace std;
 
@@ -57,6 +59,7 @@ public:
 	static void Destroy();
 	inline CLogFile& GetLog() { return _log;}
 	inline CEmulatorConfig& GetConfig() { return _conf;}
+	inline CEmulatorDB& GetDB() { return _db; }
 	
 	void InteractiveConf();
 
@@ -66,6 +69,7 @@ private:
 	CEmulatorConfig _conf;
 	CLogFile _log;
 	CEmulatorHandler _handler;
+	CEmulatorDB _db;
 };
 
 #endif

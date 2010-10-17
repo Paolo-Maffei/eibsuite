@@ -495,6 +495,51 @@ unsigned long CString::ToULong() const
 	return val;
 }
 
+int CString::ToByteArray(char* buffer, int max_len) const
+{
+	if(GetLength() % 2 != 0){
+		throw CEIBException(NumberConversionError, "String must contain even number of HEX characters");
+	}
+
+	if (max_len < GetLength() / 2){
+		throw CEIBException(NumberConversionError, "Buffer is too small");
+	}
+
+	for (int counter = 2; counter < GetLength(); ++counter){
+		if (!IS_HEX_DIGIT(_str[counter])){
+			throw CEIBException(NumberConversionError, "String contains invalid HEX characters");
+		}
+	}
+	if (_str[0] != '0' || (_str[1] != 'x' && _str[1] != 'X')){
+		throw CEIBException(NumberConversionError, "String does not start with \"0x\" prefix");
+	}
+
+	CString tmp = this->SubString(2, GetLength() - 2);
+	int len = tmp.GetLength() / 2, count = 0;
+	for(int i = 0; i < len; i++)
+	{
+		char ch1 = tmp._str[i*2];
+		if(ch1 >= '0' && ch1 <= '9')
+			ch1 = ch1 - '0';
+		else if(ch1 >= 'A' && ch1 <= 'F')
+			ch1 = 10 + ch1 - 'A';
+		else if(ch1 >= 'a' && ch1 <= 'f')
+			ch1 = 10 + ch1 - 'a';
+
+		char ch2 = tmp._str[i*2 + 1];
+		if(ch2 >= '0' && ch2 <= '9')
+			ch2 = ch2 - '0';
+		else if(ch2 >= 'A' && ch2 <= 'F')
+			ch2 = 10 + ch2 - 'A';
+		else if(ch2 >= 'a' && ch2 <= 'f')
+			ch2 = 10 + ch2 - 'a';
+
+		buffer[count++] = ((ch1 * 16) + ch2);
+	}
+
+	return count;
+}
+
 bool CString::ShortFromHexString(short& val) const
 {
 	if (GetLength() != 6 || _str[0] != '0' || (_str[1] != 'x' && _str[1] != 'X')){
@@ -645,6 +690,15 @@ CString CString::ToHexFormat(int wanted_length, const CString& current, bool inc
 		else
 			return current;
 	}
+}
+
+CString CString::ToHexFormat(const char* buffer, int len, bool include_prefix)
+{
+	CString res = include_prefix ? "0x" : EMPTY_STRING;
+	for(int i = 0; i < len; ++i){
+		res += ToHexFormat(sizeof(char) * 2, ToHex(buffer[i] & 0xFF), false);
+	}
+	return res;
 }
 
 bool CString::EndsWith(const CString& str) const

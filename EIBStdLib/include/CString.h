@@ -427,6 +427,9 @@ public:
 	*/
 	unsigned long ToULong() const;
 
+	int ToByteArray(char* buffer, int max_len) const;
+
+
 	bool EndsWith (const CString& str) const;
 	bool EndsWith (const char* str) const;
 
@@ -446,6 +449,7 @@ public:
 	static CString ToHexFormat(unsigned short val, bool include_prefix = true);
 	static CString ToHexFormat(int val, bool include_prefix = true);
 	static CString ToHexFormat(unsigned int val, bool include_prefix = true);
+	static CString ToHexFormat(const char* buffer, int len, bool include_prefix = true);
 
 private:
 	static CString ToHexFormat(int n_left_padding, const CString& current, bool include_prefix);

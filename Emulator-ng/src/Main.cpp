@@ -15,7 +15,7 @@ void emulator_main(bool interactive_conf)
 		cerr << "Error initializating EIB Emulator." << endl;
 	}
 
-	CUtils::WaitForCharInput('q', "Press q to stop Emulator: ");
+	CEmulatorCmd::StartLoop();
 	CEIBEmulator::GetInstance().Close();
 	CEIBEmulator::GetInstance().Destroy();
 }

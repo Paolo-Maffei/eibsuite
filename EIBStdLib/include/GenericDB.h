@@ -92,15 +92,12 @@ public:
 		ifstream myfile;
 		myfile.open(_file_name.GetBuffer(),ios::in);
 		if (myfile.fail()){
-			ofstream out_file;
-			out_file.open(_file_name.GetBuffer(),ios::out|ios::trunc);
-			out_file.close();
-			throw CEIBException(ConfigFileError, "Config file not found!");
+			throw CEIBException(ConfigFileError, "Database file: %s not found!", _file_name.GetBuffer());
 			return false;
 		}
 
 		CString line;
-		int line_num = -1;
+		int line_num = 0;
 		CString record_name;
 		T record;
 		bool first = true;
@@ -138,7 +135,7 @@ public:
 			{
 				if(index == line.GetLength() -1){
 					myfile.close();
-					throw CEIBException(ConfigFileError, "Error in line %d", line_num);
+					throw CEIBException(ConfigFileError, "Error in line %d: missing parameter value", line_num);
 				}
 				CString param_name = line.SubString(0,index);
 				CString param_value = line.SubString(index + 1,line.GetLength() - index - 1);
@@ -197,6 +194,16 @@ public:
 
 		myfile.close();
 		return true;
+	}
+
+	int GetNumOfRecords() const
+	{
+		return _data.size();
+	}
+
+	bool IsEmpty() const
+	{
+		return (GetNumOfRecords() == 0);
 	}
 
 protected:

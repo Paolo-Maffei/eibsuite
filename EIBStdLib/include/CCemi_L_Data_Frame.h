@@ -69,6 +69,7 @@ public:
 	void SetCtrl1(unsigned char ctrl1) { _data.ctrl1 = ctrl1;}
 	void SetCtrl2(unsigned char ctrl2) { _data.ctrl2 = ctrl2;}
 	void SetTPCI(unsigned char tpci) { _data.tpci = tpci; }
+	void SetAPCI(unsigned char apci) { _data.apci = apci; }
 
 	CCemi_L_Data_Frame& operator=(const CCemi_L_Data_Frame& rhs);
 	void FillBufferWithFrameData(unsigned char* buffer, int max_length);

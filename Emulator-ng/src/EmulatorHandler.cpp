@@ -382,7 +382,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleTunnelRequest(unsigned char*
 						dst,
 						result,
 						len);
-				ind.SetTPCI(GROUP_RESPONSE);
+				ind.SetAPCI(GROUP_RESPONSE);
 				_emulator->Broadcast(ind);
 
 			}

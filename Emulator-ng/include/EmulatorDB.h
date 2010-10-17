@@ -11,6 +11,8 @@ using namespace EibStack;
 #define EMULATOR_DB_FILE "Emulator.db"
 #define GROUP_VAL	  "VALUE"
 
+#define MAX_EIB_VAL	14
+
 class CGroupEntry
 {
 public:
@@ -20,6 +22,7 @@ public:
 
 	const CEibAddress& GetAddress() const { return _address; }
 	short GetValueLen() const { return _val_len; }
+	const char* GetValue() const { return _val; }
 
 	void SetAddress(const CEibAddress& addr) { _address = addr; }
 	void SetValueLen(short len) { _val_len = len; }
@@ -34,7 +37,7 @@ public:
 private:
 	CEibAddress _address;
 	short _val_len;
-	char _val[14];
+	char _val[MAX_EIB_VAL];
 };
 
 class CEmulatorDB : public CGenericDB<int,CGroupEntry>
@@ -47,6 +50,8 @@ public:
 	virtual void OnReadRecordComplete(CGroupEntry& current_record);
 	virtual void OnReadRecordNameComplete(CGroupEntry& current_record, const CString& record_name);
 	virtual void OnSaveRecordStarted(const CGroupEntry& record,CString& record_name, list<pair<CString, CString> >& param_values);
+
+	unsigned char* GetValueForGroup(const CEibAddress& address, int& len);
 
 	void Print() const;
 

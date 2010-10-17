@@ -55,8 +55,8 @@ void CEmulatorDB::OnReadParamComplete(CGroupEntry& current_record, const CString
 	tmp.ToUpper();
 
 	if(tmp == GROUP_VAL){
-		char buffer[14];
-		int len = value.ToByteArray(buffer, 14);
+		char buffer[MAX_EIB_VAL];
+		int len = value.ToByteArray(buffer, sizeof(buffer));
 		current_record.SetValueLen(len);
 		current_record.SetValue(buffer, len);
 
@@ -91,6 +91,20 @@ void CEmulatorDB::OnSaveRecordStarted(const CGroupEntry& record,CString& record_
 {
 	record_name = record.GetAddress().ToString();
 	param_values.push_front(pair<CString, CString>(GROUP_VAL,""));
+}
+
+unsigned char* CEmulatorDB::GetValueForGroup(const CEibAddress& address, int& len)
+{
+	static unsigned char current_value[MAX_EIB_VAL];
+
+	map<int,CGroupEntry>::iterator it = _data.find(address.ToByteArray());
+	if(it == _data.end()){
+		len = 0;
+		return NULL;
+	}
+	len = it->second.GetValueLen();
+	memcpy(current_value, it->second.GetValue(), len);
+	return current_value;
 }
 
 void CEmulatorDB::Print() const

@@ -56,7 +56,7 @@ public:
 
 		int GetLocalCtrlPort() const { return _local_port; }
 		const CString& GetLocalCtrlAddr() const { return _local_addr; }
-		void SetParent(CEmulatorHandler* relay) { _relay = relay; }
+		void SetParent(CEmulatorHandler* relay) { _emulator = relay; }
 
 		void SendTunnelToClient(const CCemi_L_Data_Frame& frame, ConnectionState* s);
 
@@ -71,7 +71,7 @@ public:
 		void HandleDescriptionRequest(unsigned char* buffer, int max_len);
 
 	private:
-		CEmulatorHandler* _relay;
+		CEmulatorHandler* _emulator;
 		bool _stop;
 		UDPSocket _sock;
 		CString _local_addr; //used for Control + Data channels

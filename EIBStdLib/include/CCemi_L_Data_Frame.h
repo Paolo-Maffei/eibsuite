@@ -52,6 +52,7 @@ public:
 	bool IsPositiveConfirmation() const;
 	unsigned short GetValueLength() const{ return _data.apci_length; }
 	unsigned char GetAPCI() const { return _data.apci; }
+	unsigned char GetTPCI() const { return _data.tpci; }
 	
 	void Parse(unsigned char* data);
 
@@ -66,6 +67,7 @@ public:
 	void SetValue(unsigned char* val, unsigned char val_len);
 	void SetCtrl1(unsigned char ctrl1) { _data.ctrl1 = ctrl1;}
 	void SetCtrl2(unsigned char ctrl2) { _data.ctrl2 = ctrl2;}
+	void SetTPCI(unsigned char tpci) { _data.tpci = tpci; }
 
 	CCemi_L_Data_Frame& operator=(const CCemi_L_Data_Frame& rhs);
 	void FillBufferWithFrameData(unsigned char* buffer, int max_length);

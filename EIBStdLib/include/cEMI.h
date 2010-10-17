@@ -22,6 +22,11 @@
 #define	M_RESET_REQ			0xF1
 #define	M_RESET_IND			0xF0
 
+#define GROUP_READ		0x00
+#define GROUP_RESPONSE	0x40
+#define GROUP_WRITE		0x80
+
+
 /*
  * ************************************ typedefinition ***
  */

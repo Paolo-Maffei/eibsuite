@@ -158,7 +158,7 @@ void CEmulatorHandler::FreeConnection(CEmulatorHandler::ConnectionState* s)
 
 CEmulatorHandler::CEmulatorInputHandler::CEmulatorInputHandler() :
 JTCThread("CRelayControlHandler"),
-_relay(NULL),
+_emulator(NULL),
 _stop(false),
 _local_addr(EMPTY_STRING),
 _local_port(0)
@@ -174,7 +174,7 @@ void CEmulatorHandler::CEmulatorInputHandler::Init()
 {
 	START_TRY
 		//set the source port to default EIB Port (3671)
-		_local_addr = Socket::LocalAddress(_relay->_server_conf->GetListenInterface());
+		_local_addr = Socket::LocalAddress(_emulator->_server_conf->GetListenInterface());
 		_sock.SetLocalAddressAndPort(_local_addr,EIB_PORT);
 		_local_port = _sock.GetLocalPort();
 		_sock.JoinGroup(_local_addr,EIB_MULTICAST_ADDRESS);
@@ -191,7 +191,7 @@ void CEmulatorHandler::CEmulatorInputHandler::run()
 
 	while (!_stop)
 	{
-		_relay->CheckConnectionsCleanup();
+		_emulator->CheckConnectionsCleanup();
 		
 		len = _sock.RecvFrom(buffer, sizeof(buffer), src_ip, src_port, timeout_interval);
 
@@ -245,7 +245,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleTunnelAck(unsigned char* buf
 	START_TRY
 		CTunnelingAck ack(buffer);
 		
-		CEmulatorHandler::ConnectionState* s = _relay->GetState(ack.GetChannelId());
+		CEmulatorHandler::ConnectionState* s = _emulator->GetState(ack.GetChannelId());
 		if(s == NULL){
 			LOG_ERROR("Error: Wrong channel id in tunnel ack (ignoring)");
 			return;
@@ -274,7 +274,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleDisconnectResponse(unsigned 
 {
 	START_TRY
 		CDisconnectResponse resp(buffer);
-		CEmulatorHandler::ConnectionState* s = _relay->GetState(resp.GetChannelID());
+		CEmulatorHandler::ConnectionState* s = _emulator->GetState(resp.GetChannelID());
 		if(s == NULL){
 			LOG_ERROR("Error: Wrong channel id in disconnect response (ignoring)");
 			return;
@@ -283,7 +283,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleDisconnectResponse(unsigned 
 		}
 
 		//reset the connection state
-		_relay->FreeConnection(s);
+		_emulator->FreeConnection(s);
 
 	END_TRY_START_CATCH(e)
 		LOG_ERROR("Error in disconnect response parsing: %s",e.what());
@@ -299,7 +299,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleTunnelRequest(unsigned char*
 	START_TRY
 		
 		CTunnelingRequest req(buffer);
-		CEmulatorHandler::ConnectionState* s = _relay->GetState(req.GetChannelId());
+		CEmulatorHandler::ConnectionState* s = _emulator->GetState(req.GetChannelId());
 		
 		if(s == NULL){
 			LOG_ERROR("[Received] [Client %d] [Tunnel Request] Error: cannot find connection with channel id: %d", req.GetChannelId());
@@ -339,17 +339,38 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleTunnelRequest(unsigned char*
 			LOG_DEBUG("[Received] [Client %d] [Tunnel Request] UNKNOWN message code!!!", s->channelid);
 			break;
 		}
+		//now we are going to check the contents of this tunnel request
+		//1. Is it read request
+		//2. Is it write request
+		const CCemi_L_Data_Frame& cemi = req.GetcEMI();
+		if(cemi.GetValueLength() == 1 && cemi.GetAPCI() == 0 && cemi.GetTPCI() == 0){
+			//this is group read request. we now look in the db
+			CEibAddress d = cemi.GetDestAddress();
+			CEibAddress s = cemi.GetSourceAddress();
+			int len;
+			unsigned char* result = CEIBEmulator::GetInstance().GetDB().GetValueForGroup(d, len);
+			if(len > 0 && result != NULL){
+
+				CCemi_L_Data_Frame ind((unsigned char)L_DATA_IND,
+										d,
+										s,
+										result,
+										len);
+				ind.SetTPCI(GROUP_RESPONSE);
+				_emulator->Broadcast(ind);
+
+			}else{
+				//do nothing.
+			}
+		}else {
+			//this is a write request, we shall
+		}
 
 		//sending an ack back
 		CTunnelingAck ack(s->channelid, s->recv_sequence , E_NO_ERROR);
 		//increment the recv sequence
 		s->recv_sequence++;
 		ack.FillBuffer(buffer, max_len);
-		
-		//everything is ok. we send forward the request to EIB Sever and waiting for confirmation
-		//if(_relay->SendEIBNetwork(req.GetcEMI(), WAIT_FOR_CONFRM)){
-		//	LOG_DEBUG("[Send] [EIB] [Raw frame from client]");
-		//}
 		//We send the ACK back over the Data channel (the channel that the request was received from)
 		_sock.SendTo(buffer, ack.GetTotalSize(), s->_remote_data_addr,s->_remote_data_port);
 
@@ -366,7 +387,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleDisconnectRequest(unsigned c
 {
 	START_TRY
 		CDisconnectRequest req(buffer);
-		CEmulatorHandler::ConnectionState* s = _relay->GetState(req.GetChannelID());
+		CEmulatorHandler::ConnectionState* s = _emulator->GetState(req.GetChannelID());
 		if(s == NULL){
 			CDisconnectResponse resp(req.GetChannelID(), E_CONNECTION_ID);
 			resp.FillBuffer(buffer, max_len);
@@ -395,7 +416,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleDisconnectRequest(unsigned c
 			_sock.SendTo(buffer, resp.GetTotalSize(), remote_ip, remote_port);
 		}while(0);
 
-		_relay->FreeConnection(s);
+		_emulator->FreeConnection(s);
 
 	END_TRY_START_CATCH(e)
 		LOG_ERROR("Error in search disconnect request parsing: %s",e.what());
@@ -410,7 +431,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleConnectionStateRequest(unsig
 {
 	START_TRY
 		CConnectionStateRequest req(buffer);
-		CEmulatorHandler::ConnectionState* s =	_relay->GetState(req.GetChannelId());
+		CEmulatorHandler::ConnectionState* s =	_emulator->GetState(req.GetChannelId());
 		
 		if(s == NULL){
 			LOG_ERROR("Error: Wrong channel id in connection state request (sending error connection state response)");
@@ -478,7 +499,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleConnectRequest(unsigned char
 		CConnectRequest req(buffer);
 		LOG_DEBUG("[Received] [Connect Request]");
 		//TODO: here need to check that we do not have another client with the same ip:port since this will create many many errors.
-		ConnectionState* state = _relay->AllocateNewState(req.GetControlAddress(), req.GetControlPort());
+		ConnectionState* state = _emulator->AllocateNewState(req.GetControlAddress(), req.GetControlPort());
 		if(state == NULL){
 			//we already have max open connections. we do not support more than that.
 			LOG_ERROR("[Send] [Client] Connect Response Error. No more connections.");

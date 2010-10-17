@@ -51,7 +51,7 @@ _addil_data(NULL)
 	ASSERT_ERROR((data_len >= 1),"Illegal cEMI data. Length should be at least 1 Byte");
 	
 	_data.apci_length = (unsigned char)data_len;
-	_data.tpci = 0;
+	_data.tpci = 0; //YGYG ???? this is the type field. should be GROUP_READ / GROUP_WRITE / GROUP_RESPONSE
 	_data.apci = data[0];
 
 	CopyAddilData(data_len, &data[1]);

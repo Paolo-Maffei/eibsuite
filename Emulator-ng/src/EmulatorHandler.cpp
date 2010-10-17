@@ -339,6 +339,15 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleTunnelRequest(unsigned char*
 			LOG_DEBUG("[Received] [Client %d] [Tunnel Request] UNKNOWN message code!!!", s->channelid);
 			break;
 		}
+
+		//sending an ack back
+		CTunnelingAck ack(s->channelid, s->recv_sequence , E_NO_ERROR);
+		//increment the recv sequence
+		s->recv_sequence++;
+		ack.FillBuffer(buffer, max_len);
+		//We send the ACK back over the Data channel (the channel that the request was received from)
+		_sock.SendTo(buffer, ack.GetTotalSize(), s->_remote_data_addr,s->_remote_data_port);
+
 		//now we are going to check the contents of this tunnel request
 		//1. Is it read request
 		//2. Is it write request
@@ -365,14 +374,6 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleTunnelRequest(unsigned char*
 		}else {
 			//this is a write request, we shall
 		}
-
-		//sending an ack back
-		CTunnelingAck ack(s->channelid, s->recv_sequence , E_NO_ERROR);
-		//increment the recv sequence
-		s->recv_sequence++;
-		ack.FillBuffer(buffer, max_len);
-		//We send the ACK back over the Data channel (the channel that the request was received from)
-		_sock.SendTo(buffer, ack.GetTotalSize(), s->_remote_data_addr,s->_remote_data_port);
 
 	END_TRY_START_CATCH(e)
 		LOG_ERROR("Error in tunnel request parsing: %s",e.what());

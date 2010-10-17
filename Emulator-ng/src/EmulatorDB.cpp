@@ -93,6 +93,25 @@ void CEmulatorDB::OnSaveRecordStarted(const CGroupEntry& record,CString& record_
 	param_values.push_front(pair<CString, CString>(GROUP_VAL,""));
 }
 
+void CEmulatorDB::SetValueForGroup(const CEibAddress& address, const CCemi_L_Data_Frame& cemi)
+{
+	map<int,CGroupEntry>::iterator it = _data.find(address.ToByteArray());
+	if(it == _data.end()){
+		return;
+	}
+	unsigned char apci = cemi.GetAPCI();
+	if(cemi.GetValueLength() > 1){
+		static unsigned char* data[MAX_EIB_VAL];
+		memcpy(&data[0], &apci, 1);
+		memcpy(&data[1], cemi.GetAddilData(), cemi.GetValueLength() - 1);
+		it->second.SetValue((const char*)data, cemi.GetValueLength());
+	}else if(cemi.GetValueLength() == 1){
+		it->second.SetValue((const char*)&apci, 1);
+	}else{
+		throw CEIBException(EibPacketError,"Packet is missing value");
+	}
+}
+
 unsigned char* CEmulatorDB::GetValueForGroup(const CEibAddress& address, int& len)
 {
 	static unsigned char current_value[MAX_EIB_VAL];

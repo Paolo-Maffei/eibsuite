@@ -46,18 +46,19 @@ public:
 	CEibAddress GetSourceAddress() const;
 	CEibAddress GetDestAddress() const;
 	bool IsRepeatedFrame() const;
-	void SetRepeatFlag(bool val);
 	CEMI_FRAME_PRIORITY GetPriority() const;
 	bool GetAcknowledgeRequested() const;
 	bool IsPositiveConfirmation() const;
 	unsigned short GetValueLength() const{ return _data.apci_length; }
 	unsigned char GetAPCI() const { return _data.apci; }
 	unsigned char GetTPCI() const { return _data.tpci; }
+	const unsigned char* GetAddilData() const { return _addil_data; }
+	unsigned char GetHopCount() const;
 	
 	void Parse(unsigned char* data);
 
-	unsigned char GetHopCount() const;
 	void FillBuffer(unsigned char* buffer, int max_length) const;
+	void SetRepeatFlag(bool val);
 	void SetPriority(CEMI_FRAME_PRIORITY priority);
 	void SetAcknowledgeRequest(bool val);
 	void SetDestAddress(const CEibAddress& add);
@@ -72,6 +73,7 @@ public:
 	CCemi_L_Data_Frame& operator=(const CCemi_L_Data_Frame& rhs);
 	void FillBufferWithFrameData(unsigned char* buffer, int max_length);
 	void SetFrameFormatStandard();
+
 
 private:
 	void CopyAddilData(byte acpi_len,unsigned char* data);

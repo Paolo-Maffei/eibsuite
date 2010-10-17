@@ -5,6 +5,7 @@
 #include "GenericDB.h"
 #include "EIBAddress.h"
 #include "EmulatorConfig.h"
+#include "CCemi_L_Data_Frame.h"
 
 using namespace EibStack;
 
@@ -26,7 +27,7 @@ public:
 
 	void SetAddress(const CEibAddress& addr) { _address = addr; }
 	void SetValueLen(short len) { _val_len = len; }
-	void SetValue(char* val, int len) { memcpy(_val, val, len); }
+	void SetValue(const char* val, int len) { memcpy(_val, val, len); }
 
 	void Reset();
 
@@ -52,6 +53,7 @@ public:
 	virtual void OnSaveRecordStarted(const CGroupEntry& record,CString& record_name, list<pair<CString, CString> >& param_values);
 
 	unsigned char* GetValueForGroup(const CEibAddress& address, int& len);
+	void SetValueForGroup(const CEibAddress& address, const CCemi_L_Data_Frame& cemi);
 
 	void Print() const;
 

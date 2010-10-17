@@ -58,7 +58,8 @@ public:
 		const CString& GetLocalCtrlAddr() const { return _local_addr; }
 		void SetParent(CEmulatorHandler* relay) { _emulator = relay; }
 
-		void SendTunnelToClient(const CCemi_L_Data_Frame& frame, ConnectionState* s);
+		bool SendTunnelToClient(const CCemi_L_Data_Frame& frame, ConnectionState* s, bool wait4ack);
+		void DisconnectClient(ConnectionState* s);
 
 	private:
 		void HandleDisconnectRequest(unsigned char* buffer, int max_len);
@@ -69,6 +70,8 @@ public:
 		void HandleDisconnectResponse(unsigned char* buffer, int max_len);
 		void HandleTunnelAck(unsigned char* buffer, int max_len);
 		void HandleDescriptionRequest(unsigned char* buffer, int max_len);
+
+
 
 	private:
 		CEmulatorHandler* _emulator;
@@ -99,7 +102,7 @@ public:
 	typedef JTCHandleT<CEmulatorHandler::CEmulatorOutputHandler> CEmulatorOutputHandlerHandle;
 
 private:
-	void SendTunnelToClient(const CCemi_L_Data_Frame& frame, ConnectionState* s) { _input_handler->SendTunnelToClient(frame, s); }
+	void SendTunnelToClient(const CCemi_L_Data_Frame& frame, ConnectionState* s, bool wait4ack) { _input_handler->SendTunnelToClient(frame, s, wait4ack); }
 
 public:
 	void Broadcast(const CCemi_L_Data_Frame& frame);

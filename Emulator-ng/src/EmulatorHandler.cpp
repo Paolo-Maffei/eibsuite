@@ -58,6 +58,13 @@ void CEmulatorHandler::Init(CEmulatorConfig* server_conf, CLogFile* log_file)
 
 void CEmulatorHandler::Close()
 {
+	for(int i = 0; i < MAX_CONNS; i++)
+	{
+		JTCSynchronized s(*this);
+		if(_states[i] != NULL){
+			_input_handler->DisconnectClient(_states[i]);
+		}
+	}
 	_input_handler->Close();
 	_input_handler->join();
 
@@ -79,7 +86,7 @@ void CEmulatorHandler::Broadcast(const CCemi_L_Data_Frame& frame)
 	for(int i = 0; i < MAX_CONNS; i++)
 	{
 		if(_states[i] != NULL){
-			SendTunnelToClient(frame, _states[i]);
+			SendTunnelToClient(frame, _states[i], true);
 		}
 	}
 }
@@ -352,27 +359,38 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleTunnelRequest(unsigned char*
 		//1. Is it read request
 		//2. Is it write request
 		const CCemi_L_Data_Frame& cemi = req.GetcEMI();
+		CEibAddress dst = cemi.GetDestAddress();
+		CEibAddress src = cemi.GetSourceAddress();
+
+		CCemi_L_Data_Frame con(cemi);
+		con.SetMessageControl(L_DATA_CON);
+		con.SetDestAddress(dst);
+		con.SetSrcAddress(src);
+		_emulator->Broadcast(con);
+
+		bool is_read_req = false;
 		if(cemi.GetValueLength() == 1 && cemi.GetAPCI() == 0 && cemi.GetTPCI() == 0){
 			//this is group read request. we now look in the db
-			CEibAddress d = cemi.GetDestAddress();
-			CEibAddress s = cemi.GetSourceAddress();
+			is_read_req = true;
+
 			int len;
-			unsigned char* result = CEIBEmulator::GetInstance().GetDB().GetValueForGroup(d, len);
+			unsigned char* result = CEIBEmulator::GetInstance().GetDB().GetValueForGroup(dst, len);
 			if(len > 0 && result != NULL){
 
-				CCemi_L_Data_Frame ind((unsigned char)L_DATA_IND,
-										d,
-										s,
-										result,
-										len);
+				CCemi_L_Data_Frame ind(L_DATA_IND,
+						src,
+						dst,
+						result,
+						len);
 				ind.SetTPCI(GROUP_RESPONSE);
 				_emulator->Broadcast(ind);
 
-			}else{
-				//do nothing.
 			}
-		}else {
-			//this is a write request, we shall
+		}
+
+		//this is a write request, we shall update the db and return confirmation
+		if(!is_read_req){
+			CEIBEmulator::GetInstance().GetDB().SetValueForGroup(dst, cemi);
 		}
 
 	END_TRY_START_CATCH(e)
@@ -577,7 +595,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleSearchRequest(unsigned char*
 	END_CATCH
 }
 
-void CEmulatorHandler::CEmulatorInputHandler::SendTunnelToClient(const CCemi_L_Data_Frame& frame, ConnectionState* s)
+bool CEmulatorHandler::CEmulatorInputHandler::SendTunnelToClient(const CCemi_L_Data_Frame& frame, ConnectionState* s, bool wait4ack)
 {
 	START_TRY
 		JTCSynchronized sync(s->state_monitor);
@@ -590,6 +608,24 @@ void CEmulatorHandler::CEmulatorInputHandler::SendTunnelToClient(const CCemi_L_D
 		}else{
 			LOG_ERROR("[Received] [EIB] Raw frame. no client connected: ignoring.");
 		}
+
+		if(wait4ack){
+			unsigned char buffer[256];
+			int len = 0, src_port, timeout_interval = 1000;
+			CString src_ip;
+			len = _sock.RecvFrom(buffer, sizeof(buffer), src_ip, src_port, timeout_interval);
+			if(len == 0){
+				return false;
+			}
+			EIBNETIP_HEADER* header = ((EIBNETIP_HEADER*)buffer);
+			header->servicetype = htons(header->servicetype);
+			header->totalsize = htons(header->totalsize);
+			if(header->servicetype != TUNNELLING_ACK){
+				return false;
+			}
+			HandleTunnelAck(buffer, sizeof(buffer));
+		}
+
 	END_TRY_START_CATCH(e)
 		LOG_ERROR("Error in SendTunnelToClient: %s",e.what());
 	END_TRY_START_CATCH_SOCKET(ex)
@@ -597,6 +633,31 @@ void CEmulatorHandler::CEmulatorInputHandler::SendTunnelToClient(const CCemi_L_D
 	END_TRY_START_CATCH_ANY
 		LOG_ERROR("Unknown Error in SendTunnelToClient");
 	END_CATCH
+	return true;
+}
+
+void CEmulatorHandler::CEmulatorInputHandler::DisconnectClient(ConnectionState* s)
+{
+	//YGYG: need to send disconnect request to all connected clients.
+	//we need only to wait very small time for the disconnect response
+	START_TRY
+		JTCSynchronized sync(s->state_monitor);
+		if(s->is_connected){
+			unsigned char buffer[256];
+			CDisconnectRequest req(s->channelid, GetLocalCtrlPort(), GetLocalCtrlAddr());
+			req.FillBuffer(buffer, sizeof(buffer));
+			_sock.SendTo(buffer, req.GetTotalSize(), s->_remote_data_addr, s->_remote_data_port);
+		}else{
+			LOG_ERROR("[Received] [EIB] Raw frame. no client connected: ignoring.");
+		}
+	END_TRY_START_CATCH(e)
+		LOG_ERROR("Error in SendTunnelToClient: %s",e.what());
+	END_TRY_START_CATCH_SOCKET(ex)
+		LOG_ERROR("Socket Error in SendTunnelToClient: %s",ex.what());
+	END_TRY_START_CATCH_ANY
+		LOG_ERROR("Unknown Error in SendTunnelToClient");
+	END_CATCH
+
 }
 
 void CEmulatorHandler::CEmulatorInputHandler::Close()

@@ -8,9 +8,8 @@
 
 using namespace EibStack;
 
-#define GROUPS_BLOCK_NAME "GROUPS"
-
-class
+#define EMULATOR_DB_FILE "Emulator.db"
+#define GROUP_BLOCK_NAME_PREFIX "GROUP-"
 
 class CGroupEntry
 {

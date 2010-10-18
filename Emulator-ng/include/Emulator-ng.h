@@ -60,6 +60,7 @@ public:
 	inline CLogFile& GetLog() { return _log;}
 	inline CEmulatorConfig& GetConfig() { return _conf;}
 	inline CEmulatorDB& GetDB() { return _db; }
+	inline CEmulatorHandler& GetHandler() { return _handler; }
 	
 	void InteractiveConf();
 

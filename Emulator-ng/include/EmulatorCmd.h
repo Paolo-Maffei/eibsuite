@@ -9,6 +9,7 @@ public:
 
 	static void StartLoop();
 	static void PrintAvailableCmds();
+	static void HandleSendCommand();
 };
 
 #endif

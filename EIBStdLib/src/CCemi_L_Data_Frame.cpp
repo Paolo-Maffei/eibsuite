@@ -17,9 +17,9 @@ _addil_data(NULL)
 }
 
 CCemi_L_Data_Frame::CCemi_L_Data_Frame(unsigned char message_control,
-					   CEibAddress& source_addr,
-					   CEibAddress& dst_addr,
-			           unsigned char* data,
+					   const CEibAddress& source_addr,
+					   const CEibAddress& dst_addr,
+			           const unsigned char* data,
 					   int data_len) :
 _addil_data(NULL)
 {
@@ -254,7 +254,7 @@ void CCemi_L_Data_Frame::FillBufferWithFrameData(unsigned char* buffer, int max_
 	}
 }
 
-void CCemi_L_Data_Frame::CopyAddilData(byte acpi_len, unsigned char* data)
+void CCemi_L_Data_Frame::CopyAddilData(byte acpi_len, const unsigned char* data)
 {
 	if (acpi_len > 1)
 	{

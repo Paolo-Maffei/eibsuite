@@ -24,9 +24,9 @@ public:
 	CCemi_L_Data_Frame();
 
 	CCemi_L_Data_Frame(unsigned char message_control,
-			   CEibAddress& source_addr,
-			   CEibAddress& dst_addr,
-			   unsigned char* data,
+			   const CEibAddress& source_addr,
+			   const CEibAddress& dst_addr,
+			   const unsigned char* data,
 			   int data_len);
 
 	CCemi_L_Data_Frame(const CCemi_L_Data_Frame& rhs);
@@ -77,7 +77,7 @@ public:
 
 
 private:
-	void CopyAddilData(byte acpi_len,unsigned char* data);
+	void CopyAddilData(byte acpi_len, const unsigned char* data);
 
 private:
 	CEMI_L_DATA_MESSAGE _data;

@@ -11,6 +11,7 @@ using namespace EibStack;
 
 #define EMULATOR_DB_FILE "Emulator.db"
 #define GROUP_VAL	  "VALUE"
+#define GROUP_PHY	  "PHY"
 
 #define MAX_EIB_VAL	14
 
@@ -22,9 +23,11 @@ public:
 	virtual ~CGroupEntry();
 
 	const CEibAddress& GetAddress() const { return _address; }
+	const CEibAddress& GetPhyAddress() const { return _phy; }
 	short GetValueLen() const { return _val_len; }
 	const char* GetValue() const { return _val; }
 
+	void SetPhyAddress(const CEibAddress& addr) { _phy = addr; }
 	void SetAddress(const CEibAddress& addr) { _address = addr; }
 	void SetValueLen(short len) { _val_len = len; }
 	void SetValue(const char* val, int len) { memcpy(_val, val, len); }
@@ -37,6 +40,7 @@ public:
 
 private:
 	CEibAddress _address;
+	CEibAddress _phy;
 	short _val_len;
 	char _val[MAX_EIB_VAL];
 };
@@ -54,6 +58,9 @@ public:
 
 	unsigned char* GetValueForGroup(const CEibAddress& address, int& len);
 	void SetValueForGroup(const CEibAddress& address, const CCemi_L_Data_Frame& cemi);
+	const CEibAddress& GetPhyForGroup(const CEibAddress& address);
+
+	bool GetGroupEntryByIndex(int index, CGroupEntry& ge);
 
 	void Print() const;
 

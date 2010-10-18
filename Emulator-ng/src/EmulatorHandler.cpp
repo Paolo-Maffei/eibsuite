@@ -48,6 +48,11 @@ void CEmulatorHandler::InitState(CEmulatorHandler::ConnectionState* s)
 	s->_timeout += HEARTBEAT_REQUEST_TIME_OUT;
 }
 
+void CEmulatorHandler::SendIndication(const CGroupEntry& ge)
+{
+	_data_output_handler->EnqueueFrame(ge);
+}
+
 void CEmulatorHandler::Init(CEmulatorConfig* server_conf, CLogFile* log_file)
 {
 	_log_file = log_file;
@@ -58,18 +63,24 @@ void CEmulatorHandler::Init(CEmulatorConfig* server_conf, CLogFile* log_file)
 
 void CEmulatorHandler::Close()
 {
-	for(int i = 0; i < MAX_CONNS; i++)
-	{
-		JTCSynchronized s(*this);
-		if(_states[i] != NULL){
-			_input_handler->DisconnectClient(_states[i]);
-		}
-	}
+	DisconnectClients();
+
 	_input_handler->Close();
 	_input_handler->join();
 
 	_data_output_handler->Close();
 	_data_output_handler->join();
+}
+
+void CEmulatorHandler::DisconnectClients()
+{
+	JTCSynchronized s(*this);
+	for(int i = 0; i < MAX_CONNS; i++)
+	{
+		if(_states[i] != NULL){
+			_input_handler->DisconnectClient(_states[i]);
+		}
+	}
 }
 
 void CEmulatorHandler::Start()
@@ -82,12 +93,16 @@ void CEmulatorHandler::Broadcast(const CCemi_L_Data_Frame& frame)
 {
 	//lock this object so if cleanup occured it will wait
 	JTCSynchronized s(*this);
-
+	bool sent = false;
 	for(int i = 0; i < MAX_CONNS; i++)
 	{
 		if(_states[i] != NULL){
 			SendTunnelToClient(frame, _states[i], true);
+			sent = true;
 		}
+	}
+	if(!sent){
+		LOG_ERROR("\nNo client connected.");
 	}
 }
 
@@ -257,7 +272,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleTunnelAck(unsigned char* buf
 			LOG_ERROR("Error: Wrong channel id in tunnel ack (ignoring)");
 			return;
 		}else{
-			LOG_DEBUG("[Received] [Client %d] [Tunnel Ack]", s->channelid);
+			LOG_DEBUG("[Received] [Tunnel Ack]");
 		}
 
 		JTCSynchronized sync(s->state_monitor);
@@ -265,7 +280,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleTunnelAck(unsigned char* buf
 			//increment the send sequence
 			s->send_sequence++;
 		}else{
-			LOG_ERROR("Error: Incorrect Sequnece number in Tunnel Ack. Ignore Ack.");
+			LOG_ERROR("Error: Incorrect Sequence number in Tunnel Ack. Ignore Ack.");
 		}
 
 	END_TRY_START_CATCH(e)
@@ -286,7 +301,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleDisconnectResponse(unsigned 
 			LOG_ERROR("Error: Wrong channel id in disconnect response (ignoring)");
 			return;
 		}else{
-			LOG_DEBUG("[Received] [Client %d] [Disconnect Response]", s->channelid);
+			LOG_DEBUG("[Received] [Disconnect Response]");
 		}
 
 		//reset the connection state
@@ -309,7 +324,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleTunnelRequest(unsigned char*
 		CEmulatorHandler::ConnectionState* s = _emulator->GetState(req.GetChannelId());
 		
 		if(s == NULL){
-			LOG_ERROR("[Received] [Client %d] [Tunnel Request] Error: cannot find connection with channel id: %d", req.GetChannelId());
+			LOG_ERROR("[Received] [Tunnel Request] Error: cannot find connection with channel id: %d", req.GetChannelId());
 			return;
 		}
 
@@ -319,7 +334,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleTunnelRequest(unsigned char*
 			CTunnelingAck ack(s->channelid, 0, E_CONNECTION_ID);
 			ack.FillBuffer(buffer, max_len);
 			_sock.SendTo(buffer, ack.GetTotalSize(), s->_remote_ctrl_addr, s->_remote_ctrl_port);
-			LOG_ERROR("[Received] [Client %d] [Tunnel Request] Error: Wrong channel id (sending error ack)", s->channelid);
+			LOG_ERROR("[Received] [Tunnel Request] Error: Wrong channel id (sending error ack)");
 			return;
 		}
 		if(req.GetSequenceNumber() != s->recv_sequence){
@@ -327,23 +342,23 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleTunnelRequest(unsigned char*
 			CTunnelingAck ack(s->channelid, 0, E_SEQUENCE_NUMBER);
 			ack.FillBuffer(buffer, max_len);
 			_sock.SendTo(buffer, ack.GetTotalSize(), s->_remote_ctrl_addr, s->_remote_ctrl_port);
-			LOG_ERROR("[Received] [Client %d] [Tunnel Request] Error: Wrong sequence id (sending error ack)", s->channelid);
+			LOG_ERROR("[Received] [Tunnel Request] Error: Wrong sequence id (sending error ack)");
 			return;
 		}
 		
 		switch(req.GetcEMI().GetMessageCode())
 		{
 		case L_DATA_REQ:
-			LOG_DEBUG("[Received] [Client %d] [Tunnel Request] Data Request", s->channelid);
+			LOG_DEBUG("[Received] [Tunnel Request] Data Request");
 			break;
 		case L_DATA_CON:
-			LOG_DEBUG("[Received] [Client %d] [Tunnel Request] Data Confirmation", s->channelid);
+			LOG_DEBUG("[Received] [Tunnel Request] Data Confirmation");
 			break;
 		case L_DATA_IND:
-			LOG_DEBUG("[Received] [Client %d] [Tunnel Request] Data Indication", s->channelid);
+			LOG_DEBUG("[Received] [Tunnel Request] Data Indication");
 			break;
 		default:
-			LOG_DEBUG("[Received] [Client %d] [Tunnel Request] UNKNOWN message code!!!", s->channelid);
+			LOG_DEBUG("[Received] [Tunnel Request] UNKNOWN message code!!!");
 			break;
 		}
 
@@ -360,7 +375,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleTunnelRequest(unsigned char*
 		//2. Is it write request
 		const CCemi_L_Data_Frame& cemi = req.GetcEMI();
 		CEibAddress dst = cemi.GetDestAddress();
-		CEibAddress src = cemi.GetSourceAddress();
+		const CEibAddress& src = CEIBEmulator::GetInstance().GetDB().GetPhyForGroup(dst);
 
 		CCemi_L_Data_Frame con(cemi);
 		con.SetMessageControl(L_DATA_CON);
@@ -414,7 +429,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleDisconnectRequest(unsigned c
 			LOG_ERROR("Error: Wrong channel id in disconnect request (sending error disconnect response)");
 			return;
 		}else{
-			LOG_DEBUG("[Received] [Client %d] [Disconnect Request]", s->channelid);
+			LOG_DEBUG("[Received] [Disconnect Request]");
 		}
 
 		do
@@ -422,11 +437,11 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleDisconnectRequest(unsigned c
 			JTCSynchronized sync(s->state_monitor);
 		
 			if(!s->is_connected){
-				LOG_ERROR("Error: Recevied disconnect request when no connection is open. (ignoring)");
+				LOG_ERROR("Error: Received disconnect request when no connection is open. (ignoring)");
 				return;
 			}
 
-			LOG_DEBUG("[Send] [Client %d] [Disconnect Response]", s->channelid);
+			LOG_DEBUG("[Send] [Disconnect Response]");
 
 			CDisconnectResponse resp(s->channelid, E_NO_ERROR);
 			resp.FillBuffer(buffer, max_len);
@@ -457,7 +472,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleConnectionStateRequest(unsig
 			return;
 		}
 
-		LOG_DEBUG("[Received] [Client %d] [Connection state Request]", s->channelid);
+		LOG_DEBUG("[Received] [Connection state Request]");
 
 		JTCSynchronized sync(s->state_monitor);
 		if(!s->is_connected){
@@ -601,7 +616,7 @@ bool CEmulatorHandler::CEmulatorInputHandler::SendTunnelToClient(const CCemi_L_D
 		JTCSynchronized sync(s->state_monitor);
 		if(s->is_connected){
 			unsigned char buffer[256];
-			LOG_DEBUG("[Send] [Client %d] [Raw frame]", s->channelid);
+			LOG_DEBUG("[Send] [Tunnel Frame]");
 			CTunnelingRequest req(s->channelid, s->send_sequence, frame);
 			req.FillBuffer(buffer, sizeof(buffer));
 			_sock.SendTo(buffer, req.GetTotalSize(), s->_remote_data_addr, s->_remote_data_port);
@@ -639,7 +654,6 @@ bool CEmulatorHandler::CEmulatorInputHandler::SendTunnelToClient(const CCemi_L_D
 void CEmulatorHandler::CEmulatorInputHandler::DisconnectClient(ConnectionState* s)
 {
 	//YGYG: need to send disconnect request to all connected clients.
-	//we need only to wait very small time for the disconnect response
 	START_TRY
 		JTCSynchronized sync(s->state_monitor);
 		if(s->is_connected){
@@ -647,8 +661,9 @@ void CEmulatorHandler::CEmulatorInputHandler::DisconnectClient(ConnectionState* 
 			CDisconnectRequest req(s->channelid, GetLocalCtrlPort(), GetLocalCtrlAddr());
 			req.FillBuffer(buffer, sizeof(buffer));
 			_sock.SendTo(buffer, req.GetTotalSize(), s->_remote_data_addr, s->_remote_data_port);
-		}else{
-			LOG_ERROR("[Received] [EIB] Raw frame. no client connected: ignoring.");
+			LOG_DEBUG("[Send] [Disconnect Request]");
+			JTCThread::sleep(200);
+			_emulator->FreeConnection(s);
 		}
 	END_TRY_START_CATCH(e)
 		LOG_ERROR("Error in SendTunnelToClient: %s",e.what());
@@ -669,7 +684,7 @@ void CEmulatorHandler::CEmulatorInputHandler::Close()
 
 CEmulatorHandler::CEmulatorOutputHandler::CEmulatorOutputHandler() :
 JTCThread("CRelayDataOutputHandler"),
-_relay(NULL),
+_emulator(NULL),
 _stop(false)
 {
 }
@@ -680,20 +695,35 @@ CEmulatorHandler::CEmulatorOutputHandler::~CEmulatorOutputHandler()
 
 void CEmulatorHandler::CEmulatorOutputHandler::Close()
 {
+	JTCSynchronized sync(_mon);
 	_stop = true;
+	_mon.notify();
+}
+
+void CEmulatorHandler::CEmulatorOutputHandler::EnqueueFrame(const CGroupEntry& ge)
+{
+	JTCSynchronized sync(_mon);
+	_q.push(ge);
+	_mon.notify();
 }
 
 void CEmulatorHandler::CEmulatorOutputHandler::run()
 {
 	CCemi_L_Data_Frame frame;
-	
-	//while(!_stop)
-	//{
-		//int len = _relay->ReceiveEIBNetwork(frame,2000);
-		//if(len == 0){
-		//	continue;
-		//}
-		//LOG_DEBUG("[Received] [EIB] [Raw frame]");
-		//_relay->Broadcast(frame);
-	//}
+	JTCSynchronized sync(_mon);
+	while(!_stop)
+	{
+		_mon.wait();
+		while(_q.size() > 0){
+			const CGroupEntry& ge = _q.front();
+
+			CCemi_L_Data_Frame ind(L_DATA_IND,
+									ge.GetPhyAddress(),
+									ge.GetAddress(),
+									(const unsigned char*)ge.GetValue(),
+									ge.GetValueLen());
+			_emulator->Broadcast(ind);
+			_q.pop();
+		}
+	}
 }

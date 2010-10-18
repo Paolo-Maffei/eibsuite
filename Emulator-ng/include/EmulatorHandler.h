@@ -4,6 +4,8 @@
 #include "EmulatorConfig.h"
 #include "JTC.h"
 #include "Socket.h"
+#include "EmulatorDB.h"
+#include <queue>
 
 #define MAX_CONNS 1
 
@@ -24,6 +26,9 @@ public:
 	const CString& GetLocalCtrlAddr() const { return _input_handler->GetLocalCtrlAddr(); }
 	int GetLocalCtrlPort() const { return _input_handler->GetLocalCtrlPort(); }
 	
+	void DisconnectClients();
+	void SendIndication(const CGroupEntry& ge);
+
 private:
 	typedef struct
 	{
@@ -71,8 +76,6 @@ public:
 		void HandleTunnelAck(unsigned char* buffer, int max_len);
 		void HandleDescriptionRequest(unsigned char* buffer, int max_len);
 
-
-
 	private:
 		CEmulatorHandler* _emulator;
 		bool _stop;
@@ -91,11 +94,14 @@ public:
 		
 		virtual void run();
 		void Close();
-		void SetParent(CEmulatorHandler* relay) { _relay = relay; }
+		void SetParent(CEmulatorHandler* relay) { _emulator = relay; }
+		void EnqueueFrame(const CGroupEntry& ge);
 
 	private:
-		CEmulatorHandler* _relay;
+		CEmulatorHandler* _emulator;
 		bool _stop;
+		JTCMonitor _mon;
+		queue<CGroupEntry> _q;
 	};
 
 	typedef JTCHandleT<CEmulatorHandler::CEmulatorInputHandler> CEmulatorInputHandlerHandle;

@@ -111,8 +111,10 @@ void CEmulatorDB::SetValueForGroup(const CEibAddress& address, const CCemi_L_Dat
 		memcpy(&data[0], &apci, 1);
 		memcpy(&data[1], cemi.GetAddilData(), cemi.GetValueLength() - 1);
 		it->second.SetValue((const char*)data, cemi.GetValueLength());
+		it->second.SetValueLen(cemi.GetValueLength());
 	}else if(cemi.GetValueLength() == 1){
 		it->second.SetValue((const char*)&apci, 1);
+		it->second.SetValueLen(1);
 	}else{
 		throw CEIBException(EibPacketError,"Packet is missing value");
 	}

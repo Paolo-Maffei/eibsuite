@@ -43,6 +43,8 @@ Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "EIBInstaller", "EIBInstalle
 		{B4CA5BEF-2DAE-429B-AF57-E805B7A77060} = {B4CA5BEF-2DAE-429B-AF57-E805B7A77060}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Emulator-ng", "Emulator-ng\Emulator-ng.vcxproj", "{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CD_ROM|Any CPU = CD_ROM|Any CPU
@@ -497,6 +499,36 @@ Global
 		{A84B6A62-4B9C-4882-80FB-6DB8878AD44A}.SingleImage|Win32.Build.0 = SingleImage
 		{A84B6A62-4B9C-4882-80FB-6DB8878AD44A}.SingleImage|x86.ActiveCfg = SingleImage
 		{A84B6A62-4B9C-4882-80FB-6DB8878AD44A}.SingleImage|x86.Build.0 = SingleImage
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.CD_ROM|Any CPU.ActiveCfg = Release|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.CD_ROM|Mixed Platforms.ActiveCfg = Release|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.CD_ROM|Mixed Platforms.Build.0 = Release|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.CD_ROM|Win32.ActiveCfg = Release|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.CD_ROM|Win32.Build.0 = Release|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.CD_ROM|x86.ActiveCfg = Release|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.Debug|Win32.Build.0 = Debug|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.Debug|x86.ActiveCfg = Debug|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.DVD-5|Any CPU.ActiveCfg = Debug|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.DVD-5|Mixed Platforms.ActiveCfg = Debug|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.DVD-5|Mixed Platforms.Build.0 = Debug|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.DVD-5|Win32.ActiveCfg = Debug|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.DVD-5|Win32.Build.0 = Debug|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.DVD-5|x86.ActiveCfg = Debug|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.Release|Any CPU.ActiveCfg = Release|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.Release|Win32.ActiveCfg = Release|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.Release|Win32.Build.0 = Release|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.Release|x86.ActiveCfg = Release|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.SingleImage|Any CPU.ActiveCfg = Release|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.SingleImage|Mixed Platforms.ActiveCfg = Release|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.SingleImage|Mixed Platforms.Build.0 = Release|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.SingleImage|Win32.ActiveCfg = Release|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.SingleImage|Win32.Build.0 = Release|Win32
+		{A734AFC1-B3F2-4FD1-A42E-7417A21F976A}.SingleImage|x86.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

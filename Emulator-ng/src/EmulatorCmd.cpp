@@ -22,7 +22,7 @@ void CEmulatorCmd::PrintAvailableCmds()
 
 void CEmulatorCmd::StartLoop()
 {
-	static CString msg("Enter command: [Press '?' for list of available commands] ");
+	static CString msg("Enter command: [Press '?' for list of available commands]\n");
 	static CString input;
 	while(true)
 	{

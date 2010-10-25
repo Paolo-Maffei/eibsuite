@@ -87,7 +87,7 @@ void CEmulatorDB::OnReadRecordNameComplete(CGroupEntry& current_record, const CS
 	START_TRY
 		CEibAddress addr(record_name);
 		current_record.SetAddress(addr);
-	END_TRY_START_CATCH(e)
+	END_TRY_START_CATCH_ANY
 		throw CEIBException(ConfigFileError,"Configuration file error. all blocks must have valid group address");
 	END_CATCH
 }
@@ -112,7 +112,7 @@ void CEmulatorDB::SetValueForGroup(const CEibAddress& address, const CCemi_L_Dat
 		memcpy(&data[1], cemi.GetAddilData(), cemi.GetValueLength() - 1);
 		it->second.SetValue((const char*)data, cemi.GetValueLength());
 		it->second.SetValueLen(cemi.GetValueLength());
-	}else if(cemi.GetValueLength() == 1){
+	}else if(cemi.GetValueLength() == 1) {
 		it->second.SetValue((const char*)&apci, 1);
 		it->second.SetValueLen(1);
 	}else{

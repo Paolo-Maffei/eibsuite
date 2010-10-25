@@ -349,7 +349,9 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleTunnelRequest(unsigned char*
 		switch(req.GetcEMI().GetMessageCode())
 		{
 		case L_DATA_REQ:
-			LOG_DEBUG("[Received] [Tunnel Request] Data Request");
+			if(req.GetcEMI().GetValueLength() == 1 && req.GetcEMI().GetAPCI() == 0 && req.GetcEMI().GetTPCI() == 0){
+				LOG_DEBUG("[Received] [GROUP_READ Request] Read Value for %s", req.GetcEMI().GetDestAddress().ToString().GetBuffer());
+			}
 			break;
 		case L_DATA_CON:
 			LOG_DEBUG("[Received] [Tunnel Request] Data Confirmation");
@@ -381,6 +383,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleTunnelRequest(unsigned char*
 		con.SetMessageControl(L_DATA_CON);
 		con.SetDestAddress(dst);
 		con.SetSrcAddress(src);
+		LOG_DEBUG("[Send] [Frame Confirmation]");
 		_emulator->Broadcast(con);
 
 		bool is_read_req = false;
@@ -397,7 +400,8 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleTunnelRequest(unsigned char*
 						dst,
 						result,
 						len);
-				ind.SetAPCI(GROUP_RESPONSE);
+				ind.SetAPCI(GROUP_RESPONSE | ind.GetAPCI());
+				LOG_DEBUG("[Send] [GROUP_RESPONE Indication] Value is: %s",CString::ToHexFormat((char*)result, len, true).GetBuffer());
 				_emulator->Broadcast(ind);
 
 			}
@@ -405,6 +409,14 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleTunnelRequest(unsigned char*
 
 		//this is a write request, we shall update the db and return confirmation
 		if(!is_read_req){
+			unsigned char data[MAX_EIB_VAL];
+			data[0] = cemi.GetAPCI();
+			if(cemi.GetValueLength() > 1){
+				memcpy(&data[1], cemi.GetAddilData(), cemi.GetValueLength() - 1);
+			}
+			LOG_DEBUG("[Received] [GROUP_WRITE Request] Write Value for %s. Value: %s", cemi.GetDestAddress().ToString().GetBuffer(),
+				CString::ToHexFormat((char*)data,cemi.GetValueLength(),true).GetBuffer());
+			
 			CEIBEmulator::GetInstance().GetDB().SetValueForGroup(dst, cemi);
 		}
 
@@ -616,7 +628,6 @@ bool CEmulatorHandler::CEmulatorInputHandler::SendTunnelToClient(const CCemi_L_D
 		JTCSynchronized sync(s->state_monitor);
 		if(s->is_connected){
 			unsigned char buffer[256];
-			LOG_DEBUG("[Send] [Tunnel Frame]");
 			CTunnelingRequest req(s->channelid, s->send_sequence, frame);
 			req.FillBuffer(buffer, sizeof(buffer));
 			_sock.SendTo(buffer, req.GetTotalSize(), s->_remote_data_addr, s->_remote_data_port);

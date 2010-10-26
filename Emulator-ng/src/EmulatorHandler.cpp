@@ -453,7 +453,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleDisconnectRequest(unsigned c
 				return;
 			}
 
-			LOG_DEBUG("[Send] [Disconnect Response]");
+			LOG_DEBUG("[Send] [Disconnect Response] [%s:%d] Channel ID: %d", s->_remote_ctrl_addr.GetBuffer(), s->_remote_ctrl_port, s->channelid);
 
 			CDisconnectResponse resp(s->channelid, E_NO_ERROR);
 			resp.FillBuffer(buffer, max_len);

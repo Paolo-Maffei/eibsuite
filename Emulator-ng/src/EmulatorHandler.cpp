@@ -509,7 +509,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleConnectionStateRequest(unsig
 		_sock.SendTo(buffer, resp.GetTotalSize(), s->_remote_ctrl_addr, s->_remote_ctrl_port);
 
 	END_TRY_START_CATCH(e)
-		LOG_ERROR("Error in search connection state request parsing: %s",e.what());
+		LOG_ERROR("Error in connection state request parsing: %s",e.what());
 	END_TRY_START_CATCH_SOCKET(ex)
 		LOG_ERROR("Socket Error in connection state request parsing: %s",ex.what());
 	END_TRY_START_CATCH_ANY
@@ -603,7 +603,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleSearchRequest(unsigned char*
 {
 	START_TRY
 		CSearchRequest req(buffer);
-		LOG_DEBUG("[Received] [Search Request]");	
+		LOG_DEBUG("[Received] [Search Request] [From: %s:%d]", req.GetRemoteIPAddress().GetBuffer(), req.GetRemotePort());	
 		//send search response back to the sender
 		char serial[6] = { 0 };
 		unsigned long mcast = inet_addr(EIB_MULTICAST_ADDRESS);
@@ -612,7 +612,7 @@ void CEmulatorHandler::CEmulatorInputHandler::HandleSearchRequest(unsigned char*
 				0, serial, mcast, serial, name, (SERVICE_CORE | SERVICE_DEV_MNGMT | SERVICE_TUNNELING));
 		resp.FillBuffer(buffer, max_len);
 		_sock.SendTo(buffer,resp.GetTotalSize(),req.GetRemoteIPAddress(),req.GetRemotePort());
-		LOG_DEBUG("[Send] [Search Response]");
+		LOG_DEBUG("[Send] [Search Response] [To: %s:%d]", req.GetRemoteIPAddress().GetBuffer(), req.GetRemotePort());
 	END_TRY_START_CATCH(e)
 		LOG_ERROR("Error in search request parsing: %s",e.what());
 	END_TRY_START_CATCH_SOCKET(ex)

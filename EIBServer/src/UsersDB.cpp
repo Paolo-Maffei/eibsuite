@@ -159,6 +159,8 @@ start:
 	case 5: Save();
 		CEIBServer::GetInstance().GetLog().SetConsoleColor(GREEN);
 		LOG_INFO("\nUsers file: \"%s\" saved successfully. the new file will be loaded automatically.\n", file_name.GetBuffer());
+		CEIBServer::GetInstance().GetLog().SetConsoleColor(WHITE);
+		LOG_SCREEN("\n\n");
 		break;
 	case 6: return;
 	case NO_DEFAULT_OPTION: goto start;
@@ -263,6 +265,7 @@ bool CUsersDB::AddOrUpdateUser(CUser& user)
 			user.SetPriviliges(user._priviliges & ~USER_POLICY_CONSOLE_ACCESS);
 		}
 	}
+
 	return true;
 }
 

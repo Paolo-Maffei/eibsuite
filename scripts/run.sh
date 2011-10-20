@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ -z "$1" ]
 then 
-	echo 'usage: $0 <program name>'
+	echo "usage: $0 <program name>"
 	exit
 fi
 

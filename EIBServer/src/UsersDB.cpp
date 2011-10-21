@@ -158,7 +158,7 @@ start:
 		break;
 	case 5: Save();
 		CEIBServer::GetInstance().GetLog().SetConsoleColor(GREEN);
-		LOG_INFO("\nUsers file: \"%s\" saved successfully. the new file will be loaded automatically.\n", file_name.GetBuffer());
+		LOG_SCREEN("\nUsers file: \"%s\" saved successfully. the new file will be loaded automatically.\n", file_name.GetBuffer());
 		CEIBServer::GetInstance().GetLog().SetConsoleColor(WHITE);
 		LOG_SCREEN("\n\n");
 		break;

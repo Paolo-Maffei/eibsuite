@@ -14,7 +14,7 @@ all: $(OUT_LIB)
 %.o: ../src/%.cpp
 	@echo 'Building file: ../src/$@'
 	@echo 'Invoking: GCC C++ Compiler'
-	$(CPP_COMPILER) $(INCLUDE_DIRS:%=-I"%") -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "../src/$(@:%.o=%.cpp)"
+	$(CPP_COMPILER) $(INCLUDE_DIRS:%=-I"%") -O0 -g3 -Wall -c -fPIC -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "../src/$(@:%.o=%.cpp)"
 	@echo 'Finished building: $@'
 	@echo 
 

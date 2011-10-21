@@ -44,6 +44,7 @@ void CDispatcher::Init()
 	}
 	catch (SocketException& e)
 	{
+		LOG_ERROR("Socket Error: %s", e.what());cd
 		throw CEIBException(SocketError,"Error in port [%d] binding: %s",GetServerPort(),e.what());
 		return;
 	}

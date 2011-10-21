@@ -5,3 +5,17 @@ CC :=
 EIB_ROOT := $(shell pwd)
 ecolor := @$(EIB_ROOT)/scripts/ecolor
 
+ifeq ($(CPP_COMPILER),)
+$(warning NO CPP Compiler defined, defaulting to g++)
+CPP_COMPILER := g++
+endif
+
+ifeq ($(CPP_LINKER),)
+$(warning NO CPP Linker defined, defaulting to g++)
+CPP_LINKER := g++
+endif
+
+ifeq ($(ARCH),)
+$(warning CPU Architecture defined, defaulting to X86)
+ARCH := X86
+endif

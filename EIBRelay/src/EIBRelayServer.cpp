@@ -122,6 +122,10 @@ void CEIBRelayServer::InteractiveConf()
 		}
 	}
 	
+	if(ConsoleCLI::Getint("KNXNet/IP Listening port?",ival, _conf.GetKnxIpPort())){
+		_conf.SetKnxIpPort(ival);
+	}
+
 	if(ConsoleCLI::GetCString("RELAY Server user name (used to connect to EIB Server)?",sval, _conf.GetName())){
 		_conf.SetName(sval);
 	}

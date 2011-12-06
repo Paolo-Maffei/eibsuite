@@ -1,0 +1,40 @@
+#######################################################################################################
+#General Block
+#######################################################################################################
+[RELAY-GENERAL]
+
+
+RELAY_INITIAL_KEY = EIBKEY
+
+#Whether to detect the IP of the EIB Server automatically (when this option is set to 'true' then the EIB_SERVER_IP_ADDRESS has no use)
+#Note: this option will work ONLY if the EIB Server is running on the same LAN as the current server (using multicast discovery message)
+AUTO_DISCOVER_EIB_SERVER = true
+
+#IP Address of the EIB Server
+EIB_SERVER_IP_ADDRESS = 127.0.0.1
+
+#The EIB Server port (the port that EIB Server listens to accept new clients)
+EIB_SERVER_PORT = 5000
+
+#Login name of the Relay server. this name will be used during the authentication with the EIB Server (Case sensitive)
+RELAY_SERVER_NAME = RELAY
+
+#Network name of this server. this name rquired during the authentication with the EIB Server (Case sensitive)
+RELAY_NETWORK_NAME = RELAY
+
+#Login password of the AMX server. this password will be used during the authentication with the EIB Server
+RELAY_SERVER_PASSWORD = RELAY
+
+#This number allows you to set the logging level:
+# 0 - No logging to log files at all
+# 1 - Error Messages are printed to the log files
+# 2 - Error & Info messages are printed to the log files
+# 3 - Error & Info & Debug messages are printed to the log files
+LOG_LEVEL = 3
+
+#The network interface used to listen to for Incoming KNXNet/IP connections (e.g. ETS Software)
+LISTEN_INTERFACE = eth0
+
+#The port used to listen for Incoming KNXNet/IP connections (e.g. ETS Software)
+KNXIP_LISTEN_PORT = 3671
+

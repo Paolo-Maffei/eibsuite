@@ -204,9 +204,8 @@ CRelayHandler::CRelayInputHandler::~CRelayInputHandler()
 void CRelayHandler::CRelayInputHandler::Init()
 {
 	START_TRY
-		//set the source port to default EIB Port (3671)
 		_local_addr = Socket::LocalAddress(_relay->_server_conf->GetListenInterface());
-		_sock.SetLocalAddressAndPort(_local_addr,EIB_PORT);
+		_sock.SetLocalAddressAndPort(_local_addr, _relay->_server_conf->GetKnxIpPort());
 		_local_port = _sock.GetLocalPort();
 		_sock.JoinGroup(_local_addr,EIB_MULTICAST_ADDRESS);
 	END_TRY_START_CATCH_SOCKET(e)

@@ -6,6 +6,10 @@
 #initial key to encrypt and decrypt the messages required for random key exchange
 SMS_INITIAL_KEY = EIBKEY
 
+#Whether to detect the IP of the EIB Server automatically (when this option is set to 'true' then the EIB_SERVER_IP_ADDRESS has no use)
+#Note: this option will work ONLY if the EIB Server is running on the same LAN as the current server (using multicast discovery message)
+AUTO_DISCOVER_EIB_SERVER = true
+
 #IP Address of EIB Server. If you are running EIB server and SMS Server on the same machine, use 127.0.0.1
 EIB_SERVER_IP_ADDRESS = 127.0.0.1
 

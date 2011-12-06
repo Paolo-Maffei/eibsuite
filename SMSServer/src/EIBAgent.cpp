@@ -30,7 +30,7 @@ bool CEIBAgent::ConnectToEIB()
 	CString serverIP = conf.GetEibIPAddress();
 	int serverPort = conf.GetEibPort();
 
-	bool established = false;
+	//bool established = false;
 	if(conf.GetAutoDiscoverEibServer())
 	{
 		LOG_INFO("Searching EIB Server on local network...");
